@@ -354,14 +354,14 @@ var obj = {
   * it is a function that gets executed immediately
     ```javascript
     (function () {
-      console.log('executed!);
+      console.log('executed!');
     })(); // or }());
     ```
   * it prevents the code from polluding the global namespace
   * we can use unary operators insteat of parantheses:
     ```javascript
     +function () {
-      console.log('executed!);
+      console.log('executed!');
     }();
     ```
 7. Recursion:
