@@ -1,3 +1,5 @@
+# Rapid JavaScript Training
+
 ### note:
 
 * `!!` is a common way to convert a value to its boolean equivalent: `!!value`, another ways is `Boolean(value)`
@@ -707,4 +709,3 @@ var obj = {
       ```
 
       ​
-
