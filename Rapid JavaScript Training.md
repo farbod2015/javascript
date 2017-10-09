@@ -1,7 +1,5 @@
 # Rapid JavaScript Training
 
-### note:
-
 * `!!` is a common way to convert a value to its boolean equivalent: `!!value`, another ways is `Boolean(value)`
 * string has properties and functions: 
   * `length` is property: `str.length`
