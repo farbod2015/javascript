@@ -1,11 +1,13 @@
 # Rapid JavaScript Training
 
+## JavaScript Basics
+
 * `!!` is a common way to convert a value to its boolean equivalent: `!!value`, another ways is `Boolean(value)`
-* string has properties and functions: 
-    * `length` is property: `str.length`
-    * `trim` is function: `str.trim()`
+* string has properties and functions:
+  * `length` is property: `str.length`
+  * `trim` is function: `str.trim()`
 * Variables created without the keyword `var`, are always global, even if they are created inside a function.
-* JavaScript code compiles twice. in the first pass it checks for variables, functions, etc. and initializes the variables with undefined and put them along with functions at the top of the code
+* JavaScript code compiles twice. in the first pass it checks for variables, functions, etc. and initializes the variables with undefined and put them along with functions at the top of the code (hoisting)
 * `undefined` and `null`:
     ```javascript
     typeof undefined = undefined
@@ -19,12 +21,11 @@
     ```javascript
     this === window            // true
     ```
-    floating point calculations are inaccurate in JavaScript. for example: `5.1+3.3 = 8.399999999999`. so this comparison will result in false: `5.1+3.3 == 8.4`. to solve this problem when using floating point operations use `toFixed` function to round the number. Example: if `total = 5.1+3.3` then `total.toFixed(2)` is equal to `8.40`
+* floating point calculations are inaccurate in JavaScript. for example: `5.1+3.3 = 8.399999999999`. so this comparison will result in false: `5.1+3.3 == 8.4`. to solve this problem when using floating point operations use `toFixed` function to round the number. Example: if `total = 5.1+3.3` then `total.toFixed(2)` is equal to `8.40`
 
+## Operations
 
-
-
-#### addition:
+### addition
 
 ```javascript
 "PRD" + 2000           // "PRD2000"
@@ -39,15 +40,13 @@
 "300" - "200"          // 100
 ```
 
-
-
-#### subtraction:
+### subtraction
 
 ```javascript
 "PRD300" - "ITEM200"   // NaN
 300 - undefined        // NaN
 300 - null             // 300
-300 - obj              // 200      obj *    
+300 - obj              // 200      obj *
 300 - NaN              // NaN
 300 - ""               // 300
 ```
@@ -59,24 +58,20 @@ var obj = {
 };
 ```
 
- 
-
-#### multiplication:
+### multiplication
 
 ```javascript
 20 * NaN           // NaN
 20 * undefined     // NaN
 20 * null          // 0
 20 * NaN           // NaN
-4 * obj            // 400      see above (obj) * 
+4 * obj            // 400      see above (obj) *
 4 * Infinity       // Infinity
 -4 * Infinity      // -Infinity
 4 * "XYZ"          // NaN
 ```
 
-
-
-#### division:
+### division
 
 ```javascript
 9 / 0              // Infinity
@@ -84,18 +79,14 @@ var obj = {
 9 / "3"            // 3
 ```
 
-
-
-
-#### modulus:
+### modulus
 
 ```javascript
 9 % 4              // 1
 9 % "    4    "    // 1
 ```
 
-
-#### Boolean:
+### Boolean
 
 ```javascript
 !99                // false
@@ -120,10 +111,7 @@ false && ++value   // value is not incremented because the second operand
 obj || 99          // if the first operand is an object that object is returned
 ```
 
-
-
-
-#### Equality Operation:
+### Equality Operation
 
 ```javascript
 true == 2          // false (1 == 2)     if boolean value is compared with numbers, it
@@ -151,7 +139,7 @@ var obj = {
 
 
 
-#### Relational Operations:
+### Relational Operations
 
 ```javascript
 "beta" < "Alpha"                                // true
@@ -164,19 +152,17 @@ var obj = {
 
 ------
 
-
-
-## Reference Types:
+## Arrays and Reference Types
 
 1. Including: Array, Date, RegEx, Object
-2. Arrays have properties (e.g. length) and functions (e.g. cat, slice, splice, etc.). one integer argument for Array constructor is for length but other than that initial elements of the array
-3. Data constructor takes seconds (start time is Jan 1970) as argument
+1. Arrays have properties (e.g. length) and functions (e.g. cat, slice, splice, etc.). one integer argument for Array constructor is for length but other than that initial elements of the array
+1. Data constructor takes seconds (start time is Jan 1970) as argument
 
 ------
 
 
 
-## Object:
+## Object, JSON, and Prototypes
 
 1. two ways for creating objects:
     * using the constructor function for objects:
@@ -187,17 +173,17 @@ var obj = {
         ```javascript
         var project = {};
         ```
-2. we can add new property to an object by:
+1. we can add new property to an object by:
     * simply specifying a name and a value pair on it
         ```javascript
         obj.name = 'phoenix'
         ```
     * using `defineProperty()` function
     * using `defineProperties()` function
-3. two ways to access object property: 
+1. two ways to access object property: 
     * use dot notation (`obj.name`)
     * use brackets with property name as string (`obj['name']`)
-4. every object has prototype property but we don't always have access to it
+1. every object has prototype property but we don't always have access to it
     * prototype property is an object
     * when we create an object using JSON notation or new Object, our prototype for the object gets set to `Object.prototype`
     * every object have a prototype. The prototype is an object so it can have prototype too. so every time that a property or function is accessed for an object, if it does not have the property or function itself JavaScript will look at its prototype; and if the prototype doesn't have it'll look for the prototype of the prototype and so on.
@@ -250,7 +236,7 @@ var obj = {
 1. Naming function expression:
     * function expressions with no name appear as anonymous function in stack traces so it'll make it difficult for debugging. the solution is to assign a name to the function expression. so if the function throws an error the name will appear in stack trace.
     * if you want to create a recursive function and refer to the current function inside the function body, you need to create a named function expression.
-2. Constructor Functions:
+1. Constructor Functions:
     * ES5 does not have classes but it has constructor functions
     * the name of these functions always start with capital letters (e.g. Object)
     * to create a constructor functions just set it to a regular function expression:
@@ -272,7 +258,7 @@ var obj = {
         ```
     * when working with JSON object we can't have access to the `.prototype` of the object directly (unless we use the hack `__proto__`), but in constructor functions we do have access (e.g. Employee.prototype)
     * constructor functions get an empty prototype unlike JSON objects that get the prototype of the Object constructor function
-3. The `this` Keyword:
+1. The `this` Keyword:
     * in the global space `this` is set to the object `Window` if we are working in a browser (Node works on a server so doesn't have the window object)
         ```javascript
         var name = 'Jeff';
@@ -299,7 +285,7 @@ var obj = {
         };
         var addr = new Address('123 State St.');
         ```
-4. Calling Functions:
+1. Calling Functions:
     * we use `call` and `apply` to get control over what `this` is set to within a function
     * we can use the `call` function to pass an object to a function as its `this` object
         ```javascript
@@ -345,8 +331,8 @@ var obj = {
                     return function () {return counter += 1;}
                 })();
             ```
-        2. as an event handler
-        3. as a set interval function
+        1. as an event handler
+        1. as a set interval function
 6. IIFEs: Immediately Invoked Function Expressions
     * it is a function that gets executed immediately
         ```javascript
@@ -354,8 +340,8 @@ var obj = {
             console.log('executed!');
         })(); // or }());
         ```
-    * it prevents the code from polluding the global namespace
-    * we can use unary operators insteat of parantheses:
+    * it prevents the code from polluting the global namespace
+    * we can use unary operators instead of parentheses:
         ```javascript
         +function () {
             console.log('executed!');
@@ -386,7 +372,7 @@ var obj = {
                     fn(topEmployee.subordinates[i]);
             };
             ```
-            using the functoin this would work fine:
+            using the function this would work fine:
             ```javascript
             fn(orgChart);
             ```
@@ -417,8 +403,8 @@ var obj = {
 ## Programming the BOM and DOM:
 
 1. BOM stands for browser object model and that is a set of objects that the browser exposes to JavaScript
-2. DOM is the document object model and that is the document that the browser is showing and it exposes objects to JavaScript so we can work with the document
-3. The window Object and Timers:
+1. DOM is the document object model and that is the document that the browser is showing and it exposes objects to JavaScript so we can work with the document
+1. The window Object and Timers:
     * some properties of the window object:
         * `window.screenLeft`
         * `window.screenTop`
@@ -447,7 +433,7 @@ var obj = {
                     clearInterval(id);
             }, 1000);
             ```
-4. System Dialogs:
+1. System Dialogs:
     * These are the simple dialogs that the browser puts up that accept user input
     * They are very useful for testing, debugging, and utility applications 
     * These are styled differently in all the different major browsers, so if you wanted a consistent look across browsers, you wouldn't use these
@@ -541,7 +527,7 @@ var obj = {
         * ``touchmove``
         * ``touchend``
         * ``touchcancel``: when a touch is canceled before ending
-2. The Event Object:
+1. The Event Object:
     * is an object created by the JavaScript runtime engine which gets passed to an event handler
     * Event object key properties: these are only readonly
         * ``bubbles``: true or false based upon whether or not this event is allowed to bubble up to the parents
@@ -561,7 +547,7 @@ var obj = {
         * ``target``: is the original target of this event, so if we click on a button and the event starts to bubble up from parent to parent to parent, target will be set to that original button
         * ``trusted``: will be true if the event comes from the browser and it will be false if the event is triggered through JavaScript code from a developer
         * type: is simply the name of the event, for example, it would be the string click for a click event
-3. Handling events: 
+1. Handling events: 
     * we can add `on` to any event to use it (e.g. `onclick`)
     * it's best to put all the JavaScripts in a JavaScript file and put nothing in an HTML handler
     * example:
@@ -576,7 +562,7 @@ var obj = {
             console.log('ButtonClicked');
         }
         ```
-4. Event Listeners: are the most modern way of handling events
+1. Event Listeners: are the most modern way of handling events
     * Above example with event listener:
         ```html
         <!-- body of HTML -->
@@ -695,7 +681,7 @@ var obj = {
         var code = 'console.log(globalVar)';
         eval(code);       // foo
         ```
-2. The Math Object: some of the Math object's important functions are:
+1. The Math Object: some of the Math object's important functions are:
     ```javascript
     Math.PI                       // 3.141592653589793
     Math.abs(-42)                 // 42
@@ -709,7 +695,7 @@ var obj = {
     Math.sqrt(81)                 // 9
     Math.sqrt(-81)                // NaN
     ```
-3. The String Object: some of the String object's important functions are:
+1. The String Object: some of the String object's important functions are:
     ```javascript
     var value = 'My String';
     console.log(value.charAt(3));             // S
@@ -730,7 +716,7 @@ var obj = {
     console.log(value.substring(5, 6));       // S
     console.log(value.substr(5, 6));          // String
     ```
-3. arguments:
+1. arguments:
     ```javascript
     var validateValues = function () {
       console.log(arguments.length);          // 3
@@ -741,4 +727,130 @@ var obj = {
     };
     validateValues(1, true, 'Settings');
     ```
-     ​
+
+
+------
+
+
+
+## Miscellaneous JavaScript Topics
+
+1. Promises and Observables:
+    * Promises: check the Promises module of the pluralsight course JavaScript Design Pattenrs by Aaron Powell
+    * read about Observables on [ReactiveX](reactivex.io)
+1. Stric Mode: 
+    * generally it's better to always work in strict mode:
+        * helps write better code
+        * detects errors
+    * if we put the the `'use strict'` in the global environment that would apply to the global area and the functions
+    * if we put the `'use strict'` inside a function, it would execute in strict mode but the not the code outside
+    * strict mode won't create a new variable in global space if the variable is not defined:
+        ```javascript
+        var actNow = function() {
+            'use strict';
+            newVar = 9;
+        }
+        actNow();       // Uncaught ReferenceError: newVar is not defined
+        ```
+        ```javascript
+        var actNow = function() {
+            newVar = 9;
+        }
+        actNow();       // (no error)
+        ```
+    * we cannot `delete` a variable if we declare it in the strict mode. (`delete` operator removes the variable from the context):
+        ```javascript
+        var actNow = function() {
+            var newVar = 9;
+            delete newVar;
+        }
+        actNow();       // (no error)
+        ```
+        ```javascript
+        var actNow = function() {
+            'use strict';
+            var newVar = 9;
+            delete newVar;
+        }
+        actNow();       // Uncaught SyntaxError: Delete of an 
+                        // unqualified identifier in strict mode
+        ```
+    * in strict mode we are not allowed to have duplicate parameter names:
+        ```javascript
+        var actNow = function() {
+            var fn = function(a, a) {
+            };
+        }
+        actNow();       // (no error)
+        ```
+        ```javascript
+        var actNow = function() {
+            'use strict';
+            var fn = function(a, a) {
+            };
+        }
+        actNow();       // Uncaught SyntaxError: Duplicate parameter 
+                        // name not allowed in this context
+        ```
+    * `with` statement is not allowed in strict mode. The reason is that if the variable name in with statement is wrong it'll create a new global variable for that:
+        ```javascript
+        var obj = {};
+        with (obj) {
+
+        }
+        // (no error)
+        ```
+        ```javascript
+        'use strict';
+        var obj = {};
+        with (obj) {
+
+        }
+        // Uncaught SyntaxError: Strict mode code
+        // may not include a with statement
+        ```
+1. JSLint and JSHint:
+    * Linters are very useful in evaluating source codes and looking for errors before you even compile
+    * JSLint is not the most configurable utility out there, and that's where JSHint comes in
+    * examples:
+        ```javascript
+        var MyClass = function () {
+            'use strict';
+            this.id = 9;
+        };
+        var c = new MyClass();
+        console.log(c.id);
+
+        // Linter's message:
+        //   Unexpected 'this'.
+        //   Undeclared 'console'.
+        ```
+        ```javascript
+        var MyClass = function () {
+            this.id = 9;
+        };
+        var c = new MyClass();
+        console.log(c.id);
+
+        // Linter's message:
+        //   Expected 'use strict' before 'this'.
+        ```
+        ```javascript
+        var myClass = function () {
+            'use strict';
+            id = 9;
+        };
+        var c = new myClass();
+        console.log(c.id);
+
+        // Linter's message:
+        //   Undeclared 'id'.
+        ```
+1. Modular JavaScript:
+    * it's a good idea to work with modules to be able to reuse our code in as many projects as needed or possible
+    * it's also a good idea to remove any kind of dependencies among modules the get maximum code reuse
+    * Patterns to use modules within JavaScript:
+        * **AMD:** Asynchronous Module Definition: a popular pattern mainly on the browser side
+        * **CoomonJS:** more likely used on the server side
+        * **ES6:** a new syntax module
+        * **SystemJS:** a universal module loader that can work with AMD, CommonJS, and ES6 syntax

@@ -1,3 +1,4 @@
-# My Awesome Book
+# JavaScript Notes
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+These are a collection of notes on JavaScript courses taken online.
+
