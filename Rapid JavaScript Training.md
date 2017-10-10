@@ -105,8 +105,8 @@ null && 99         // null     null is returned if either of the operands in nul
 "Z" && null        // null
 "Z" && undefined   // undefined
 "Z" && NaN         // NaN      NaN is returned if either of the operands in NaN
-false && ++value   // value is not incremented because the second operand 
-                   //          is ignored. if the first operand is true or false 
+false && ++value   // value is not incremented because the second operand
+                   //          is ignored. if the first operand is true or false
                    //          the second operand is not going to be looked at
 obj || 99          // if the first operand is an object that object is returned
 ```
@@ -137,13 +137,11 @@ var obj = {
 }
 ```
 
-
-
 ### Relational Operations
 
 ```javascript
 "beta" < "Alpha"                                // true
-"Beta" < "alpha"                                // true     The uppercase characters always 
+"Beta" < "alpha"                                // true     The uppercase characters always
                                                 //          come before the lowercase characters
 "Beta".toLowerCase() < "alpha".toLowerCase()    // false
 '42' < 55                                       // true
@@ -159,8 +157,6 @@ var obj = {
 1. Data constructor takes seconds (start time is Jan 1970) as argument
 
 ------
-
-
 
 ## Object, JSON, and Prototypes
 
@@ -180,7 +176,7 @@ var obj = {
         ```
     * using `defineProperty()` function
     * using `defineProperties()` function
-1. two ways to access object property: 
+1. two ways to access object property:
     * use dot notation (`obj.name`)
     * use brackets with property name as string (`obj['name']`)
 1. every object has prototype property but we don't always have access to it
@@ -194,7 +190,7 @@ var obj = {
         };
         var secretProject = Object.create(project); // project is set as the prototype for secretProject object
         ```
-5. each property is paired with a descriptor:
+1. each property is paired with a descriptor:
     * Property descriptors present in objects come in two main flavors:
         * **Data descriptor**: is a property that has a value, which may or may not be writable
         * **Accessor descriptor**: is a property described by a getter-setter pair of functions.
@@ -223,15 +219,13 @@ var obj = {
         ```javascript
         var descriptor = Object.getOwnPropertyDescriptor(task, 'text');
         ```
-6. Miscellaneous object functions:
+1. Miscellaneous object functions:
     * `Object.prototype.hasOwnProperty()`: Returns a boolean indicating whether an object contains the specified property as a direct property of that object and not inherited through the prototype chain.
     * `Object.prototype.isPrototypeOf()`: Returns a boolean indicating whether the object this method is called upon is in the prototype chain of the specified object.
 
 ------
 
-
-
-## Functions:
+## Functions
 
 1. Naming function expression:
     * function expressions with no name appear as anonymous function in stack traces so it'll make it difficult for debugging. the solution is to assign a name to the function expression. so if the function throws an error the name will appear in stack trace.
@@ -292,7 +286,7 @@ var obj = {
         var updateZipCode = function () {
             console.log(this);
         };
-        updateZipCode.call(obj); 
+        updateZipCode.call(obj);
         ```
     * if the function has arguments we pass to `call` the object first then the arguments, comma separated:
         ```javascript
@@ -302,15 +296,15 @@ var obj = {
         var zipCode = {
             zip: '11787'
         };
-        updateZipCode.call(zipCode, '11888', 'us'); 
+        updateZipCode.call(zipCode, '11888', 'us');
         ```
     * `apply` does the same as `call` just instead of comma separated arguments it get an array of arguments:
         ```javascript
-        updateZipCode.apply(zipCode, ['11888', 'us']); 
+        updateZipCode.apply(zipCode, ['11888', 'us']);
         ```
-5. Closure:
+1. Closure:
     * Nested functions have access to variables declared in their outer scope.
-    * A closure is a function having access to the parent scope, even after the parent function has closed. Functions normally get created, they have a lifecycle, and then they get garbage collected, but a closure is a function that persists and we can hold onto that function.
+    * A closure is a function having access to the parent scope, even after the parent function has closed. Functions normally get created, they have a life cycle, and then they get garbage collected, but a closure is a function that persists and we can hold onto that function.
     * Common ways to use closure:
         1. where we return a function from another function. Example:
             ```javascript
@@ -318,11 +312,11 @@ var obj = {
                 var currentSalary = salary;
                 var generator = function () {
                     currentSalary += 10000;
-                    returncurrentSalary;
+                    return currentSalary;
                 };
                 return generator;
             };
-            varupdateFn = salaryUpdater(50000);                
+            var updateFn = salaryUpdater(50000);
             ```
             another example:
             ```javascript
@@ -333,7 +327,7 @@ var obj = {
             ```
         1. as an event handler
         1. as a set interval function
-6. IIFEs: Immediately Invoked Function Expressions
+1. IIFEs: Immediately Invoked Function Expressions
     * it is a function that gets executed immediately
         ```javascript
         (function () {
@@ -347,7 +341,7 @@ var obj = {
             console.log('executed!');
         }();
         ```
-7. Recursion:
+1. Recursion:
     * is a function's ability to call itself
     * the following example shows a common problem that happens in recursion:
         * this is the recursive function and the input object:
@@ -398,9 +392,7 @@ var obj = {
 
 ------
 
-
-
-## Programming the BOM and DOM:
+## Programming the BOM and DOM
 
 1. BOM stands for browser object model and that is a set of objects that the browser exposes to JavaScript
 1. DOM is the document object model and that is the document that the browser is showing and it exposes objects to JavaScript so we can work with the document
@@ -435,7 +427,7 @@ var obj = {
             ```
 1. System Dialogs:
     * These are the simple dialogs that the browser puts up that accept user input
-    * They are very useful for testing, debugging, and utility applications 
+    * They are very useful for testing, debugging, and utility applications
     * These are styled differently in all the different major browsers, so if you wanted a consistent look across browsers, you wouldn't use these
     * the three system dialogs are:
         * `alert`:
@@ -449,22 +441,22 @@ var obj = {
             }
             else {
                 console.log('Maybe next time...');
-            } 
+            }
             ```
         * `prompt`:
             ```javascript
             var result = prompt('Your name?');
             console.log(result);
             ```
-5. The location Object:
+1. The location Object:
     * this if a property of the global Object which lets us look at the browser's URL location and we can also modify it as well
     * some location properties are:
         * `location.href`
         * `location.host`
-        * `location.port` 
+        * `location.port`
         * `location.protocol`
         * `location.assign`
-6. Document Basics:
+1. Document Basics:
     * we can get access to HTML document using document property in JavaScript:
     * some properties and functions:
         * `document.getElementByID(...)`
@@ -473,7 +465,7 @@ var obj = {
         * `[element].getAttribute(...)`
         * `[element].setAttribute(...)`
         * `[element].childNodes`
-7. Query Selectors:
+1. Query Selectors:
     * Returns the first Element within the document that matches the specified selector, or group of selectors (CSS selectors separated by commas)
     * examples:
         ```javascript
@@ -485,9 +477,7 @@ var obj = {
 
 ------
 
-
-
-## Event Handlers:
+## Event Handlers
 
 1. Events
     * User Interface Events: are fired by the browser or the user interacting with the -browser:
@@ -547,13 +537,13 @@ var obj = {
         * ``target``: is the original target of this event, so if we click on a button and the event starts to bubble up from parent to parent to parent, target will be set to that original button
         * ``trusted``: will be true if the event comes from the browser and it will be false if the event is triggered through JavaScript code from a developer
         * type: is simply the name of the event, for example, it would be the string click for a click event
-1. Handling events: 
+1. Handling events:
     * we can add `on` to any event to use it (e.g. `onclick`)
     * it's best to put all the JavaScripts in a JavaScript file and put nothing in an HTML handler
     * example:
         ```html
         <!-- body of HTML -->
-        <inputid="submit1" type="button"/>
+        <input id="submit1" type="button"/>
         ```
         ```javascript
         // JavaScript file
@@ -592,7 +582,7 @@ var obj = {
         button.addEventListener('click', submitHandler);
         button.removeEventListener('click', submitHandler);
         ```
-5. **Event propagation**: An overarching term that includes the three different phases of DOM Events (watch vido: https://youtu.be/BtOrr7oTH_8)
+1. **Event propagation**: An overarching term that includes the three different phases of DOM Events (video: https://youtu.be/BtOrr7oTH_8)
     * the phases are:
         * **Capturing Phase**: When an event occurs in the DOM, notification of the event is passed starting at the top of the DOM tree and passing down through all parent element nodes all the way to the target node where the event occurred.
         * **Target Phase**: After the capturing phase occurs, the Target phase occurs. The target phase only includes a notification of Node where the event took place.
@@ -617,10 +607,7 @@ var obj = {
         div2.addEventListener('click', clickHandler, true);
         ```
 
-
 ------
-
-
 
 ## Built-in Objects and Functions
 
@@ -663,7 +650,7 @@ var obj = {
         var path = '\\start\\+';
         console.log(encodeURIComponent(path));      // %5Cstart%5C+      encodes '+' *
         ```
-        \* `encodeURI` does not encode these characters: 
+        \* `encodeURI` does not encode these characters:
              `A-Z a-z 0-9 - _ . ! ~ * ' ( )`
     * `decodeURI()`:
         ```javascript
@@ -701,8 +688,8 @@ var obj = {
     console.log(value.charAt(3));             // S
     console.log(value.concat(' Lives!'));     // My String Lives!
     console.log(value.includes(' '));         // true
-    console.log(value.indswith('ing'));       // true
-    console.log(value.indswith('ing '));      // false
+    console.log(value.endsWith('ing'));       // true
+    console.log(value.endsWith('ing '));      // false
     console.log(value.indexOf('M'));          // 0
     console.log(value.indexOf('Z'));          // -1
 
@@ -728,17 +715,14 @@ var obj = {
     validateValues(1, true, 'Settings');
     ```
 
-
 ------
-
-
 
 ## Miscellaneous JavaScript Topics
 
 1. Promises and Observables:
-    * Promises: check the Promises module of the pluralsight course JavaScript Design Pattenrs by Aaron Powell
+    * Promises: check the Promises module of the Pluralsight course JavaScript Design Patterns by Aaron Powell
     * read about Observables on [ReactiveX](reactivex.io)
-1. Stric Mode: 
+1. Strict Mode:
     * generally it's better to always work in strict mode:
         * helps write better code
         * detects errors
@@ -772,7 +756,7 @@ var obj = {
             var newVar = 9;
             delete newVar;
         }
-        actNow();       // Uncaught SyntaxError: Delete of an 
+        actNow();       // Uncaught SyntaxError: Delete of an
                         // unqualified identifier in strict mode
         ```
     * in strict mode we are not allowed to have duplicate parameter names:
@@ -789,7 +773,7 @@ var obj = {
             var fn = function(a, a) {
             };
         }
-        actNow();       // Uncaught SyntaxError: Duplicate parameter 
+        actNow();       // Uncaught SyntaxError: Duplicate parameter
                         // name not allowed in this context
         ```
     * `with` statement is not allowed in strict mode. The reason is that if the variable name in with statement is wrong it'll create a new global variable for that:
