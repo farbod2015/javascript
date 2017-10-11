@@ -92,6 +92,7 @@
   * the reason is that all packages are installed in `node_modules/.bin` which is in path when we call them from npm
 * use `npm-run-all` package to run multiple scripts at the same time:
   * example:
+
     ```json
     "open:src": "node buildScripts/srcServer.js",
     "security-check": "nsp check",
@@ -107,6 +108,7 @@
   * **Elm**
 * can configure babel in `.babelrc` or `package.json` files.
   * add `.babelrc` to root (use babel-node instead of node to run the code):
+
     ```json
     {
       "presets": [
@@ -169,6 +171,7 @@
 * use npm package called `eslint-watch` that adds file watching capability to ESLint
 * use `babel-eslint` instead if you wanted to use other experimental JavaScript features 
 * other than the required packages (`eslint`, `eslint-plugin-import` and `eslint-watch`), these lines added to the scripts section of the `package.json`:
+
   ```json
   "lint": "esw webpack.config.* src buildScripts --color",
   "lint:watch": "npm run lint -- --watch",
