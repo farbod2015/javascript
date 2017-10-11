@@ -137,9 +137,9 @@
   1. create `webpack.config.dev.js` in root and export an object for configuration
   1. configure a dev server (we used webpack with express in `srcServer.js` for this)
   1. configure the build to automatically generate sourcemaps for debugging as part of the bundling process
-    * it is set as devtool in webpack
-    * there are many different options depending on the quality and speed that you are looking (we used `inline-source-map`).
-    * use `debugger;` as breakpoint in the javascript code. the inspector in the developer tool of the browser will show the original js code instead the bundled
+      * it is set as devtool in webpack
+      * there are many different options depending on the quality and speed that you are looking (we used `inline-source-map`).
+      * use `debugger;` as breakpoint in the javascript code. the inspector in the developer tool of the browser will show the original js code instead the bundled
 
 ## Linting
 
