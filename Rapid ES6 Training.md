@@ -4,7 +4,7 @@
 
 ### let, const and Block Scoping
 
-* variable productId gets hoisted and set to undefined in the following example:
+* variable productId gets hoisted and set to `undefined` in the following example:
 
     ```javascript
     'use strict';
@@ -166,7 +166,7 @@
             ```
 
     1. non-binding of `this`:
-        * Until arrow functions, every new function defined its own `this` value (e.g. a new object in the case of a constructor, undefined in strict mode function calls, the base object if the function is called as an "object method", etc.)
+        * Until arrow functions, every new function defined its own `this` value (e.g. a new object in the case of a constructor, `undefined` in strict mode function calls, the base object if the function is called as an "object method", etc.)
         * An arrow function does not create its own this, the this value of the enclosing execution context is used.
 
             ```javascript
@@ -181,15 +181,231 @@
             document.addEventListener('click', () => console.log(this));  // Window {...}
             });
 
-
             // in this example 'this' is being set to the object
             // that is calling the function (invoice)
             'use strict';
             var invoice = {
                 number: 123,
                 process: function () {
-                    console.log(this);      // Object{
-                }                           //   number: 123
-            };                              // }
+                    console.log(this);          // Object{
+                }                               //   number: 123
+            };                                  // }
             invoice.process();
+
+            'use strict';
+            var invoice = {
+                number: 123,
+                process: () => console.log(this)
+            };
+            invoice.process();                  // Window {...}
+
+            'use strict';
+            var invoice = {
+                number: 123,
+                process: function () {
+                    return () => console.log(this.number);
+                }
+            };
+            invoice.process()();                // 123
             ```
+
+        * we cannot `bind` a new object to an arrow function (JavaScript engine will ignore the bind). also calls to `call` and `apply` are going to be useless:
+
+            ```javascript
+            'use strict';
+            var invoice = {
+                number: 123,
+                process: function () {
+                    return () => console.log(this.number);
+                }
+            };
+            var newInvoice = {
+                number: 456
+            };
+            invoice.process().bind(newInvoice)();   // 123
+
+            'use strict';
+            var invoice = {
+                number: 123,
+                process: function () {
+                    return () => console.log(this.number);
+                }
+            };
+            var newInvoice = {
+                number: 456
+            };
+            invoice.process().call(newInvoice)();   // 123
+            ```
+
+        * we can't put the arrow symbol on a new line:
+
+            ```javascript
+            'use strict';
+            var getPrice = ()
+                    => 5.99;
+            console.log(this.number);   // SyntaxError: unexpected token =>
+            ```
+
+        * we do not have access to prototype field when we declare an arrow function:
+
+            ```javascript
+            'use strict';
+            var getPrice = () => 5.99;
+            console.log(getPrice.hasOwnProperty("prototype"));  // false
+            ```
+
+### Default Function Parameters
+
+* in ES5 if we didn't specify a parameter its value would be set to `undefined` but now we have the ability to set a default:
+
+    ```javascript
+    'use strict';
+    var getProduct = function(productId = 1000) {
+        console.log(productId);
+    };
+    getProduct();               // 1000
+    ```
+
+* if we pass `undefined` as parameter, JavaScript will use the default value if there is one:
+
+    ```javascript
+    'use strict';
+    var getProduct = function(productId = 1000, type = 'software') {
+        console.log(productId + ', ' + type);
+    };
+    getProduct(undefined, 'hardware');      // 1000, hardware
+    ```
+
+* when we are creating a default we have access to other parameters and the variables and functions that are in the context (outside of the function):
+
+    ```javascript
+    'use strict';
+    var getTotal = function(price, tax = price * 0.07 ) {
+        console.log(price + tax);
+    };
+    getTotal(5.00);             // 5.35
+
+    'use strict';
+    var baseTax = 0.07;
+    var getTotal = function(price, tax = price * baseTax ) {
+        console.log(price + tax);
+    };
+    getTotal(5.00);             // 5.35
+
+    'use strict';
+    var generateBaseTax = () => 0.07;
+    var getTotal = function(price, tax = price * generateBaseTax() ) {
+        console.log(price + tax);
+    };
+    getTotal(5.00);             // 5.35
+
+    'use strict';
+    var getTotal = function(price = adjustment, adjustment = 1.00) {
+        console.log(price + adjustment);
+    };
+    getTotal();                 // SyntaxError: Use before declaration
+
+    'use strict';
+    var getTotal = function(price = adjustment, adjustment = 1.00) {
+        console.log(price + adjustment);
+    };
+    getTotal(5.00);             // 6
+    ```
+
+* it's not best practice to use `arguments` within a function but it will refer to the number of arguments that are actually passed to the function
+
+    ```javascript
+    'use strict';
+    var getTotal = function(price, tax = 0.07 ) {
+        console.log(arguments.length);
+    };
+    getTotal(5.00);             // 1
+    ```
+
+* default parameters work even when we are creating a dynamic function:
+
+    ```javascript
+    'use strict';
+    var getTotal = new Function("price = 20.00", "return price;");
+    console.log(getTotal());    // 20
+    ```
+
+### Rest and Spread
+
+* **Rest:** refers to gathering up parameters and putting them all into a single array
+
+    ```javascript
+    // here ... is the rest symbol. that will just gather
+    // up all the remaining parameters to the function and
+    // put them into categories
+    'use strict';
+    var showCategories = function (productId, ...categories) {
+        console.log(categories instanceof Array);
+    };
+    showCategories(123, 'search', 'advertising');   // true
+
+    'use strict';
+    var showCategories = function (productId, ...categories) {
+        console.log(categories);
+    };
+    showCategories(123, 'search', 'advertising');   // ['search', 'advertising']
+
+    'use strict';
+    var showCategories = function (productId, ...categories) {
+        console.log(categories);
+    };
+    showCategories(123);                            // []
+
+    // length shows the number of parameters to the function, 
+    // but it will ignore the rest parameter
+    'use strict';
+    var showCategories = function (productId, ...categories) {
+    };
+    console.log(showCategories.length);             // 1
+
+    'use strict';
+    var showCategories = function (productId, ...categories) {
+        console.log(arguments.length);
+    };
+    showCategories(123, 'search', 'advertising');   // 3
+
+    'use strict';
+    var showCategories = new Function("...categories", "return categories;");
+    console.log(showCategories('search', 'advertising'));
+    // ['search', 'advertising']
+    ```
+
+* **Spread:** refers to spreading out the elements of an array or a string
+
+    ```javascript
+    'use strict';
+    var prices = [12, 20, 18];
+    var maxPrice = Math.max(...prices);
+    console.log(maxPrice);              // 20
+
+    'use strict';
+    var prices = [12, 20, 18];
+    var newPriceArray = [...prices];
+    console.log(newPriceArray);         // [12, 20, 18]
+
+    'use strict';
+    var newPriceArray = Array(...[,,]);
+    console.log(newPriceArray);         // [undefined, undefined]
+
+    'use strict';
+    var newPriceArray = [...[,,]];
+    console.log(newPriceArray);         // [undefined, undefined]
+
+    'use strict';
+    var maxCode = Math.max(..."43210");
+    console.log(maxCode);               // 4
+
+    'use strict';
+    var codeArray = ["A", ..."BCD", "E"];
+    console.log(codeArray);             // ["A","B","C","D","E"]
+    ```
+
+### Object Literal Extensions
+
+
+
