@@ -169,27 +169,27 @@
         * Until arrow functions, every new function defined its own `this` value (e.g. a new object in the case of a constructor, undefined in strict mode function calls, the base object if the function is called as an "object method", etc.)
         * An arrow function does not create its own this, the this value of the enclosing execution context is used.
 
-        ```javascript
-        // in this example document is calling the function
-        // so 'this' is set to 'document'
-        'use strict';
-        document.addEventListener('click', function () {
-            console.log(this);              // #document
-        });
+            ```javascript
+            // in this example 'document' is calling the function
+            // so 'this' is set to 'document'
+            'use strict';
+            document.addEventListener('click', function () {
+                console.log(this);              // #document
+            });
 
-        'use strict';
-        document.addEventListener('click', () => console.log(this));  // Window {...}
-        });
+            'use strict';
+            document.addEventListener('click', () => console.log(this));  // Window {...}
+            });
 
 
-        // in this example 'this' is being set to the object
-        // that is calling the function (invoice)
-        'use strict';
-        var invoice = {
-            number: 123,
-            process: function () {
-                console.log(this);      // Object{
-            }                           //   number: 123
-        };                              // }
-        invoice.process();
-        ```
+            // in this example 'this' is being set to the object
+            // that is calling the function (invoice)
+            'use strict';
+            var invoice = {
+                number: 123,
+                process: function () {
+                    console.log(this);      // Object{
+                }                           //   number: 123
+            };                              // }
+            invoice.process();
+            ```
