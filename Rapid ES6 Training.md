@@ -712,3 +712,69 @@
 
 ### Advanced Destructuring
 
+Examples:
+
+```javascript
+'use strict';
+let [high, low] = [,];                        // high: undefined
+console.log(`high: ${high} low: ${low}`);     // low: undefined
+
+'use strict';                                 // Runtime Error: Unable to get property
+let [high, low] = undefined;                  // 'Symbol.iterator' of undefined or null
+console.log(`high: ${high} low: ${low}`);     // reference
+
+'use strict';                                 // Runtime Error: Unable to get property
+let [high, low] = null;                       // 'Symbol.iterator' of undefined or null
+console.log(`high: ${high} low: ${low}`);     // reference
+
+'use strict';
+try {
+  let [ high, low, ] = undefined;
+}
+catch (e) {
+  console.log(e.name);                        // TypeError
+}
+
+'use strict';
+let [ high, low, ] = [500, 200];
+console.log(`high: ${high} low: ${low}`);     // high: 500 low: 200
+
+'use strict';
+for (let [a, b] of [[5, 10]]) {
+  console.log(`${a} ${b}`);                   // 5 10
+}
+
+'use strict';
+let count = 0;
+for (let [a, b] of [[5, 10]]) {
+  console.log(`${a} ${b}`);                   // 5 10
+  count++;                                    // 1
+}
+console.log(count);
+
+'use strict';
+try {
+  throw [123, 'message'];
+}
+catch ([invoiceNum, errorMessage]) {
+  console.log(`${invoiceNum} ${errorMessage}`); // 123 message
+}
+
+'use strict';
+function getResult() {
+let high, low;
+return { high, low } = { high: 500, low: 200 };
+}
+console.log(getResult());                     // {high: 500, low: 200}
+
+'use strict';
+let nums = {
+  high: 1000,
+  low: 20,
+  average: 400
+};
+let high, low, average;
+({ high, low } = { average } = nums);
+console.log(`${high} ${low} ${average}`);     // 1000 20 400
+```
+
