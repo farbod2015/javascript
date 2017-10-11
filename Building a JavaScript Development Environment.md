@@ -47,125 +47,133 @@
 
 ## Package Security
 
-1. Packages can be published npm by anyone. `Reire.js` and the `Node Security Platform` (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities.
-1. Install Node Security Platform to automate security checks for our dependencies:
-    * to run nsp directly on the command line, install it globally: `npm install -g nsp`
-    * we can call this from an npm script and thus avoid having to install it globally (we'll do later)
-1. to check for vulnerabilities, in command line: `nsp check`
+* Packages can be published npm by anyone. `Reire.js` and the `Node Security Platform` (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities.
+* Install Node Security Platform to automate security checks for our dependencies:
+  * to run nsp directly on the command line, install it globally: `npm install -g nsp`
+  * we can call this from an npm script and thus avoid having to install it globally (we'll do later)
+* to check for vulnerabilities, in command line: `nsp check`
 
 ## Development Webservers
 
-  1- web server can be configured to start automatically as part of our development process
-  2- it opens the application so we can view our results immediately every time that we hit save.
-  3- Development Webservers:
-    - http-server
-    - live-server
-    - Express (we use in this course)
-    - budo
-    - webpack dev server
-    - Browsersync
-  4- express is already installed as part of package.json
-  5- create buildScripts folder for all build tools
-  6- create srcServer.js inside buildScripts folder
-    - this file will configure a web server that will serve up the files in our source directory
-  7- 
-  
-Sharing Work-in-progress with Customer:  
-  1- tools: localtunnel, ngrok, Surge, now
-  2- example: 
-    - install: npm install localtunnel -git
-    - node buildScripts/srcServer.js
-    - in a new terminal: lt --port 3000
-    - copy the URL and give it to the customer
-  
-Automation:
-  1- Popular tools:
-    - Grunt
-    - Gulp
-    - npm Scripts (we use this)
-  2- add npm scripts to the "scripts" section of package.json:
-    - "start": "node buildScripts/srcServer" --> use "npm start" to run this (use -s flag to silent the noise)
-    - generally if there is "script" (e.g. "start"), you can define "prescript" (e.g. "prestart") and "postscript" (e.g. "poststart") that automatically will run before "script"
-    - type "npm run scriptname" to run a script. start and test don't need the keyword "run"
-    -  don't need to install packages globally if run them by npm scripts. for example we won't need to install nsp globally if we write an scipt for running it (e.g. "security-check": "nsp check"). 
-    - the reason is that all packages are installed in node_modules/.bin which is in path when we call them from npm
-  3- use npm-run-all package to run multiple scripts at the same time:
-    - example:
-      "open:src": "node buildScripts/srcServer.js",
-      "security-check": "nsp check",
-      "start": " npm-run-all --parallel security-check open:src",
-      
-Transpiling:
-  1- Since we've decided to use the latest version of JavaScript in this project we need to transpile down to ES5 to assure that it runs in environments that don't yet fully support the latest versions of JavaScript. 
-  2- Popular transpilers:
-    - Babel: transpiles the latest version of JavaScript down to ES5 so that you can use all of these new features, but run them everywhere that ES5 is supported. But it actually does a lot more than that. Babel plugins are responsible for converting JSX (inline HTML in JavaScript, made popular by React) into plain old Javascript in the browser. 
-    - TypeScript
-    - Elm
-  3- can configuer babel in .babelrc or package.json files.
-    - add .babelrc to root (use babel-node instead of node to run the code):
-      {
-        "presets": [
-          "latest"
-        ]
-      }
-  
-Bundling:
-  1- Bundlers take all your JavaScript files, and intelligently package them for a target environment, such as a browser or node, and some bundlers add a variety of additional features on top of that.
-  2- Bundlers to choose from:
-    - Browserify
-    - Webpack
-    - Rollup
-    - JSPM
-  3- we use Webpack because:
-    - much more than just JS (CSS, images, fonts, html)
-    - bundle splitting
-    - hot module reloading (depending on the library or framework that you are using)
-    - tree shaking: dead-code elimination (webpack 2 offers this)
-  
-  Note:
-    - React hot reloading: As we know in Meteor, every time we save, Meteor rebundles your entire app and reloads the page, and this takes a bit of time depending on the size of your project. React hotloading is slightly different, it leverages HMR (see below) and without reloading the page, replaces changed components in-place, preserving state. That means that, your change will be visible in about half a second; if it was a dialog, you wouldn't need to re-open it, your text inputs remain filled, etc. In short, it's a massive boon to iterative development where you spend much less time waiting for your app to reload. 
+* web server can be configured to start automatically as part of our development process
+* it opens the application so we can view our results immediately every time that we hit save.
+* Development Webservers:
+  * **http-server**
+  * **live-server**
+  * **Express** (we use in this course)
+  * **budo**
+  * **webpack dev server**
+  * **Browsersync**
+* express is already installed as part of `package.json`
+* create `buildScripts` folder for all build tools
+* create `srcServer.js` inside `buildScripts` folder
+  * this file will configure a web server that will serve up the files in our source directory
 
-    - Code splitting: As we know in Meteor, the client loads all client files on the first load. E.g. not admins will still be served all the admin templates, which will never be used, and this creates a slower load time. With code splitting, you can divide your app into different pieces. You could, e.g. load the main code straight away, and load code for particular sections if a user visits them (or load everything else after the initial load is complete and the user can start using your app).
-    
-  Steps:  
-    1- create webpack.config.dev.js in root and export an object for configuration
-    2- configure a dev server (we used webpack with express in srcServer.js for this)
-    3- configure the build to automatically generate sourcemaps for debuging as part of the bundling process
-      - it is set as devtool in webpack
-      - there are many different options depending on the quality and speed that you are looking (we used "inline-source-map").
-      - use "debugger;" as breakpoint in the javascript code. the inspector in the developer tool of the browser will show the original js code instead the bundled
-  
-Linting:
-  1- why do you need a linter? I see two core reasons:
-    - First: it programmatically enforces consistency to make it easy to read (e.g. enforcing the position of curly braces)
-    - Second: it helps avoid mistakes (e.g. adding an extra parenthesis or overwriting a function)
-    Note: it does rapid feedback when hit save
-  2- Linters:
-    - JSLint
-    - JSHint
-    - ESLint (most popular and powerful)
-  3- Core decisions for using a linter:
-    - config format? choose one of these file names for configuration:
-      - .enlintrc.js
-      - .enlintrc.yaml
-      - .enlintrc.yml
-      - .enlintrc.json
-      - .enlintrc
-      - package.json
-    - which built-in rules? no rules are enabled by default (see ESLint docs for a full list of rules)
-    - warnings or errors? if you set the rule as a "warning" it doesn't break the build while "error" does
-    - which plugins? e.g. use eslint-plugin-react for React specific linting rules for ESLint
-    - use preset instead? ways to handle your ESLint rules:
-      - start from scratch
-      - use ESLint preset (recommended)
-      - other presets: XO, airbnb, standardJS
-  4- helpful link: github.com/dustinspecker/awesome-eslint
-  5- use npm package called eslint-watch that adds file watching capability to ESLint
-  6- use babel-eslint instead if you wanted to use other experimental JavaScript features 
-  7- other than the required packages ("eslint", "eslint-plugin-import" and "eslint-watch"), these lines added to the scripts section of the package.json:
-    "lint": "esw webpack.config.* src buildScripts --color",
-    "lint:watch": "npm run lint -- --watch",
-    "start": " npm-run-all --parallel security-check open:src lint:watch",
+## Sharing Work-in-progress with Customer
+
+* tools: localtunnel, ngrok, Surge, now
+* example:
+  * install: `npm install localtunnel -git`
+  * `node buildScripts/srcServer.js`
+  * in a new terminal: `lt --port 3000`
+  * copy the URL and give it to the customer
+
+## Automation
+
+* Popular tools:
+  * **Grunt**
+  * **Gulp**
+  * **npm Scripts** (we use this)
+* add npm scripts to the `scripts` section of `package.json`:
+  * `start: "node buildScripts/srcServer"` (use "npm start" to run this and use -s flag to silent the noise)
+  * generally if there is `script` (e.g. `start`), you can define `prescript` (e.g. `prestart`) and `postscript` (e.g. `poststart`) that automatically will run before `script`
+  * type `npm run scriptname` to run a script. `start` and `test` don't need the keyword `run`
+  * don't need to install packages globally if run them by npm scripts. for example we won't need to install nsp globally if we write an script for running it (e.g. `"security-check": "nsp check"`).
+  * the reason is that all packages are installed in `node_modules/.bin` which is in path when we call them from npm
+* use `npm-run-all` package to run multiple scripts at the same time:
+  * example:
+    ```json
+    "open:src": "node buildScripts/srcServer.js",
+    "security-check": "nsp check",
+    "start": " npm-run-all --parallel security-check open:src",
+    ```
+
+## Transpiling
+
+* Since we've decided to use the latest version of JavaScript in this project we need to transpile down to ES5 to assure that it runs in environments that don't yet fully support the latest versions of JavaScript.
+* Popular transpilers:
+  * **Babel**: transpiles the latest version of JavaScript down to ES5 so that you can use all of these new features, but run them everywhere that ES5 is supported. But it actually does a lot more than that. Babel plugins are responsible for converting JSX (inline HTML in JavaScript, made popular by React) into plain old Javascript in the browser.
+  * **TypeScript**
+  * **Elm**
+* can configure babel in `.babelrc` or `package.json` files.
+  * add `.babelrc` to root (use babel-node instead of node to run the code):
+    ```json
+    {
+      "presets": [
+        "latest"
+      ]
+    }
+    ```
+
+## Bundling
+
+* Bundlers take all your JavaScript files, and intelligently package them for a target environment, such as a browser or node, and some bundlers add a variety of additional features on top of that.
+* Bundlers to choose from:
+  * **Browserify**
+  * **Webpack**
+  * **Rollup**
+  * **JSPM**
+* we use Webpack because:
+  * it is much more than just JS (CSS, images, fonts, html)
+  * bundle splitting
+  * hot module reloading (depending on the library or framework that you are using)
+  * tree shaking: dead-code elimination (webpack 2 offers this)
+
+* **Note:**
+  * **React hot reloading:** As we know in Meteor, every time we save, Meteor rebundles your entire app and reloads the page, and this takes a bit of time depending on the size of your project. React hotloading is slightly different, it leverages HMR (see below) and without reloading the page, replaces changed components in-place, preserving state. That means that, your change will be visible in about half a second; if it was a dialog, you wouldn't need to re-open it, your text inputs remain filled, etc. In short, it's a massive boon to iterative development where you spend much less time waiting for your app to reload.
+  * **Code splitting:** As we know in Meteor, the client loads all client files on the first load. E.g. not admins will still be served all the admin templates, which will never be used, and this creates a slower load time. With code splitting, you can divide your app into different pieces. You could, e.g. load the main code straight away, and load code for particular sections if a user visits them (or load everything else after the initial load is complete and the user can start using your app).
+
+* Steps:
+  1. create `webpack.config.dev.js` in root and export an object for configuration
+  1. configure a dev server (we used webpack with express in `srcServer.js` for this)
+  1. configure the build to automatically generate sourcemaps for debugging as part of the bundling process
+    * it is set as devtool in webpack
+    * there are many different options depending on the quality and speed that you are looking (we used `inline-source-map`).
+    * use `debugger;` as breakpoint in the javascript code. the inspector in the developer tool of the browser will show the original js code instead the bundled
+
+## Linting
+
+* why do you need a linter? I see two core reasons:
+  1. it programmatically enforces consistency to make it easy to read (e.g. enforcing the position of curly braces)
+  1. it helps avoid mistakes (e.g. adding an extra parenthesis or overwriting a function). It does rapid feedback when hit save.
+* Linters:
+  * **JSLint**
+  * **JSHint**
+  * **ESLint** (most popular and powerful)
+* Core decisions for using a linter:
+  * **config format?** choose one of these file names for configuration:
+    * `.enlintrc.js`
+    * `.enlintrc.yaml`
+    * `.enlintrc.yml`
+    * `.enlintrc.json`
+    * `.enlintrc`
+    * `package.json`
+  * **which built-in rules?** no rules are enabled by default (see ESLint docs for a full list of rules)
+  * **warnings or errors?** if you set the rule as a `warning` it doesn't break the build while `error` does
+  * **which plugins?** e.g. use `eslint-plugin-react` for React specific linting rules for ESLint
+  * **use preset instead?** ways to handle your ESLint rules:
+    * start from scratch
+    * use ESLint preset (recommended)
+    * other presets: XO, airbnb, standardJS
+* helpful link: github.com/dustinspecker/awesome-eslint
+* use npm package called `eslint-watch` that adds file watching capability to ESLint
+* use `babel-eslint` instead if you wanted to use other experimental JavaScript features 
+* other than the required packages (`eslint`, `eslint-plugin-import` and `eslint-watch`), these lines added to the scripts section of the `package.json`:
+  ```json
+  "lint": "esw webpack.config.* src buildScripts --color",
+  "lint:watch": "npm run lint -- --watch",
+  "start": " npm-run-all --parallel security-check open:src lint:watch",
+  ```
 
 Testing and Continuous Integration:
   1- JavaScript Testin Styles:
