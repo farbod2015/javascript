@@ -139,31 +139,31 @@
         * we don't need the `return` keyword for a single expression
         * if there is no input we use empty parentheses and when we have one argument we can leave off the parentheses:
 
-        ```javascript
-        'use strict';
-        var getPrice = () => 5.99;
-        console.log(typeof getPrice);       // function
+            ```javascript
+            'use strict';
+            var getPrice = () => 5.99;
+            console.log(typeof getPrice);       // function
 
-        'use strict';
-        var getPrice = () => 5.99;
-        console.log(getPrice());            // 5.99
+            'use strict';
+            var getPrice = () => 5.99;
+            console.log(getPrice());            // 5.99
 
-        'use strict';
-        var getPrice = count => count * 4.00;
-        console.log(getPrice(2));           // 8
+            'use strict';
+            var getPrice = count => count * 4.00;
+            console.log(getPrice(2));           // 8
 
-        'use strict';
-        var getPrice = (count, tax) => count * 4.00 * (1 + tax);
-        console.log(getPrice(2, .07));      // 8.56
+            'use strict';
+            var getPrice = (count, tax) => count * 4.00 * (1 + tax);
+            console.log(getPrice(2, .07));      // 8.56
 
-        'use strict';
-        var getPrice = (count, tax) => {
-            var price = count * 4.00;
-            price *= (1 + tax);
-            return price;
-        }
-        console.log(getPrice(2, .07));      // 8.56
-        ```
+            'use strict';
+            var getPrice = (count, tax) => {
+                var price = count * 4.00;
+                price *= (1 + tax);
+                return price;
+            }
+            console.log(getPrice(2, .07));      // 8.56
+            ```
 
     1. non-binding of `this`:
         * Until arrow functions, every new function defined its own `this` value (e.g. a new object in the case of a constructor, undefined in strict mode function calls, the base object if the function is called as an "object method", etc.)
