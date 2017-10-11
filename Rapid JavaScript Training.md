@@ -1,24 +1,5 @@
 # Rapid JavaScript Training
 
-- [Rapid JavaScript Training](#rapid-javascript-training)
-  - [JavaScript Basics](#javascript-basics)
-  - [Operations](#operations)
-    - [addition](#addition)
-    - [subtraction](#subtraction)
-    - [multiplication](#multiplication)
-    - [division](#division)
-    - [modulus](#modulus)
-    - [Boolean](#boolean)
-    - [Equality Operation](#equality-operation)
-    - [Relational Operations](#relational-operations)
-  - [Arrays and Reference Types](#arrays-and-reference-types)
-  - [Object, JSON, and Prototypes](#object-json-and-prototypes)
-  - [Functions](#functions)
-  - [Programming the BOM and DOM](#programming-the-bom-and-dom)
-  - [Event Handlers](#event-handlers)
-  - [Built-in Objects and Functions](#built-in-objects-and-functions)
-  - [Miscellaneous JavaScript Topics](#miscellaneous-javascript-topics)
-
 ## JavaScript Basics
 
 * `!!` is a common way to convert a value to its boolean equivalent: `!!value`, another ways is `Boolean(value)`
@@ -28,6 +9,7 @@
 * Variables created without the keyword `var`, are always global, even if they are created inside a function.
 * JavaScript code compiles twice. in the first pass it checks for variables, functions, etc. and initializes the variables with undefined and put them along with functions at the top of the code (hoisting)
 * `undefined` and `null`:
+
     ```javascript
     typeof undefined = undefined
     typeof null = object     // empty object
@@ -36,10 +18,13 @@
     var level = undefined;   // ++level    ==>    NaN
     var level = null;        // ++level    ==>    1
     ```
+
 * in the browser the global object is `Window` but in node it is global:
+
     ```javascript
     this === window            // true
     ```
+
 * floating point calculations are inaccurate in JavaScript. for example: `5.1+3.3 = 8.399999999999`. so this comparison will result in false: `5.1+3.3 == 8.4`. to solve this problem when using floating point operations use `toFixed` function to round the number. Example: if `total = 5.1+3.3` then `total.toFixed(2)` is equal to `8.40`
 
 ## Operations
@@ -181,18 +166,24 @@ var obj = {
 
 1. two ways for creating objects:
     * using the constructor function for objects:
+
         ```javascript
         var project = new Object();
         ```
+
     * using JSON:
+
         ```javascript
         var project = {};
         ```
+
 1. we can add new property to an object by:
     * simply specifying a name and a value pair on it
+
         ```javascript
         obj.name = 'phoenix'
         ```
+
     * using `defineProperty()` function
     * using `defineProperties()` function
 1. two ways to access object property:
@@ -203,12 +194,14 @@ var obj = {
     * when we create an object using JSON notation or new Object, our prototype for the object gets set to `Object.prototype`
     * every object have a prototype. The prototype is an object so it can have prototype too. so every time that a property or function is accessed for an object, if it does not have the property or function itself JavaScript will look at its prototype; and if the prototype doesn't have it'll look for the prototype of the prototype and so on.
     * we can use `Object.create(obj)` to create an object with obj as its prototype:
+
         ```javascript
         var project = {
             securityLevel: 2
         };
         var secretProject = Object.create(project); // project is set as the prototype for secretProject object
         ```
+
 1. each property is paired with a descriptor:
     * Property descriptors present in objects come in two main flavors:
         * **Data descriptor**: is a property that has a value, which may or may not be writable
@@ -225,6 +218,7 @@ var obj = {
         get: A function which serves as a getter for the property, or undefined if there is no getter. The function return will be used as the value of the property (defaults to undefined).
         set: A function which serves as a setter for the property, or undefined if there is no setter. The function will receive as only argument the new value being assigned to the property (defaults to undefined).
     * A property can be defined by defineProperty function
+
         ```javascript
         var task = {};
         Object.defineProperty(task, {
@@ -234,10 +228,13 @@ var obj = {
             }
         });
         ```
+
     * We can get the property descriptor by `Object.getOwnPropertyDescriptor` function:
+
         ```javascript
         var descriptor = Object.getOwnPropertyDescriptor(task, 'text');
         ```
+
 1. Miscellaneous object functions:
     * `Object.prototype.hasOwnProperty()`: Returns a boolean indicating whether an object contains the specified property as a direct property of that object and not inherited through the prototype chain.
     * `Object.prototype.isPrototypeOf()`: Returns a boolean indicating whether the object this method is called upon is in the prototype chain of the specified object.
@@ -253,15 +250,18 @@ var obj = {
     * ES5 does not have classes but it has constructor functions
     * the name of these functions always start with capital letters (e.g. Object)
     * to create a constructor functions just set it to a regular function expression:
+
         ```javascript
         var Employee = function (name) {
             this.name = name;
         };
         var newEmployee = new Employee('John'); // newEmployee is an object of type Employee
         ```
+
     * within constructor function we can access the `this` keyword. `this` refers to the current object. think of `this` as referring to an object that gets passed into the function behind the scenes.
     * `new` creates an empty object an passes it to the function as `this`
     * the prototypes of all instances of a constructor function are identically equal (no duplicates). but if we create a function inside the constructor function for each instance a duplicate of that function is created. to avoid this we put all the functions inside the prototype
+
         ```javascript
         var Employee = function (name) {
             this.name = name;
@@ -269,15 +269,19 @@ var obj = {
         Employee.prototype.giveRaise = function () {
         };
         ```
+
     * when working with JSON object we can't have access to the `.prototype` of the object directly (unless we use the hack `__proto__`), but in constructor functions we do have access (e.g. Employee.prototype)
     * constructor functions get an empty prototype unlike JSON objects that get the prototype of the Object constructor function
 1. The `this` Keyword:
     * in the global space `this` is set to the object `Window` if we are working in a browser (Node works on a server so doesn't have the window object)
+
         ```javascript
         var name = 'Jeff';
         console.log(this.name); // we get 'Jeff'
         ```
+
     * when we call a function that has no object attached to it `this` inside that function refers to global (`Window`) object
+
         ```javascript
         var employee = {
             name: 'Jeff',
@@ -290,7 +294,9 @@ var obj = {
         };
         employee.updateSalary();
         ```
+
     * `new` creates a new object and assigns the new object to `this` inside the constructor function:
+
         ```javascript
         var Address = function (line1) {
             this.line1 = line1;
@@ -298,16 +304,20 @@ var obj = {
         };
         var addr = new Address('123 State St.');
         ```
+
 1. Calling Functions:
     * we use `call` and `apply` to get control over what `this` is set to within a function
     * we can use the `call` function to pass an object to a function as its `this` object
+
         ```javascript
         var updateZipCode = function () {
             console.log(this);
         };
         updateZipCode.call(obj);
         ```
+
     * if the function has arguments we pass to `call` the object first then the arguments, comma separated:
+
         ```javascript
         var updateZipCode = function (newZip, country) {
             console.log(newZip + ' ' + country);
@@ -317,15 +327,19 @@ var obj = {
         };
         updateZipCode.call(zipCode, '11888', 'us');
         ```
+
     * `apply` does the same as `call` just instead of comma separated arguments it get an array of arguments:
+
         ```javascript
         updateZipCode.apply(zipCode, ['11888', 'us']);
         ```
+
 1. Closure:
     * Nested functions have access to variables declared in their outer scope.
     * A closure is a function having access to the parent scope, even after the parent function has closed. Functions normally get created, they have a life cycle, and then they get garbage collected, but a closure is a function that persists and we can hold onto that function.
     * Common ways to use closure:
         1. where we return a function from another function. Example:
+
             ```javascript
             var salaryUpdater = function (salary) {
                 var currentSalary = salary;
@@ -337,33 +351,41 @@ var obj = {
             };
             var updateFn = salaryUpdater(50000);
             ```
+
             another example:
+
             ```javascript
                 var add = (function () {
                     var counter = 0;
                     return function () {return counter += 1;}
                 })();
             ```
+
         1. as an event handler
         1. as a set interval function
 1. IIFEs: Immediately Invoked Function Expressions
     * it is a function that gets executed immediately
+
         ```javascript
         (function () {
             console.log('executed!');
         })(); // or }());
         ```
+
     * it prevents the code from polluting the global namespace
     * we can use unary operators instead of parentheses:
+
         ```javascript
         +function () {
             console.log('executed!');
         }();
         ```
+
 1. Recursion:
     * is a function's ability to call itself
     * the following example shows a common problem that happens in recursion:
         * this is the recursive function and the input object:
+
             ```javascript
             var orgChart = {
                 name: 'Michael', subordinates: [
@@ -385,22 +407,30 @@ var obj = {
                     fn(topEmployee.subordinates[i]);
             };
             ```
+
             using the function this would work fine:
+
             ```javascript
             fn(orgChart);
             ```
+
             but if we assign the function variable to another variable and assign something else to it and then call the function using the new variable:
+
             ```javascript
             var fn2 = fn;
             fn = null;
             fn2(orgChart);
             ```
+
             we get this error:
+
             ```javascript
             Michael
             Uncaught TypeError: fn is not a function
             ```
+
             to resolve this we should name the function and call this name recursively:
+
             ```javascript
             var fn = function showAllEmployees(topEmployee) {
                 console.log(topEmployee.name);
@@ -429,6 +459,7 @@ var obj = {
         * ``setInterval()``: Calls a function or executes a code snippet repeatedly, with a fixed time delay between each call to that function.
         * ``clearInterval()``: Cancels repeated action which was set up using `setInterval()`.
         * example:
+
             ```javascript
             console.log(new Date().getSeconds());
             var id = setTimeout(function () {
@@ -444,16 +475,20 @@ var obj = {
                     clearInterval(id);
             }, 1000);
             ```
+
 1. System Dialogs:
     * These are the simple dialogs that the browser puts up that accept user input
     * They are very useful for testing, debugging, and utility applications
     * These are styled differently in all the different major browsers, so if you wanted a consistent look across browsers, you wouldn't use these
     * the three system dialogs are:
         * `alert`:
+
             ```javascript
             alert('Hello World!');
             ```
+
         * `confirm`:
+
             ```javascript
             if (confirm('Delete EVERYTHING?!')) {
             console.log('You asked for it!')
@@ -462,11 +497,14 @@ var obj = {
                 console.log('Maybe next time...');
             }
             ```
+
         * `prompt`:
+
             ```javascript
             var result = prompt('Your name?');
             console.log(result);
             ```
+
 1. The location Object:
     * this if a property of the global Object which lets us look at the browser's URL location and we can also modify it as well
     * some location properties are:
@@ -487,6 +525,7 @@ var obj = {
 1. Query Selectors:
     * Returns the first Element within the document that matches the specified selector, or group of selectors (CSS selectors separated by commas)
     * examples:
+
         ```javascript
         document.querySelector('article')     // get element by ID
         document.querySelector('#article')    // get element by ID
@@ -560,10 +599,12 @@ var obj = {
     * we can add `on` to any event to use it (e.g. `onclick`)
     * it's best to put all the JavaScripts in a JavaScript file and put nothing in an HTML handler
     * example:
+
         ```html
         <!-- body of HTML -->
         <input id="submit1" type="button"/>
         ```
+
         ```javascript
         // JavaScript file
         var button = document.getElementById('submit1');
@@ -571,12 +612,15 @@ var obj = {
             console.log('ButtonClicked');
         }
         ```
+
 1. Event Listeners: are the most modern way of handling events
     * Above example with event listener:
+
         ```html
         <!-- body of HTML -->
         <input id="submit1" type ="button" />
         ```
+
         ```javascript
         // JavaScript file
         var button = document.getElementById('submit1');
@@ -584,12 +628,15 @@ var obj = {
             console.log('Button Clicked');
         });
         ```
+
     * we can work with multiple handlers on a single DOM element
     * we use `removeEventListener` to remove a handler function and we have to actually pass the handler function that we want to remove, so the handler function needs to have name:
+
         ```html
         <!-- body of HTML -->
         <input id="submit1" type ="button" />
         ```
+
         ```javascript
         // JavaScript file
         var button = document.getElementById('submit1');
@@ -601,18 +648,21 @@ var obj = {
         button.addEventListener('click', submitHandler);
         button.removeEventListener('click', submitHandler);
         ```
+
 1. **Event propagation**: An overarching term that includes the three different phases of DOM Events (video: https://youtu.be/BtOrr7oTH_8)
     * the phases are:
         * **Capturing Phase**: When an event occurs in the DOM, notification of the event is passed starting at the top of the DOM tree and passing down through all parent element nodes all the way to the target node where the event occurred.
         * **Target Phase**: After the capturing phase occurs, the Target phase occurs. The target phase only includes a notification of Node where the event took place.
         * **Bubbling Phase**: This is the final phase to occur, although many people think this is the first phase. In the bubbling phase a notice is passed from the target Node up through all of the parent Nodes all the way back to the top root of the DOM.
     * many times controls are going to overlap on a webpage. When using a listener, it's always important to know whether or not a parent is going to receive the event first before it's child (in the capturing phase) or if the child will receive first and then the parent (in the bubbling phase). To specify in which phase an element is going to receive the event we use the third argument of the `addEventListener` function. If it is true that means the element will receive the event in the capturing phase and if it is false it will receive it in the bubbling phase. We can also use `stopPropagation` function to stop the propagation and notifying any more parents/children:
+
         ```html
         <!-- body of HTML -->
         <div id="div1" style="width:200px; height:200px; background-color: blue;">
             <div id="div2" style="width:100px; height:100px; background-color: red;"></div>
         </div>
         ```
+
         ```javascript
         // JavaScript file
         var div1 = document.getElementById('div1');
@@ -632,6 +682,7 @@ var obj = {
 
 1. Global Functions:
     * Parsing numbers:
+
         ```javascript
         parseInt('1234')          // 1234
         parseInt('b1234')         // NaN
@@ -643,18 +694,24 @@ var obj = {
         parseFloat('z123.9')      // NaN
         parseFloat('1239e-1')     // 123.9
         ```
+
     * `isFinite()`:
+
         ```javascript
         isFinite(Number.POSITIVE_INFINITY)     // false
         isFinite(42)                           // ture
         isFinite(9 / 0)                        // false
         ```
+
     * ​`inNaN()`:
+
         ```javascript
         isNaN(NaN)                // true
         isNaN(9 / 0)              // false        it is infinity
         ```
+
     * `encodeURI()`: encodes a URI by replacing each instance of certain characters by one, two, three, or four escape sequences representing the UTF-8 encoding of the character:
+
         ```javascript
         var path = '\\start\\';
         console.log(encodeURI(path));      // %5Cstart%5C
@@ -662,32 +719,42 @@ var obj = {
         var path = '\\start\\+';
         console.log(encodeURI(path));      // %5Cstart%5C+     does not encode '+' *
         ```
+
         \* `encodeURI` does not encode these characters: 
              `A-Z a-z 0-9 ; , / ? : @ & = + $ - _ . ! ~ * ' ( ) #`
     * `encodeURIComponent()`:
+
         ```javascript
         var path = '\\start\\+';
         console.log(encodeURIComponent(path));      // %5Cstart%5C+      encodes '+' *
         ```
+
         \* `encodeURI` does not encode these characters:
              `A-Z a-z 0-9 - _ . ! ~ * ' ( )`
     * `decodeURI()`:
+
         ```javascript
         var path = '%5Cstart%5C+';
         console.log(decodeURI(path));         // \start\+
         ```
+
     * `decodeURIComponent()`:
+
         ```javascript
         var path = '%5Cstart%5C%2B';
         console.log(decodeURIComponent(path));         // \start\+
         ```
+
     * `eval()`: evaluates JavaScript code represented as a string:
+
         ```javascript
         var globalVar = 'foo';
         var code = 'console.log(globalVar)';
         eval(code);       // foo
         ```
+
 1. The Math Object: some of the Math object's important functions are:
+
     ```javascript
     Math.PI                       // 3.141592653589793
     Math.abs(-42)                 // 42
@@ -701,7 +768,9 @@ var obj = {
     Math.sqrt(81)                 // 9
     Math.sqrt(-81)                // NaN
     ```
+
 1. The String Object: some of the String object's important functions are:
+
     ```javascript
     var value = 'My String';
     console.log(value.charAt(3));             // S
@@ -722,7 +791,9 @@ var obj = {
     console.log(value.substring(5, 6));       // S
     console.log(value.substr(5, 6));          // String
     ```
+
 1. arguments:
+
     ```javascript
     var validateValues = function () {
       console.log(arguments.length);          // 3
@@ -748,6 +819,7 @@ var obj = {
     * if we put the the `'use strict'` in the global environment that would apply to the global area and the functions
     * if we put the `'use strict'` inside a function, it would execute in strict mode but the not the code outside
     * strict mode won't create a new variable in global space if the variable is not defined:
+
         ```javascript
         var actNow = function() {
             'use strict';
@@ -755,13 +827,16 @@ var obj = {
         }
         actNow();       // Uncaught ReferenceError: newVar is not defined
         ```
+
         ```javascript
         var actNow = function() {
             newVar = 9;
         }
         actNow();       // (no error)
         ```
+
     * we cannot `delete` a variable if we declare it in the strict mode. (`delete` operator removes the variable from the context):
+
         ```javascript
         var actNow = function() {
             var newVar = 9;
@@ -769,6 +844,7 @@ var obj = {
         }
         actNow();       // (no error)
         ```
+
         ```javascript
         var actNow = function() {
             'use strict';
@@ -778,7 +854,9 @@ var obj = {
         actNow();       // Uncaught SyntaxError: Delete of an
                         // unqualified identifier in strict mode
         ```
+
     * in strict mode we are not allowed to have duplicate parameter names:
+
         ```javascript
         var actNow = function() {
             var fn = function(a, a) {
@@ -786,6 +864,7 @@ var obj = {
         }
         actNow();       // (no error)
         ```
+
         ```javascript
         var actNow = function() {
             'use strict';
@@ -795,7 +874,9 @@ var obj = {
         actNow();       // Uncaught SyntaxError: Duplicate parameter
                         // name not allowed in this context
         ```
+
     * `with` statement is not allowed in strict mode. The reason is that if the variable name in with statement is wrong it'll create a new global variable for that:
+
         ```javascript
         var obj = {};
         with (obj) {
@@ -803,6 +884,7 @@ var obj = {
         }
         // (no error)
         ```
+
         ```javascript
         'use strict';
         var obj = {};
@@ -812,10 +894,12 @@ var obj = {
         // Uncaught SyntaxError: Strict mode code
         // may not include a with statement
         ```
+
 1. JSLint and JSHint:
     * Linters are very useful in evaluating source codes and looking for errors before you even compile
     * JSLint is not the most configurable utility out there, and that's where JSHint comes in
     * examples:
+
         ```javascript
         var MyClass = function () {
             'use strict';
@@ -828,6 +912,7 @@ var obj = {
         //   Unexpected 'this'.
         //   Undeclared 'console'.
         ```
+
         ```javascript
         var MyClass = function () {
             this.id = 9;
@@ -838,6 +923,7 @@ var obj = {
         // Linter's message:
         //   Expected 'use strict' before 'this'.
         ```
+
         ```javascript
         var myClass = function () {
             'use strict';
@@ -849,6 +935,7 @@ var obj = {
         // Linter's message:
         //   Undeclared 'id'.
         ```
+
 1. Modular JavaScript:
     * it's a good idea to work with modules to be able to reuse our code in as many projects as needed or possible
     * it's also a good idea to remove any kind of dependencies among modules the get maximum code reuse
