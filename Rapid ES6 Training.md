@@ -407,5 +407,96 @@
 
 ### Object Literal Extensions
 
+* in ES6 we don't have to specify both the key and the value for object literals:
 
+    ```javascript
+    'use strict';
+    var price = 5.99, quantity = 30;
+    var productView = {
+        price,
+        quantity
+    };
+    console.log(productView);           // {price: 5.99, quantity: 30}
+    ```
 
+* we no longer need to specify the `function` keyword to add a function to an object literal:
+
+    ```javascript
+    'use strict';
+    var price = 5.99, quantity = 10;
+    var productView = {
+        price,
+        quantity,
+        calculateValue() {
+            return this.price * this.quantity
+        }
+    };
+    console.log(productView.calculateValue());  // 59.900000000000006
+    ```
+* just like the arrow function, `this` inside the function in object literals refer to the context; not referring to the object that contains the function:
+
+    ```javascript
+    'use strict';
+    var price = 5.99, quantity = 10;
+    var productView = {
+        price: 7.99,
+        quantity: 1,
+        calculateValue() {
+            return this.price * this.quantity
+        }
+    };
+    console.log(productView.calculateValue());  // 59.900000000000006
+    ```
+
+* it is valid to have a space in property name. it just needs to wrap the name in `""` and access it with `[]` notation:
+
+    ```javascript
+    'use strict';
+    var price = 5.99, quantity = 10;
+    var productView = {
+        price,
+        quantity,
+        "calculate value"() {
+            return this.price * this.quantity
+        }
+    };
+    console.log(productView["calculate value"]());  // 59.900000000000006
+    ```
+
+* we can create property names dynamically using a variable name or an entire expression as a field inside `[]`:
+
+    ```javascript
+    'use strict';
+    var field = 'dynamicField';
+    var price = 5.99;
+    var productView = {
+        [field]: price
+    };
+    console.log(productView);       // {dynamicField: 5.99}
+
+    'use strict';
+    var field = 'dynamicField';
+    var price = 5.99;
+    var productView = {
+        [field + "-001"]: price
+    };
+    console.log(productView);       // {dynamicField-001: 5.99}
+
+    'use strict';
+    var method = 'doIt';
+    var productView = {
+        [method + "-001"]() {
+            console.log("in a method");
+        }
+    };
+    productView['doIt-001']();      // in a method
+
+    'use strict';
+    var ident =
+    'productId';
+    var productView = {
+        get [ident] () { return true; },
+        set [ident] (value) { }
+    };
+    console.log(productView.productId);     // true
+    ```
