@@ -22,41 +22,42 @@
 
 ## Editors and Configuration
 
-1. Atom, WebStorm, Brackets, VSCode
-1. Create `.editorconfig` in the root consistence spacing, character set, etc. regardless of the editor
+* Atom, WebStorm, Brackets, VSCode
+* Create `.editorconfig` in the root consistence spacing, character set, etc. regardless of the editor
     * download the plugin for VS Code from editorconfig.org
 
 ## Package Management
 
-1. You need a Package Manager because every language benefits from a standardized method for sharing code
-1. NPM: most popular now
-1. install Node.js
+* You need a Package Manager because every language benefits from a standardized method for sharing code
+* NPM: most popular now
+* install Node.js
     * Node.js is an open source server framework.
     * Node.js allows you to run JavaScript on the server.
     * when you install node, npm, node's package manager comes bundled along with it
 
-1. `package.json`:
+* `package.json`:
     * is the manifest that NPM uses
     * It stores the list of npm packages that we are using as well as the npm scripts (download from bit.ly/jsdevpackagejson)
-1. to install the packages in package.json do `npm install` in command line
+* to install the packages in package.json do `npm install` in command line
 
 * **Note:**
   * `npm install` installs the dependencies in the local `node_modules` folder.
   * In global mode (with `-g` or `--global` appended to the command), it installs the current package context (the current working directory) as a global package.
   * By default, `npm install` will install all modules listed as dependencies in `package.json`. With the `--production` flag (or when the `NODE_ENV` environment variable is set to production), npm will not install modules listed in `devDependencies`.
 
-## Package Security:
-  1- Packages can be published npm by anyone. "Reire.js" and the "Node Security Platform" (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities
-  2- Install Node Security Platform to automate security checks for our dependencies
-    -  to run nsp directly on the command line, install it globally
-    - npm install -g nsp
-    - we can call this from an npm script and thus avoid having to install it globally (we'll do later)
-  3- to check for vulnerabilities, in command line: nsp check
-  
-Development Webservers:
-  1- web server can be configuered to start automatically as part of our development process
+## Package Security
+
+1. Packages can be published npm by anyone. `Reire.js` and the `Node Security Platform` (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities.
+1. Install Node Security Platform to automate security checks for our dependencies:
+    * to run nsp directly on the command line, install it globally: `npm install -g nsp`
+    * we can call this from an npm script and thus avoid having to install it globally (we'll do later)
+1. to check for vulnerabilities, in command line: `nsp check`
+
+## Development Webservers
+
+  1- web server can be configured to start automatically as part of our development process
   2- it opens the application so we can view our results immediately every time that we hit save.
-  3- Development Webservers: 
+  3- Development Webservers:
     - http-server
     - live-server
     - Express (we use in this course)
