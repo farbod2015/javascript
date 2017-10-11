@@ -500,3 +500,215 @@
     };
     console.log(productView.productId);     // true
     ```
+
+### for ... of Loops
+
+* The `for...of` statement creates a loop iterating over iterable objects (including `Array`,`Map`, `Set`, `String`, `TypedArray`, arguments object and so on), invoking a custom iteration hook with statements to be executed for the value of each distinct property.
+
+    ```javascript
+    'use strict';
+    var categories = ['hardware', 'software', 'vaporware'];     // hardware
+    for (var item of categories) {                              // software
+        console.log(item);                                      // vaporware
+    }
+
+    'use strict';
+    var categories = [,,];
+    for (var item of categories) {              // undefined
+        console.log(item);                      // undefined
+    }
+
+    'use strict';
+    var codes = "ABCDF";
+    var count = 0;
+    for (var code of codes) {
+        count++;
+    }
+    console.log(count);             // 5
+    ```
+
+### Octal and Binary Literals
+
+* octal values begin with number `0` followed by the letter `o` or `O` (would be better to use lowercase since it is next to a zero):
+
+    ```javascript
+    'use strict';
+    var value = 0o10;
+    console.log(value);             // 8
+
+    'use strict';
+    var value = 0O10;
+    console.log(value);             // 8
+    ```
+
+* we can get a binary value by replacing `o` with `b` or `B`:
+
+    ```javascript
+    'use strict';
+    var value = 0b10;
+    console.log(value);             // 2
+
+    'use strict';
+    var value = 0B10;
+    console.log(value);             // 2
+    ```
+
+### Template Literals
+
+* by template literals we mean string templates with interpolated variable and expressions. Interpolation occurs when we run into `${}`:
+
+    ```javascript
+    'use strict';
+    let invoiceNum = '1350';
+    console.log(`Invoice Number: ${invoiceNum}`);   // Invoice Number: 1350
+
+    'use strict';
+    let invoiceNum = '1350';
+    console.log(`Invoice Number: \${invoiceNum}`);  // Invoice Number: ${invoiceNum}
+    ```
+
+* when we create a template literal, whitespace such as newlines and tabs are maintained:
+
+    ```javascript
+    'use strict';
+    let message = `A                // A
+    B                               // B
+    C`;                             // C
+    console.log(message);
+    ```
+
+* we are allowed to have expressions within `{}`:
+
+    ```javascript
+    'use strict';
+    let invoiceNum = '1350';
+    console.log(`Invoice Number: ${"INV-" + invoiceNum}`);
+    // Invoice Number: INV-1350
+    ```
+
+* interpolation takes place first before a function call:
+
+    ```javascript
+    'use strict';
+    function showMessage(message) {
+        let invoiceNum = '99';
+        console.log(message);
+    }
+    let invoiceNum = '1350';
+    showMessage(`Invoice Number: ${invoiceNum}`);   // Invoice Number: 1350
+
+    ```
+
+* **Tagged Template Literals:** a more advanced form of template literals are tagged template literals. Tags allow you to parse template literals with a function. The first argument of a tag function contains an array of string values. The remaining arguments are related to the expressions. In the end, your function can return your manipulated string:
+
+    ```javascript
+    'use strict';
+    function processInvoice(segments) {
+        console.log(segments);          // ["template"]
+    }
+    processInvoice `template`;
+
+    'use strict';
+    function processInvoice(segments, ...values) {
+        console.log(segments);          // ["Invoice: ", " for ", ""]
+        console.log(values);            // [1350, 2000]
+    }
+    let invoiceNum = '1350';
+    let amount = '2000';
+    processInvoice `Invoice: ${invoiceNum} for ${amount}`;
+    ```
+
+### Destructuring
+
+* destructuring is a JavaScript expression that makes it possible to unpack values from arrays, or properties from objects, into distinct variables.
+
+    ```javascript
+    'use strict';
+    let salary = ['32000', '50000', '75000'];
+    let [ low, average, high ] = salary;
+    console.log(average);               // 50000
+
+    'use strict';
+    let salary = ['32000', '50000'];
+    let [ low, average, high ] = salary;
+    console.log(high);                  // undefined
+
+    'use strict';
+    let salary = ['32000', '50000', '75000'];
+    let [ low, , high ] = salary;
+    console.log(high);                  // 75000
+
+    'use strict';
+    let salary = ['32000', '50000', '75000'];
+    let [ low, ...remaining ] = salary;
+    console.log(remaining);             // ["50000", "75000"]
+
+    'use strict';
+    let salary = ['32000', '50000'];
+    let [ low, average, high = '88000' ] = salary;
+    console.log(high);                  // 88000
+
+    'use strict';
+    let salary = ['32000', '50000', ['88000', '99000'] ];
+    let [low, average, [actualLow, actualHigh]] = salary;
+    console.log(actualLow);             // 88000
+
+    'use strict';
+    let salary = ['32000', '50000'];
+    let low, average, high;
+    [ low, average, high = '88000' ] = salary;
+    console.log(high);                  // 88000
+
+    'use strict';
+    function reviewSalary([low, average], high = '88000') {
+        console.log(average);
+    }
+    reviewSalary(['32000', '50000']);   // 50000
+
+    'use strict';
+    let salary = {
+        low: '32000',
+        average: '50000',
+        high: '75000'
+    };
+    let { low, average, high } = salary;
+    console.log(high);                  // 75000
+
+    'use strict';
+    let salary = {
+        low: '32000',
+        average: '50000',
+        high: '75000'
+    };
+    let { low: newLow, average: newAverage, high: newHigh } = salary;
+    console.log(newHigh);               // 75000
+
+    // JavaScript compiler considers {} a block of code
+    // so we get a syntax error for the destructuring
+    'use strict';
+    let salary = {
+        low: '32000',
+        average: '50000',
+        high: '75000'
+    };
+    let newLow, newAverage, newHigh;
+    { low: newLow, average: newAverage, high: newHigh } = salary;
+    console.log(newHigh);               // Syntax Error
+
+    'use strict';
+    let salary = {
+        low: '32000',
+        average: '50000',
+        high: '75000'
+    };
+    let newLow, newAverage, newHigh;
+    ({ low: newLow, average: newAverage, high: newHigh } = salary);
+    console.log(newHigh);               // 75000
+
+    'use strict';
+    let [maxCode, minCode] = 'AZ';
+    console.log(`min: ${minCode} max: ${maxCode}`);     // min: Z max: A
+    ```
+
+### Advanced Destructuring
+
