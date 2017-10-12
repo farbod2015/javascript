@@ -356,7 +356,7 @@
     };
     showCategories(123);                            // []
 
-    // length shows the number of parameters to the function, 
+    // length shows the number of parameters to the function,
     // but it will ignore the rest parameter
     'use strict';
     var showCategories = function (productId, ...categories) {

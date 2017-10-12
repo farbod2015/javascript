@@ -1,5 +1,24 @@
 # Rapid JavaScript Training
 
+* [Rapid JavaScript Training](#rapid-javascript-training)
+  * [JavaScript Basics](#javascript-basics)
+  * [Operations](#operations)
+    * [addition](#addition)
+    * [subtraction](#subtraction)
+    * [multiplication](#multiplication)
+    * [division](#division)
+    * [modulus](#modulus)
+    * [Boolean](#boolean)
+    * [Equality Operation](#equality-operation)
+    * [Relational Operations](#relational-operations)
+  * [Arrays and Reference Types](#arrays-and-reference-types)
+  * [Object, JSON, and Prototypes](#object-json-and-prototypes)
+  * [Functions](#functions)
+  * [Programming the BOM and DOM](#programming-the-bom-and-dom)
+  * [Event Handlers](#event-handlers)
+  * [Built-in Objects and Functions](#built-in-objects-and-functions)
+  * [Miscellaneous JavaScript Topics](#miscellaneous-javascript-topics)
+
 ## JavaScript Basics
 
 * `!!` is a common way to convert a value to its boolean equivalent: `!!value`, another ways is `Boolean(value)`
