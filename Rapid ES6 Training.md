@@ -780,8 +780,7 @@ console.log(`${high} ${low} ${average}`);     // 1000 20 400
 
 ## ES6 Modules and Classes
 
-### Module Basics
-
+for this section we use the following `HTML` for testing our examples. as you can see we use two scripts: one for `traceur` as our transpiler, and the other ES6 module loader to load base.js which is what we use in our examples:
 
 ```html
 <!DOCTYPE html>
@@ -789,8 +788,82 @@ console.log(`${high} ${low} ${average}`);     // 1000 20 400
 <head>
     <script src="traceur.min.js"></script>
     <script src="es6-module-loader-dev.js"></script>
+<body>
+    <script>
+        System.import('./base.js');
+    </script>
+</body>
 </head>
 </html>
 ```
+
+### Module Basics
+
+* a module get executed once at its initial load:
+
+    ```javascript
+    // File base.js:
+    console.log('in base.js');      // in base.js
+    ```
+
+* the ES6 module loader automatically puts the module in strict mode and that is part of the ES6 specification:
+
+    ```javascript
+    // File base.js:
+    projectId = 99;                 // Runtime Error: Variable undefined
+    console.log('in base.js');      // in strict mode
+    ```
+
+* `export` and `import` commands are the basic way to communicate between modules and share information:
+
+    ```javascript
+    // File base.js:
+    import { projectId } from 'module1.js';
+    console.log(projectId);         // 99
+
+    // File module1.js:
+    export let projectId = 99;
+    ```
+    ```javascript
+    // File base.js:
+    import { projectId, projectName } from 'module1.js';
+    console.log(`${projectName} has id: ${projectId}`);
+
+    // File module1.js:
+    export let projectId = 99;              // BuildIt has id: 99
+    export let projectName = 'BuildIt';
+    ```
+    ```javascript
+    // File base.js:
+    import { projectId as id, projectName } from 'module1.js';
+    console.log(`${projectName} has id: ${id}`);
+
+    // File module1.js:
+    export let projectId = 99;              // BuildIt has id: 99
+    export let projectName = 'BuildIt';
+    ```
+    ```javascript
+    // File base.js:
+    import { projectId as id, projectName } from 'module1.js';
+    console.log(`${projectName} has id: ${projectId}`);
+
+    // File module1.js:
+    export let projectId = 99;     // Runtime error: projectId is undefined
+    export let projectName = 'BuildIt';
+    ```
+
+* `import` statement gets hoisted:
+
+    ```javascript
+    // File base.js:
+    console.log('starting in base');
+    import { projectId } from 'module1.js';
+    console.log('ending in base');
+
+    // File module1.js:            // in module1
+    export let projectId = 99;     // starting in base
+    console.log('in module1');     // ending in base
+    ```
+
 
 
