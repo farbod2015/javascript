@@ -178,52 +178,53 @@
   "start": " npm-run-all --parallel security-check open:src lint:watch",
   ```
 
-Testing and Continuous Integration:
-  1- JavaScript Testin Styles:
-    - Unit Testing: focuses on testing a single function or module in an automated fashion (covered in this course)
-    - Integration Testing: focuses on testing the interactions between multiple modules
-    - Automated UI Testing: tests the appliation by automating clicks and key strokes within the actual UI
-    - etc.
-  2- Unit Testing Decisions:
-    - Framework
-      - Mocha: the most popular (we use this)
-      - Jasmine
-      - tape
-      - QUnit
-      - AVA
-      - Jest
-    - Assertion Library: is a way to declare what you expect:
-      - Example: expect(2+2).to.equal(4)
-      -  Most frameworks include their own assertions built in, but since Mocha doesn't, we need to choose one (we'll use Chai for assertions)
-    - Helper Libraries
-      - JSDOM: it is useful when you want to write tests that involve HTML and interactions in the browser using Node (we use this)
-      - Cheerio: it is as jQuery for the server
-    - Where to run tests?
-      - Browser: run the test on real browser (Karma, Testem)
-      - Headless Browser: run the test on an invisible browser (PhantomJS)
-      - In-memory DOM: simulating a DOM in memory (JSDOM)
-    - Where to place tests?
-      - Centralized: centralize all your tests within a folder called tests or something similar
-      - Alongside: place tests alongside the file under test (we prefer)
-        - easy import
-        - clear visibility
-        - convenient to open
-        - no recreating folder structure
-    - When to run tests?
-      - unit test should run any time we hit save
-      - integration test: oftem run on demand, or in QA
-    
-    - Decision summary for this course:
-      - Framework: Mocha
-      - Assertion Library: Chai
-      - Helper Libraries: JSDOM
-      - Where to run tests? Node
-      - Where to place tests? Alongside
-      - When to run tests? Upon save
-  
-  Note: id test setup in testSetup.js and wrote two test cases in index.test.js
+## Testing and Continuous Integration
 
-  Note: if there is an asynchronous call (e.g. "function" in following example) use done() so that mocha knows that it is safe to evaluate what you expect is true or false:
+* JavaScript Testing Styles:
+  * **Unit Testing:** focuses on testing a single function or module in an automated fashion (covered in this course)
+  * **Integration Testing:** focuses on testing the interactions between multiple modules
+  * **Automated UI Testing:** tests the application by automating clicks and key strokes within the actual UI
+  * etc.
+* Unit Testing Decisions:
+  * **Framework**
+    * **Mocha:** the most popular (we use this)
+    * **Jasmine**
+    * **tape**
+    * **QUnit**
+    * **AVA**
+    * **Jest**
+  * **Assertion Library:** is a way to declare what you expect:
+    * Example: `expect(2+2).to.equal(4)`
+    * Most frameworks include their own assertions built in, but since `Mocha` doesn't, we need to choose one (we'll use **Chai** for assertions)
+  * **Helper Libraries**
+    * **JSDOM:** it is useful when you want to write tests that involve HTML and interactions in the browser using Node (we use this)
+    * **Cheerio:** it is as jQuery for the server
+  * **Where to run tests?**
+    * **Browser:** run the test on real browser (Karma, Testem)
+    * **Headless Browser:** run the test on an invisible browser (PhantomJS)
+    * **In-memory DOM:** simulating a DOM in memory (JSDOM)
+  * **Where to place tests?**
+    * **Centralized:** centralize all your tests within a folder called tests or something similar
+    * **Alongside:** place tests alongside the file under test (we prefer)
+      * easy import
+      * clear visibility
+      * convenient to open
+      * no recreating folder structure
+  * **When to run tests?**
+    * unit test should run any time we hit save
+    * integration test: often run on demand, or in QA
+
+  * Decision summary for this course:
+    * Framework: **Mocha**
+    * Assertion Library: **Chai**
+    * Helper Libraries: **JSDOM**
+    * Where to run tests? **Node**
+    * Where to place tests? **Alongside**
+    * When to run tests? **Upon save**
+
+  **Note:** did test setup in `testSetup.js` and wrote two test cases in `index.test.js`
+
+  **Note:** if there is an asynchronous call (e.g. `function` in the following example) use `done()` so that `Mocha` knows that it is safe to evaluate what you expect is true or false:
       describe('index.html', () => {
       it('should say hello', (done) => {
         const index = fs.readFileSync('./src/index.html', "utf-8");
@@ -236,7 +237,7 @@ Testing and Continuous Integration:
       })
     })
 
-  - To run the test automatically every time that we hit save add the following to scipts section of package.json:
+* To run the test automatically every time that we hit save add the following to scipts section of package.json:
     "test:watch": "npm run test -- --watch"
   
 Continuous Integration:
