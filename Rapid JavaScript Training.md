@@ -262,7 +262,8 @@ var obj = {
 
 ## Functions
 
-1. Naming function expression:
+1. Function expressions in JavaScript are not hoisted, unlike function declarations. You can't use function expressions before you define them.
+1. Naming function expression (see [Function Declarations vs. Function Expressions](https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/)).
     * function expressions with no name appear as anonymous function in stack traces so it'll make it difficult for debugging. the solution is to assign a name to the function expression. so if the function throws an error the name will appear in stack trace.
     * if you want to create a recursive function and refer to the current function inside the function body, you need to create a named function expression.
 1. Constructor Functions:
