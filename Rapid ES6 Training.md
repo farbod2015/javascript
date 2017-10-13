@@ -865,5 +865,65 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log('in module1');     // ending in base
     ```
 
+* if we don't use `{}` when importing a variable, the default export gets imported:
+
+    ```javascript
+    // File base.js:
+    import someValue from 'module1.js';
+    console.log(someValue);
+                                    // BuildIt
+    export let projectId = 99;
+    let projectName = 'BuildIt';
+    export default projectName;
+    ```
+
+    ```javascript
+    // File base.js:
+    import someValue from 'module1.js';
+    console.log(someValue);
+                                    // undefined
+
+    let projectId = 99;
+    let projectName = 'BuildIt';
+    export { projectId, projectName };
+    ```
+
+    ```javascript
+    // File base.js:
+    import someValue from 'module1.js';
+    console.log(someValue);
+                                    // 99
+
+    let projectId = 99;
+    let projectName = 'BuildIt';
+    export { projectId as default, projectName };
+    ```
+
+* we can explicitly say that we want the default export and give it an alias name. We need to use `{}` again:
+
+    ```javascript
+    // File base.js:
+    import { default as myProjectName } from 'module1.js';
+    console.log(myProjectName);
+                                    // BuildIt
+    export let projectId = 99;
+    let projectName = 'BuildIt';
+    export default projectName;
+    ```
+
+* when we import everything with the `*` character we need to give it an alias and tha will become an object whose properties are all the exports (access with `values.projectId``values.projectName`):
+
+    ```javascript
+    // File base.js:
+    import * as values from 'module1.js';
+    console.log(values);
+                                    // { projectId: 99, projectName: 'BuildIt'}
+    let projectId = 99;
+    let projectName = 'BuildIt';
+    export { projectId, projectName };
+    ```
+
+### Name Exports in Modules
+
 
 
