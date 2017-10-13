@@ -1178,6 +1178,105 @@ for this section we use the following `HTML` for testing our examples. as you ca
     Task.call(task);                            // called with the new keyword
     ```
 
+* classes don't get placed on the window object, so we are not polluting the global namespace:
+
+    ```javascript
+    function Project() { };
+
+    console.log(window.Project === Project);    // true
+    ```
+
+    ```javascript
+    class Task { }
+
+    console.log(window.Task === Task);          // false
+    ```
+
+### extends and super
+
+* The extends keyword is used in class declarations or class expressions to set the prototype and create a class which is a child of another class.
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log('constructing Project');
+        }
+    }
+
+    class SoftwareProject extends Project {
+    }
+
+    let p = new SoftwareProject();              // constructing Project
+    ```
+
+    ```javascript
+    class Project {
+        constructor(name) {
+            console.log('constructing Project: ' + name);
+        }
+    }
+    class SoftwareProject extends Project {
+    }
+
+    let p = new SoftwareProject('Mazatlan');    // constructing Project: Mazatlan
+    ```
+
+* The super keyword is used to call functions on an object's parent. Also, within a constructor or method of a class we can call super to explicitly access a function on the prototype
+
+* When used in a constructor, the super keyword appears alone and must be used before the this keyword is used
+
+* if an extended class needs to have a constructor it needs to call `super`. That's how JavaScript knows when to instantiate a new prototype object:
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log('constructing Project');
+        }
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            super();
+            console.log('constructing SoftwareProject');
+            }
+    }                                           // constructing Project
+    let p = new SoftwareProject();              // constructing SoftwareProject
+    ```
+
+* even if the parent class doesn't have a constructor we still need to instantiate it as the prototype and it is done in the constructor of the child class by using `super`
+
+    ```javascript
+    class Project {
+        //constructor() {
+        // console.log('constructing Project');
+        //}
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            //super();
+            console.log('constructing SoftwareProject');
+        }
+    }
+    let p = new SoftwareProject();              // ReferenceError: this is not defined
+    ```
+
+* the child class extends the parent class which becomes the prototype that does have the parent methods:
+
+    ```javascript
+    class Project {
+    getTaskCount() {
+    return 50;
+    }
+    }
+    class SoftwareProject extends Project {
+    }
+    let p = new SoftwareProject();
+    console.log(p.getTaskCount());
+    ```
+
+
+
+
+
 
 
 
