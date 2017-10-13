@@ -22,11 +22,13 @@
     'use strict';
     console.log(productId);     // ReferenceError: productId is not defined
     let productId = 12;
-
+    ```
+    ```javascript
     'use strict';
     let productId = 12;         // 12
     console.log(productId);
-
+    ```
+    ```javascript
     'use strict';
     let productId;              // undefined
     console.log(productId);
@@ -40,13 +42,15 @@
         let productId = 2000;
     }
     console.log(productId);     // 12
-
+    ```
+    ```javascript
     'use strict';
     {
         let productId = 2000;
     }
     console.log(productId);     // Reference Error: productId is not defined
-
+    ```
+    ```javascript
     'use strict';
     function updateProductId() {
         productId = 12;
@@ -54,7 +58,8 @@
     let productId = null;
     updateProductId();
     console.log(productId);     // 12     the function is called after variable declaration
-
+    ```
+    ```javascript
     'use strict';
     let productId = 42;
     for (let productId = 0; productId < 10; productId++) {
@@ -73,7 +78,8 @@
     }
     console.log(x);         // 2
     }
-
+    ```
+    ```javascript
     function letTest() {
     let x = 1;
     if (true) {
@@ -93,7 +99,8 @@
         updateFunctions.push(function () { return i; });
     }
     console.log(updateFunctions[0]());      // 2
-
+    ```
+    ```javascript
     'use strict';
     let updateFunctions = [];
     for (let i = 0; i < 2; i++) {
@@ -112,16 +119,19 @@
     'use strict';
     const MARKUP_PCT = 100;
     console.log(MARKUP_PCT);        // 100
-
+    ```
+    ```javascript
     'use strict';
     const MARKUP_PCT;
     console.log(MARKUP_PCT);        // SyntaxError: Unexpected token ;
-
+    ```
+    ```javascript
     'use strict';
     const MARKUP_PCT = 100;
     MARKUP_PCT = 10;
     console.log(MARKUP_PCT);        // TypeError: Assignment to constant variable.
-
+    ```
+    ```javascript
     'use strict';
     const MARKUP_PCT = 100;
     if (MARKUP_PCT > 0) {
@@ -143,19 +153,23 @@
             'use strict';
             var getPrice = () => 5.99;
             console.log(typeof getPrice);       // function
-
+            ```
+            ```javascript
             'use strict';
             var getPrice = () => 5.99;
             console.log(getPrice());            // 5.99
-
+            ```
+            ```javascript
             'use strict';
             var getPrice = count => count * 4.00;
             console.log(getPrice(2));           // 8
-
+            ```
+            ```javascript
             'use strict';
             var getPrice = (count, tax) => count * 4.00 * (1 + tax);
             console.log(getPrice(2, .07));      // 8.56
-
+            ```
+            ```javascript
             'use strict';
             var getPrice = (count, tax) => {
                 var price = count * 4.00;
@@ -176,11 +190,13 @@
             document.addEventListener('click', function () {
                 console.log(this);              // #document
             });
-
+            ```
+            ```javascript
             'use strict';
             document.addEventListener('click', () => console.log(this));  // Window {...}
             });
-
+            ```
+            ```javascript
             // in this example 'this' is being set to the object
             // that is calling the function (invoice)
             'use strict';
@@ -191,14 +207,16 @@
                 }                               //   number: 123
             };                                  // }
             invoice.process();
-
+            ```
+            ```javascript
             'use strict';
             var invoice = {
                 number: 123,
                 process: () => console.log(this)
             };
             invoice.process();                  // Window {...}
-
+            ```
+            ```javascript
             'use strict';
             var invoice = {
                 number: 123,
@@ -223,7 +241,8 @@
                 number: 456
             };
             invoice.process().bind(newInvoice)();   // 123
-
+            ```
+            ```javascript
             'use strict';
             var invoice = {
                 number: 123,
@@ -284,27 +303,31 @@
         console.log(price + tax);
     };
     getTotal(5.00);             // 5.35
-
+    ```
+    ```javascript
     'use strict';
     var baseTax = 0.07;
     var getTotal = function(price, tax = price * baseTax ) {
         console.log(price + tax);
     };
     getTotal(5.00);             // 5.35
-
+    ```
+    ```javascript
     'use strict';
     var generateBaseTax = () => 0.07;
     var getTotal = function(price, tax = price * generateBaseTax() ) {
         console.log(price + tax);
     };
     getTotal(5.00);             // 5.35
-
+    ```
+    ```javascript
     'use strict';
     var getTotal = function(price = adjustment, adjustment = 1.00) {
         console.log(price + adjustment);
     };
     getTotal();                 // SyntaxError: Use before declaration
-
+    ```
+    ```javascript
     'use strict';
     var getTotal = function(price = adjustment, adjustment = 1.00) {
         console.log(price + adjustment);
@@ -343,32 +366,37 @@
         console.log(categories instanceof Array);
     };
     showCategories(123, 'search', 'advertising');   // true
-
+    ```
+    ```javascript
     'use strict';
     var showCategories = function (productId, ...categories) {
         console.log(categories);
     };
     showCategories(123, 'search', 'advertising');   // ['search', 'advertising']
-
+    ```
+    ```javascript
     'use strict';
     var showCategories = function (productId, ...categories) {
         console.log(categories);
     };
     showCategories(123);                            // []
-
+    ```
+    ```javascript
     // length shows the number of parameters to the function,
     // but it will ignore the rest parameter
     'use strict';
     var showCategories = function (productId, ...categories) {
     };
     console.log(showCategories.length);             // 1
-
+    ```
+    ```javascript
     'use strict';
     var showCategories = function (productId, ...categories) {
         console.log(arguments.length);
     };
     showCategories(123, 'search', 'advertising');   // 3
-
+    ```
+    ```javascript
     'use strict';
     var showCategories = new Function("...categories", "return categories;");
     console.log(showCategories('search', 'advertising'));
@@ -382,24 +410,29 @@
     var prices = [12, 20, 18];
     var maxPrice = Math.max(...prices);
     console.log(maxPrice);              // 20
-
+    ```
+    ```javascript
     'use strict';
     var prices = [12, 20, 18];
     var newPriceArray = [...prices];
     console.log(newPriceArray);         // [12, 20, 18]
-
+    ```
+    ```javascript
     'use strict';
     var newPriceArray = Array(...[,,]);
     console.log(newPriceArray);         // [undefined, undefined]
-
+    ```
+    ```javascript
     'use strict';
     var newPriceArray = [...[,,]];
     console.log(newPriceArray);         // [undefined, undefined]
-
+    ```
+    ```javascript
     'use strict';
     var maxCode = Math.max(..."43210");
     console.log(maxCode);               // 4
-
+    ```
+    ```javascript
     'use strict';
     var codeArray = ["A", ..."BCD", "E"];
     console.log(codeArray);             // ["A","B","C","D","E"]
@@ -473,7 +506,8 @@
         [field]: price
     };
     console.log(productView);       // {dynamicField: 5.99}
-
+    ```
+    ```javascript
     'use strict';
     var field = 'dynamicField';
     var price = 5.99;
@@ -481,7 +515,8 @@
         [field + "-001"]: price
     };
     console.log(productView);       // {dynamicField-001: 5.99}
-
+    ```
+    ```javascript
     'use strict';
     var method = 'doIt';
     var productView = {
@@ -490,7 +525,8 @@
         }
     };
     productView['doIt-001']();      // in a method
-
+    ```
+    ```javascript
     'use strict';
     var ident =
     'productId';
@@ -511,13 +547,15 @@
     for (var item of categories) {                              // software
         console.log(item);                                      // vaporware
     }
-
+    ```
+    ```javascript
     'use strict';
     var categories = [,,];
     for (var item of categories) {              // undefined
         console.log(item);                      // undefined
     }
-
+    ```
+    ```javascript
     'use strict';
     var codes = "ABCDF";
     var count = 0;
@@ -535,7 +573,8 @@
     'use strict';
     var value = 0o10;
     console.log(value);             // 8
-
+    ```
+    ```javascript
     'use strict';
     var value = 0O10;
     console.log(value);             // 8
@@ -547,7 +586,8 @@
     'use strict';
     var value = 0b10;
     console.log(value);             // 2
-
+    ```
+    ```javascript
     'use strict';
     var value = 0B10;
     console.log(value);             // 2
@@ -561,7 +601,8 @@
     'use strict';
     let invoiceNum = '1350';
     console.log(`Invoice Number: ${invoiceNum}`);   // Invoice Number: 1350
-
+    ```
+    ```javascript
     'use strict';
     let invoiceNum = '1350';
     console.log(`Invoice Number: \${invoiceNum}`);  // Invoice Number: ${invoiceNum}
@@ -607,7 +648,8 @@
         console.log(segments);          // ["template"]
     }
     processInvoice `template`;
-
+    ```
+    ```javascript
     'use strict';
     function processInvoice(segments, ...values) {
         console.log(segments);          // ["Invoice: ", " for ", ""]
@@ -627,44 +669,52 @@
     let salary = ['32000', '50000', '75000'];
     let [ low, average, high ] = salary;
     console.log(average);               // 50000
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000'];
     let [ low, average, high ] = salary;
     console.log(high);                  // undefined
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000', '75000'];
     let [ low, , high ] = salary;
     console.log(high);                  // 75000
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000', '75000'];
     let [ low, ...remaining ] = salary;
     console.log(remaining);             // ["50000", "75000"]
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000'];
     let [ low, average, high = '88000' ] = salary;
     console.log(high);                  // 88000
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000', ['88000', '99000'] ];
     let [low, average, [actualLow, actualHigh]] = salary;
     console.log(actualLow);             // 88000
-
+    ```
+    ```javascript
     'use strict';
     let salary = ['32000', '50000'];
     let low, average, high;
     [ low, average, high = '88000' ] = salary;
     console.log(high);                  // 88000
-
+    ```
+    ```javascript
     'use strict';
     function reviewSalary([low, average], high = '88000') {
         console.log(average);
     }
     reviewSalary(['32000', '50000']);   // 50000
-
+    ```
+    ```javascript
     'use strict';
     let salary = {
         low: '32000',
@@ -673,7 +723,8 @@
     };
     let { low, average, high } = salary;
     console.log(high);                  // 75000
-
+    ```
+    ```javascript
     'use strict';
     let salary = {
         low: '32000',
@@ -682,7 +733,8 @@
     };
     let { low: newLow, average: newAverage, high: newHigh } = salary;
     console.log(newHigh);               // 75000
-
+    ```
+    ```javascript
     // JavaScript compiler considers {} a block of code
     // so we get a syntax error for the destructuring
     'use strict';
@@ -694,7 +746,8 @@
     let newLow, newAverage, newHigh;
     { low: newLow, average: newAverage, high: newHigh } = salary;
     console.log(newHigh);               // Syntax Error
-
+    ```
+    ```javascript
     'use strict';
     let salary = {
         low: '32000',
@@ -704,7 +757,8 @@
     let newLow, newAverage, newHigh;
     ({ low: newLow, average: newAverage, high: newHigh } = salary);
     console.log(newHigh);               // 75000
-
+    ```
+    ```javascript
     'use strict';
     let [maxCode, minCode] = 'AZ';
     console.log(`min: ${minCode} max: ${maxCode}`);     // min: Z max: A
@@ -712,71 +766,80 @@
 
 ### Advanced Destructuring
 
-Examples:
+* Examples:
 
-```javascript
-'use strict';
-let [high, low] = [,];                        // high: undefined
-console.log(`high: ${high} low: ${low}`);     // low: undefined
-
-'use strict';                                 // Runtime Error: Unable to get property
-let [high, low] = undefined;                  // 'Symbol.iterator' of undefined or null
-console.log(`high: ${high} low: ${low}`);     // reference
-
-'use strict';                                 // Runtime Error: Unable to get property
-let [high, low] = null;                       // 'Symbol.iterator' of undefined or null
-console.log(`high: ${high} low: ${low}`);     // reference
-
-'use strict';
-try {
-    let [ high, low, ] = undefined;
-}
-catch (e) {
-    console.log(e.name);                        // TypeError
-}
-
-'use strict';
-let [ high, low, ] = [500, 200];
-console.log(`high: ${high} low: ${low}`);     // high: 500 low: 200
-
-'use strict';
-for (let [a, b] of [[5, 10]]) {
-    console.log(`${a} ${b}`);                   // 5 10
-}
-
-'use strict';
-let count = 0;
-for (let [a, b] of [[5, 10]]) {
-    console.log(`${a} ${b}`);                   // 5 10
-    count++;                                    // 1
-}
-console.log(count);
-
-'use strict';
-try {
-    throw [123, 'message'];
-}
-catch ([invoiceNum, errorMessage]) {
-    console.log(`${invoiceNum} ${errorMessage}`); // 123 message
-}
-
-'use strict';
-function getResult() {
-    let high, low;
-    return { high, low } = { high: 500, low: 200 };
-}
-console.log(getResult());                     // {high: 500, low: 200}
-
-'use strict';
-let nums = {
-    high: 1000,
-    low: 20,
-    average: 400
-};
-let high, low, average;
-({ high, low } = { average } = nums);
-console.log(`${high} ${low} ${average}`);     // 1000 20 400
-```
+    ```javascript
+    'use strict';
+    let [high, low] = [,];                        // high: undefined
+    console.log(`high: ${high} low: ${low}`);     // low: undefined
+    ```
+    ```javascript
+    'use strict';                                 // Runtime Error: Unable to get property
+    let [high, low] = undefined;                  // 'Symbol.iterator' of undefined or null
+    console.log(`high: ${high} low: ${low}`);     // reference
+    ```
+    ```javascript
+    'use strict';                                 // Runtime Error: Unable to get property
+    let [high, low] = null;                       // 'Symbol.iterator' of undefined or null
+    console.log(`high: ${high} low: ${low}`);     // reference
+    ```
+    ```javascript
+    'use strict';
+    try {
+        let [ high, low, ] = undefined;
+    }
+    catch (e) {
+        console.log(e.name);                        // TypeError
+    }
+    ```
+    ```javascript
+    'use strict';
+    let [ high, low, ] = [500, 200];
+    console.log(`high: ${high} low: ${low}`);     // high: 500 low: 200
+    ```
+    ```javascript
+    'use strict';
+    for (let [a, b] of [[5, 10]]) {
+        console.log(`${a} ${b}`);                   // 5 10
+    }
+    ```
+    ```javascript
+    'use strict';
+    let count = 0;
+    for (let [a, b] of [[5, 10]]) {
+        console.log(`${a} ${b}`);                   // 5 10
+        count++;                                    // 1
+    }
+    console.log(count);
+    ```
+    ```javascript
+    'use strict';
+    try {
+        throw [123, 'message'];
+    }
+    catch ([invoiceNum, errorMessage]) {
+        console.log(`${invoiceNum} ${errorMessage}`); // 123 message
+    }
+    ```
+    ```javascript
+    'use strict';
+    function getResult() {
+        let high, low;
+        return { high, low } = { high: 500, low: 200 };
+    }
+    console.log(getResult());                     // {high: 500, low: 200}
+    ```
+    ```javascript
+    'use strict';
+    let nums = {
+        high: 1000,
+        low: 20,
+        average: 400
+    };
+    let high, low, average;
+    ({ high, low } = { average } = nums);
+    console.log(`${high} ${low} ${average}`);     // 1000 20 400
+    ```
 
 ## ES6 Modules and Classes
 
