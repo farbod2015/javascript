@@ -1412,7 +1412,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 * The `new.target` property lets you detect whether a function or constructor was called using the new operator. In constructors and functions instantiated with the new operator, `new.target` returns a reference to the constructor or function. In normal function calls, `new.target` is `undefined`.
 
-* it's mainly used in a constructor and it is set to the constructor that was initially called
+* In class constructors, `new.target` refers to the constructor that was directly invoked by `new`. This is also the case if the constructor is in a parent class and was delegated from a child constructor.
 
     ```javascript
     class Project {
