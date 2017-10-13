@@ -1270,7 +1270,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     class SoftwareProject extends Project {
     }
     let p = new SoftwareProject();
-    console.log(p.getTaskCount());               50
+    console.log(p.getTaskCount());              // 50
     ```
 
     ```javascript
@@ -1368,7 +1368,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Static Members
 
-* by declaring a static method, it gets attached directly to the class as a constructor function. We can access static methods using the class name (no need to create an instance of the class):
+* by declaring a static method, it gets attached directly to the class as a constructor function. We can access static methods using the class name (not the instance of the class):
 
     ```javascript
     class Project {
@@ -1376,8 +1376,120 @@ for this section we use the following `HTML` for testing our examples. as you ca
             return 0;
         }
     }
-    console.log(Project.getDefaultId());        // 0
+    console.log(Project.getDefaultId());    // 0
     ```
+
+    ```javascript
+    class Project {
+        static getDefaultId() {
+            return 0;
+        }
+    }
+    var p = new Project();                  // Error: Object doesn't support
+    console.log(p.getDefaultId());          // property or method getDefaultId
+    ```
+
+* we do not have static properties:
+
+    ```javascript
+    class Project {
+        static let id = 0;
+    }
+    console.log(Project.id);                // Syntax Error: ( expected
+    ```
+
+* another way of creating a static property is by attaching it directly to the class:
+
+    ```javascript
+    class Project {
+
+    }
+    Project.id = 99;
+    console.log(Project.id);                // 99
+    ```
+
+### new.target
+
+* The `new.target` property lets you detect whether a function or constructor was called using the new operator. In constructors and functions instantiated with the new operator, `new.target` returns a reference to the constructor or function. In normal function calls, `new.target` is `undefined`.
+
+* it's mainly used in a constructor and it is set to the constructor that was initially called
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log(typeof new.target);
+        }
+    }
+    var p = new Project();          // function
+    ```
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log(new.target);
+        }
+    }
+    var p = new Project();          // constructor() { console.log(new.target); }
+
+* it's useful when working with inheritance and extending classes. It is useful to refer back to the original class that's getting created
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log(new.target);
+        }
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            super();
+        }
+    }
+    var p = new SoftwareProject();      // constructor() { super(); }
+    ```
+
+* JavaScript will create the default constructor if we don't create it:
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log(new.target);
+        }
+    }
+    class SoftwareProject extends Project {     // constructor(...args) {
+    }                                           //     super(...args);
+    var p = new SoftwareProject();              // }
+    ```
+
+    ```javascript
+    class Project {
+        constructor() {
+            console.log(new.target.getDefaultId());
+        }
+    }
+    class SoftwareProject extends Project {
+        static getDefaultId() { return 99; }
+    }
+    var p = new SoftwareProject();              // 99
+    ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
