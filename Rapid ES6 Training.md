@@ -1368,7 +1368,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Static Members
 
-* by declaring a static method, it gets attached directly to the class as a constructor function. We can access static methods using the class name (not the instance of the class):
+* by declaring a `static` method, it gets attached directly to the class as a constructor function. We can access `static` methods using the class name (not the instance of the class):
 
     ```javascript
     class Project {
@@ -1389,7 +1389,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(p.getDefaultId());          // property or method getDefaultId
     ```
 
-* we do not have static properties:
+* we do not have `static` properties:
 
     ```javascript
     class Project {
@@ -1398,7 +1398,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(Project.id);                // Syntax Error: ( expected
     ```
 
-* another way of creating a static property is by attaching it directly to the class:
+* another way of creating a `static` property is by attaching it directly to the class:
 
     ```javascript
     class Project {
@@ -1459,6 +1459,8 @@ for this section we use the following `HTML` for testing our examples. as you ca
     }                                           //     super(...args);
     var p = new SoftwareProject();              // }
     ```
+
+* we can call the `static` functions of the class which is initialized using `new.target`:
 
     ```javascript
     class Project {
