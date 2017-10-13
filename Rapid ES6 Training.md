@@ -988,5 +988,196 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Name Exports in Modules
 
+* the exports are usually referred to Named Exports when we export values and functions from a module
+
+* we can't change the value of a named export variable, but if it's an object we can modify its properties:
+
+    ```javascript
+    // File base.js:
+    import { projectId } from 'module1.js';
+    projectId = 8000;
+    console.log(projectId);
+                                    // Runtime error: projectId is read-only
+    export let projectId = 99;
+    ```
+
+    ```javascript
+    // File base.js:
+    import { project } from 'module1.js';
+    project.projectId = 8000;
+    console.log(project.projectId);
+                                    // 8000
+    export let project = {
+        projectId: 99
+    };
+    ```
+
+* when we import an object and modify it the two module stay in sync:
+
+    ```javascript
+    // File base.js:
+    import { project, showProject } from 'module1.js';
+    project.projectId = 8000;
+    showProject();
+    console.log(project.projectId);                 // 8000
+                                                    // 8000
+    export let project = { projectId: 99 };
+    export function showProject() {
+        console.log(project.projectId);
+    };
+    ```
+
+* we can also import functions, but only the name of the function gets imported not the actual function. So if for that name the function changes, the imported name will call the new function:
+
+    ```javascript
+    // File base.js:
+    import { showProject, updateFunction } from 'module1.js';
+    showProject();
+    updateFunction();                   // in original
+    showProject();                      // in updated
+
+    export function showProject() { console.log('in original'); }
+    export function updateFunction() {
+        showProject = function () { console.log('in updated'); };
+    };
+    ```
+
+### Class Fundamentals
+
+* The class syntax is not introducing a new object-oriented inheritance model to JavaScript. JavaScript classes provide a much simpler and clearer syntax to create objects and deal with inheritance (prototypes).
+
+* You can think of a class as being somewhat a constructor function:
+
+    ```javascript
+    class Task {
+
+    }
+    console.log(typeof Task);                   // function
+    ```
+
+    ```javascript
+    class Task {
+
+    }
+    let task = new Task();
+    console.log(typeof task);                   // object
+    ```
+
+    ```javascript
+    class Task {
+
+    }
+    let task = new Task();
+    console.log(task instanceof Task);          // true
+    ```
+
+* methods in class don't need function keyword:
+
+    ```javascript
+    class Task {
+        showId() {
+            console.log('99');
+        }
+    }
+    let task = = new Task();
+    task.showId();                              // 99
+    ```
+
+* adding a method to a class is similar to adding a method to the prototype object:
+
+    ```javascript
+    class Task {
+        showId() {
+            console.log('99');                  // true
+        }
+    }
+    let task = new Task();
+    console.log(task.showId === Task.prototype.showId);
+    ```
+
+* we can also have constructors in a class and by creating an instance of the class the constructor is called:
+
+    ```javascript
+    class Task {
+        constructor() {
+            console.log('constructing Task');
+        }
+        showId() {
+            console.log('99');
+        }
+    }
+    let task = new Task();                      // constructing Task
+    ```
+
+* when we are working with object literals we would separate properties with comma, but we should leave those commas out when working with classes:
+
+    ```javascript
+    class Task {
+        constructor() {
+            console.log('constructing Task');
+        },
+        showId() {
+            console.log('99');
+        }
+    }
+    let task = new Task();                      // Syntax error
+    ```
+
+* we can't declare a property inside a class:
+
+    ```javascript
+    class Task {
+        let taskId = 9000;
+        constructor() {
+            console.log('constructing Task');
+        }
+        showId() {
+            console.log('99');
+        }
+    }
+    let task = new Task();                      // Syntax error
+    ```
+
+* An important difference between function declarations and class declarations is that function declarations are hoisted and class declarations are not:
+
+    ```javascript
+    let task = new Task();                      // Error: Use before declaration
+    class Task {
+        constructor() {
+            console.log('constructing Task');
+        }
+    }
+    ```
+
+* A class expression is another way to define a class. Class expressions can be named or unnamed
+
+    ```javascript
+    let newClass = class Task {
+        constructor() {
+            console.log('constructing Task');
+        }
+    };
+    new newClass();                             // constructing Task
+    ```
+
+* an important difference between constructor function and class is that we can't call the `call` function to change 'this' object of the class
+
+    ```javascript
+    let Task = function () {
+        console.log('constructing Task');
+    };
+    let task = {};
+    Task.call(task);                            // constructing Task
+    ```
+
+    ```javascript
+    class Task {
+        console.log('constructing Task');
+    };
+    let task = {};                              // Error: class constructor cannot be
+    Task.call(task);                            // called with the new keyword
+    ```
+
+
 
 
