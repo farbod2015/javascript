@@ -1194,7 +1194,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### extends and super
 
-* The extends keyword is used in class declarations or class expressions to set the prototype and create a class which is a child of another class.
+* The `extends` keyword is used in class declarations or class expressions to set the prototype and create a class which is a child of another class.
 
     ```javascript
     class Project {
@@ -1221,9 +1221,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let p = new SoftwareProject('Mazatlan');    // constructing Project: Mazatlan
     ```
 
-* The super keyword is used to call functions on an object's parent. Also, within a constructor or method of a class we can call super to explicitly access a function on the prototype
+* The `super` keyword is used to call functions on an object's parent. Also, within a constructor or method of a class we can call `super` to explicitly access a function on the prototype
 
-* When used in a constructor, the super keyword appears alone and must be used before the this keyword is used
+* When used in a constructor, the `super` keyword appears alone and must be used before the this keyword is used
 
 * if an extended class needs to have a constructor it needs to call `super`. That's how JavaScript knows when to instantiate a new prototype object:
 
@@ -1270,13 +1270,52 @@ for this section we use the following `HTML` for testing our examples. as you ca
     class SoftwareProject extends Project {
     }
     let p = new SoftwareProject();
-    console.log(p.getTaskCount());
+    console.log(p.getTaskCount());               50
     ```
 
+    ```javascript
+    class Project {
+        getTaskCount() {
+            return 50;
+        }
+    }
+    class SoftwareProject extends Project {
+        getTaskCount() {
+            return 66;
+        }
+    }
+    let p = new SoftwareProject();
+    console.log(p.getTaskCount());              // 66
+    ```
 
+* in the following example JavaScript engine is going to look in the prototype chain for a getTaskCount and it finds it in project:
 
+    ```javascript
+    class Project {
+        getTaskCount() {
+            return 50;
+        }
+    }
+    class SoftwareProject extends Project {
+        getTaskCount() {
+            return super.getTaskCount() + 6;
+        }
+    }
+    let p = new SoftwareProject();
+    console.log(p.getTaskCount());              // 56
+    ```
 
+* we can use `super` with object literals when we set an object as the prototype for another object:
 
-
-
-
+    ```javascript
+    let project = {
+        getTaskCount() { return 50; }
+    };
+    let softwareProject = {
+        getTaskCount() {
+        return super.getTaskCount() + 7;
+        }
+    }
+    Object.setPrototypeOf(softwareProject, project);
+    console.log(softwareProject.getTaskCount());    //57
+    ```
