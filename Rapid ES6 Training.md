@@ -1223,7 +1223,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 * The `super` keyword is used to call functions on an object's parent. Also, within a constructor or method of a class we can call `super` to explicitly access a function on the prototype
 
-* When used in a constructor, the `super` keyword appears alone and must be used before the this keyword is used
+* When used in a constructor, the `super` keyword appears alone and must be used before the `this` keyword is used
 
 * if an extended class needs to have a constructor it needs to call `super`. That's how JavaScript knows when to instantiate a new prototype object:
 
@@ -1319,3 +1319,73 @@ for this section we use the following `HTML` for testing our examples. as you ca
     Object.setPrototypeOf(softwareProject, project);
     console.log(softwareProject.getTaskCount());    //57
     ```
+
+### Properties for Class Instances
+
+* we can initialize instance variables with the `this` keyword in the constructor of the class:
+
+    ```javascript
+    class Project {
+        constructor() { this.location = 'Mazatlan'; }
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            super();
+        }
+    }
+    let p = new SoftwareProject();
+    console.log(p.location);                    // Mazatlan
+    ```
+
+* if we use `const`, `let`, or `var` for a variable it goes out of the scope instantly and it won't be attached to the instance:
+
+    ```javascript
+    class Project {
+        constructor() { let location = 'Mazatlan'; }
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            super();
+        }
+    }
+    let p = new SoftwareProject();
+    console.log(p.location);                    // Mazatlan
+    ```
+
+    ```javascript
+    class Project {
+        constructor() { this.location = 'Mazatlan'; }
+    }
+    class SoftwareProject extends Project {
+        constructor() {
+            super();  // 'super' should be called before 'this'
+            this.location = this.location + ' Beach';
+        }
+    }
+    let p = new SoftwareProject();
+    console.log(p.location);                    // Mazatlan Beach
+    ```
+
+### Static Members
+
+* by declaring a static method, it gets attached directly to the class as a constructor function. We can access static methods using the class name (no need to create an instance of the class):
+
+    ```javascript
+    class Project {
+        static getDefaultId() {
+            return 0;
+        }
+    }
+    console.log(Project.getDefaultId());        // 0
+    ```
+
+
+
+
+
+
+
+
+
+
+
