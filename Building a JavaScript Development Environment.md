@@ -24,20 +24,20 @@
 
 * Atom, WebStorm, Brackets, VSCode
 * Create `.editorconfig` in the root consistence spacing, character set, etc. regardless of the editor
-    * download the plugin for VS Code from editorconfig.org
+  * download the plugin for VS Code from editorconfig.org
 
 ## Package Management
 
 * You need a Package Manager because every language benefits from a standardized method for sharing code
 * NPM: most popular now
 * install Node.js
-    * Node.js is an open source server framework.
-    * Node.js allows you to run JavaScript on the server.
-    * when you install node, npm, node's package manager comes bundled along with it
+  * Node.js is an open source server framework.
+  * Node.js allows you to run JavaScript on the server.
+  * when you install node, npm, node's package manager comes bundled along with it
 
 * `package.json`:
-    * is the manifest that NPM uses
-    * It stores the list of npm packages that we are using as well as the npm scripts (download from bit.ly/jsdevpackagejson)
+  * is the manifest that NPM uses
+  * It stores the list of npm packages that we are using as well as the npm scripts (download from bit.ly/jsdevpackagejson)
 * to install the packages in package.json do `npm install` in command line
 
 * **Note:**
