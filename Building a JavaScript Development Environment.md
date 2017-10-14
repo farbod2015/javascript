@@ -195,7 +195,7 @@
     * **Jest**
   * **Assertion Library:** is a way to declare what you expect:
     * Example: `expect(2+2).to.equal(4)`
-    * Most frameworks include their own assertions built in, but since `Mocha` doesn't, we need to choose one (we'll use **Chai** for assertions)
+    * Most frameworks include their own assertions built in, but since `Mocha` doesn't, we need to choose one (we'll use Chai for assertions)
   * **Helper Libraries**
     * **JSDOM:** it is useful when you want to write tests that involve HTML and interactions in the browser using Node (we use this)
     * **Cheerio:** it is as jQuery for the server
@@ -213,7 +213,6 @@
   * **When to run tests?**
     * unit test should run any time we hit save
     * integration test: often run on demand, or in QA
-
   * Decision summary for this course:
     * Framework: **Mocha**
     * Assertion Library: **Chai**
@@ -225,7 +224,9 @@
   **Note:** did test setup in `testSetup.js` and wrote two test cases in `index.test.js`
 
   **Note:** if there is an asynchronous call (e.g. `function` in the following example) use `done()` so that `Mocha` knows that it is safe to evaluate what you expect is true or false:
-      describe('index.html', () => {
+
+    ```javascript
+    describe('index.html', () => {
       it('should say hello', (done) => {
         const index = fs.readFileSync('./src/index.html', "utf-8");
         jsdom.env(index, function(err, window) {
@@ -236,154 +237,139 @@
         });
       })
     })
+  ```
 
-* To run the test automatically every time that we hit save add the following to scipts section of package.json:
-    "test:watch": "npm run test -- --watch"
-  
-Continuous Integration:
-  1- with continuous integration server we can find out right away when someone else has broken the build or when you made a bad commit that has broken the build on someone else's machine
-  2- CI server catches (quickly) a number of potential mistakes:
-    - Forgot to commit new file
-    - Forgot to update package.json
-    - Commit doesn't run cross-platform
-    - Node version conflicts
-    - Bad merge
-    - Didn't run tests
-  3- What does a CI server do?
-    - Run automated build
-    - Run your tests
-    - Check code coverage
-    - Automate deployment
-  4- Common CIs:
-    - Travis (Linux)
-    - Appveyor (Windows)
-    - Jenkins
-    - CircleCI
-    - Semaphore
-    -SnapCI
+* To run the test automatically every time that we hit save add the following to scripts section of `package.json`:
 
-    Note: you can run multiple CI servers. For example, set up Travis and Appveyor to make sure that our build process runs on Mac, Linux, and Windows.
-  
-  5- How to set up travis:
-    - log into travis-ci.org using your github account and activate the repository
-    - create .travis.yml under root and add: 
-        language: node_js
-        node_js:
-          - "6"
-  
-  6- How to set up Appveyor:
-    - log into appveyor.com using your github account and add the repository
-    - create appveyor.yml under root and add the desired settings 
-  
-HTTP Calls:
-  1- HTTP call approaches:
-    - Node: http, request (recommended)
-    - Browser: XMLHttpRequest, JQuery, Fetch (recommended)
-    - Node & Browser: isomorphic-fetch, xhr, SuperAgent, Axios
-  2- Key: Centralize API calls:
-    - Handle API calls in a single spot
-    - Why?
-      - You can configure all calls in a single place
-      - Handle preloader login: show preloader until all asynchronous calls are complete
-      - Handle errors in one place
-      - Sinlge seam for mocking API
-  3- Why Mock HTTP?
-    - Unit Testing
-    - Instant response
-    - Keep working when services are down
-    - Rapid prototyping
-    - Avoid inter-team bottlenecks
-    - Work offline
-  4- How to Mock HTTP?
-    - Nock: a handy way for unit test (specify the URL to mock and what it should return)
-    - Static JSON 
-    - Create development webserver
-      - api-mock
-      - JSON server (creates realistic API using a static JSON)
-      - JSON Schema Faker (creates different fake JSON data every time app starts). Libraries:
-        - faker.js
-        - chance.js
-        - regexp.js
-      - Browsersync
-      - Express, etc.
+  ```json
+  "test:watch": "npm run test -- --watch"
+  ```
 
-  Note: In this course we used JSON Schema faker to dynamically generate a mock data set and point JSON server to that.
+## Continuous Integration
 
-Project Structure
-  1- Create a demo app with the starting kit:
-    - This gives everyone clarity on recommended approaches for directory structure, file naming, framework usage, testing, API calls, deployment, and more.
-    - It provides an interactive example of what it's like to work on your team. 
-  2- Tips:
-    - Tip 1: JS belongs in a .js file (no inline js code in HTML files)
-    - Tip 2: organize by feature instead of file type
-    - Tip 3: extract logic to POJOs (minimizes the impacts of switching to a different framework):
-      - Plain Old JavaScript Objects
-      - Pure logic
-      - No framework-specific code
+* with continuous integration server we can find out right away when someone else has broken the build or when you made a bad commit that has broken the build on someone else's machine
+* CI server catches (quickly) a number of potential mistakes:
+  * Forgot to commit new file
+  * Forgot to update `package.json`
+  * Commit doesn't run cross-platform
+  * Node version conflicts
+  * Bad merge
+  * Didn't run tests
+* What does a CI server do?
+  * Run automated build
+  * Run your tests
+  * Check code coverage
+  * Automate deployment
+* Common CIs:
+  * Travis (Linux)
+  * Appveyor (Windows)
+  * Jenkins
+  * CircleCI
+  * Semaphore
+  * SnapCI
 
-Production Build:
-  1- create an automated production build to benefit from:
-    - minification: to speed loads:
-      - Shortens variable and function names
-      - Removes comments
-      - Removes whitespace and new lines
-      - Dead code elimination / Tree-shaking
-      - Debug via sourcemap
-    - Sourcemaps: generated to support debugging in production
-    - Dynamic HTML: for production specific concerns
-    - Cache busting: to ensure that users receive the latest version of our code upon deployment
-    - Bundle splitting: so that users don't have to download the entire application when just part of it changes
-    - Error logging: so that we know when bugs sneak their way into production. 
-      - Error Logging Services:
-        - TrackJS (we used this)
-        - Sentry
-        - New Relic
-        - Raygun
-      - Things to consider when choosing an error logging service:
-        - Error Metadata
-          - Browser
-          - Stack trace
-          - Previous actions
-          - Custom API for enhanced tracking
-        - Notifications & integrations
-        - Analytics and filtering
-        - Pricing
+  **Note:** you can run multiple CI servers. For example, set up Travis and Appveyor to make sure that our build process runs on Mac, Linux, and Windows.
 
-Production Deployment:
-  1- Cloud Hosting:
-    - amazon web services
-    - Microsoft Azure
-    - HEROKU
-    - Firebase
-    - Google Cloud Platform
-    - Netlify (only static files)
-    - GitHub Pages (only static files)
-    - Surge (only static files)
-2- We used HEROKU for API and Surge for UI
+* How to set up travis:
+  * log into travis-ci.org using your github account and activate the repository
+  * create `.travis.yml` under root and add:
 
+    ```json
+    language: node_js
+    node_js:
+      - "6"
+    ```
 
+* How to set up Appveyor:
+  * log into appveyor.com using your github account and add the repository
+  * create `appveyor.yml` under root and add the desired settings
 
+## HTTP Calls
 
+* HTTP call approaches:
+  * Node: http, request (recommended)
+  * Browser: XMLHttpRequest, JQuery, Fetch (recommended)
+  * Node & Browser: isomorphic-fetch, xhr, SuperAgent, Axios
+* Key: Centralize API calls:
+  * Handle API calls in a single spot
+  * Why?
+    * You can configure all calls in a single place
+    * Handle preloader login: show preloader until all asynchronous calls are complete
+    * Handle errors in one place
+    * Sinlge seam for mocking API
+* Why Mock HTTP?
+  * Unit Testing
+  * Instant response
+  * Keep working when services are down
+  * Rapid prototyping
+  * Avoid inter-team bottlenecks
+  * Work offline
+* How to Mock HTTP?
+  * Nock: a handy way for unit test (specify the URL to mock and what it should return)
+  * Static JSON
+  * Create development webserver
+    * api-mock
+    * JSON server (creates realistic API using a static JSON)
+    * JSON Schema Faker (creates different fake JSON data every time app starts). Libraries:
+      * `faker.js`
+      * `chance.js`
+      * `regexp.js`
+    * Browsersync
+    * Express, etc.
 
+  **Note:** In this course we used JSON Schema faker to dynamically generate a mock data set and point JSON server to that.
 
+## Project Structure
 
+* Create a demo app with the starting kit:
+  * This gives everyone clarity on recommended approaches for directory structure, file naming, framework usage, testing, API calls, deployment, and more.
+  * It provides an interactive example of what it's like to work on your team.
+* **Tips:**
+  1. JS belongs in a .js file (no inline js code in HTML files)
+  1. organize by feature instead of file type
+  1. extract logic to POJOs (minimizes the impacts of switching to a different framework):
+      * Plain Old JavaScript Objects
+      * Pure logic
+      * No framework-specific code
 
+## Production Build
 
+* create an automated production build to benefit from:
+  * minification: to speed loads:
+    * Shortens variable and function names
+    * Removes comments
+    * Removes whitespace and new lines
+    * Dead code elimination / Tree-shaking
+    * Debug via sourcemap
+  * Sourcemaps: generated to support debugging in production
+  * Dynamic HTML: for production specific concerns
+  * Cache busting: to ensure that users receive the latest version of our code upon deployment
+  * Bundle splitting: so that users don't have to download the entire application when just part of it changes
+  * Error logging: so that we know when bugs sneak their way into production.
+    * Error Logging Services:
+      * TrackJS (we used this)
+      * Sentry
+      * New Relic
+      * Raygun
+    * Things to consider when choosing an error logging service:
+      * Error Metadata
+        * Browser
+        * Stack trace
+        * Previous actions
+        * Custom API for enhanced tracking
+      * Notifications & integrations
+      * Analytics and filtering
+      * Pricing
 
+## Production Deployment
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-React hot reloading: As we know in Meteor, every time we save, Meteor rebundles your entire app and reloads the page, and this takes a bit of time depending on the size of your project. React hotloading is slightly different, it leverages HMR (see below) and without reloading the page, replaces changed components in-place, preserving state. That means that, your change will be visible in about half a second; if it was a dialog, you wouldn't need to re-open it, your text inputs remain filled, etc. In short, it's a massive boon to iterative development where you spend much less time waiting for your app to reload. 
-
-Code splitting: As we know in Meteor, the client loads all client files on the first load. E.g. not admins will still be served all the admin templates, which will never be used, and this creates a slower load time. With code splitting, you can divide your app into different pieces. You could, e.g. load the main code straight away, and load code for particular sections if a user visits them (or load everything else after the initial load is complete and the user can start using your app).
+* Cloud Hosting:
+  * amazon web services
+  * Microsoft Azure
+  * HEROKU
+  * Firebase
+  * Google Cloud Platform
+  * Netlify (only static files)
+  * GitHub Pages (only static files)
+  * Surge (only static files)
+* We used HEROKU for API and Surge for UI
