@@ -939,24 +939,20 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let projectName = 'BuildIt';
     export default projectName;
     ```
-
     ```javascript
     // File base.js:
     import someValue from 'module1.js';
     console.log(someValue);
                                     // undefined
-
     let projectId = 99;
     let projectName = 'BuildIt';
     export { projectId, projectName };
     ```
-
     ```javascript
     // File base.js:
     import someValue from 'module1.js';
     console.log(someValue);
                                     // 99
-
     let projectId = 99;
     let projectName = 'BuildIt';
     export { projectId as default, projectName };
@@ -1000,7 +996,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
                                     // Runtime error: projectId is read-only
     export let projectId = 99;
     ```
-
     ```javascript
     // File base.js:
     import { project } from 'module1.js';
@@ -1054,7 +1049,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     }
     console.log(typeof Task);                   // function
     ```
-
     ```javascript
     class Task {
 
@@ -1062,7 +1056,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let task = new Task();
     console.log(typeof task);                   // object
     ```
-
     ```javascript
     class Task {
 
@@ -1169,7 +1162,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let task = {};
     Task.call(task);                            // constructing Task
     ```
-
     ```javascript
     class Task {
         console.log('constructing Task');
@@ -1185,7 +1177,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(window.Project === Project);    // true
     ```
-
     ```javascript
     class Task { }
 
@@ -1208,7 +1199,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     let p = new SoftwareProject();              // constructing Project
     ```
-
     ```javascript
     class Project {
         constructor(name) {
@@ -1272,7 +1262,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let p = new SoftwareProject();
     console.log(p.getTaskCount());              // 50
     ```
-
     ```javascript
     class Project {
         getTaskCount() {
@@ -1351,7 +1340,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let p = new SoftwareProject();
     console.log(p.location);                    // Mazatlan
     ```
-
     ```javascript
     class Project {
         constructor() { this.location = 'Mazatlan'; }
@@ -1378,7 +1366,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     }
     console.log(Project.getDefaultId());    // 0
     ```
-
     ```javascript
     class Project {
         static getDefaultId() {
@@ -1422,7 +1409,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
     }
     var p = new Project();          // function
     ```
-
     ```javascript
     class Project {
         constructor() {
@@ -1474,32 +1460,21 @@ for this section we use the following `HTML` for testing our examples. as you ca
     var p = new SoftwareProject();              // 99
     ```
 
+## New Types and Object Extensions
 
+### Symbols
 
+* this is a brand new type that doesn't even exist in ES5. The purpose of the `Symbol` is to generate a unique identifier, but as developers we never get access to that identifier
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ```javascript
+    let eventSymbol = Symbol('resize event');
+    console.log(typeof eventSymbol);            // symbol
+    //
+    ```
+    ```javascript
+    let eventSymbol = Symbol('resize event');
+    console.log(eventSymbol.toString());        // Symbol(resize event)
+    //
+    ```
 
 
