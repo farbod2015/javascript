@@ -1477,4 +1477,243 @@ for this section we use the following `HTML` for testing our examples. as you ca
     //
     ```
 
+* one way to use symbols is to create a constant. We can guarantee that this constant will have a unique value
+
+    ```javascript
+    const CALCULATE_EVENT_SYMBOL = Symbol('calculate event');
+    console.log(CALCULATE_EVENT_SYMBOL.toString());
+    ```
+
+* every time that we call `Symbol` even if it is a string that we have used before we get a unique symbol
+
+    ```javascript
+    let s = Symbol('event');
+    let s2 = Symbol('event');
+    console.log(s === s2);                      // false
+    ```
+
+* there is a built-in symbol registry and we get access to that by `Symbol.for`. So if we already have a registered symbol ('event' in the following example) that would be returned otherwise a new symbol will be generated:
+
+    ```javascript
+    let s = Symbol.for('event');
+    console.log(s.toString());                  // Symbol(event)
+    ```
+    ```javascript
+    let s = Symbol('event');
+    let s2 = Symbol('event');
+    console.log(s === s2);                      // true
+    ```
+    ```javascript
+    let s = Symbol.for('event');
+    let s2 = Symbol.for('event2');
+    console.log(s === s2);                      // false
+    ```
+
+* we can get the human readable debugging string that was initially used to create the symbol by `Symbol.keyFor`:
+
+    ```javascript
+    let s = Symbol.for('event');
+    let description = Symbol.keyFor(s);
+    console.log(description);                   // event
+
+    ```
+
+* the majority of the cases that symbols are used for is as a property, whether in an object or in a class (to create a property using an expression we put it in `[]`):
+
+    ```javascript
+    let article = {
+        title: 'Whiteface Mountain',
+        [Symbol.for('article')]: 'My Article'
+    };
+    let value = article[Symbol.for('article')];
+    console.log(value);                         // My Article
+    ```
+
+* we can't get access to properties that are created using `Symbol` by `getOwnPropertyNames` method. Instead we should use `getOwnPropertySymbols`:
+
+    ```javascript
+    let article = {
+        title: 'Whiteface Mountain',
+        [Symbol.for('article')]: 'My Article'
+    };
+    console.log( Object.getOwnPropertyNames(article) );         // ['title']
+    ```
+    ```javascript
+    let article = {
+        title: 'Whiteface Mountain',
+        [Symbol.for('article')]: 'My Article'
+    };
+    console.log( Object.getOwnPropertySymbols(article) );       // [Symbol(article)]
+    ```
+
+### Well-known Symbols
+
+* there are some symbols that are use for meta programming. Meta programming involves looking more deeply into objects, functions, and even how the JavaScript engine operates; and there are several symbols tha we can use to access some unique features of ES6. These symbols are called well-known symbols
+
+* here is some examples of well-known symbols All these symbols are placed directly on the `Symbol` class:
+
+    ```javascript
+    et Blog = function () {
+    };
+    let blog = new Blog();
+    console.log( blog.toString() );                 // [object Object]
+
+    let Blog = function () {
+    };
+    Blog.prototype[Symbol.toStringTag] = 'Blog Class';
+    let blog = new Blog();
+    console.log( blog.toString() );                 // [object Blog Class]
+    ```
+    ```javascript
+    let values = [8, 12, 16];
+    console.log([].concat(values));                 // [8, 12, 16]
+
+    let values = [8, 12, 16];
+    values[Symbol.isConcatSpreadable] = false;
+    console.log([].concat(values));                 // [ [8, 12, 16] ]
+    ```
+    ```javascript
+    let values = [8, 12, 16];
+    let sum = values + 100;
+    console.log(sum);                               // 8,12,16100
+
+    let values = [8, 12, 16];
+    values[Symbol.toPrimitive] = function (hint) {
+        console.log(hint);
+        return 42;
+    };
+    let sum = values + 100;                         // default
+    console.log(sum);                               // 142
+    ```
+
+### Object
+
+* several new methods have been added to `Object`:
+
+    ```javascript
+    let article = {
+        title: 'Whiteface Mountain',
+        [Symbol.for('article')]: 'My Article'
+    };
+    console.log( Object.getOwnPropertySymbols(article) );       // [Symbol(article)]
+
+    ```
+    ```javascript
+    let a = {
+        x: 1
+    };
+    let b = {
+        y: 2
+    };
+    Object.setPrototypeOf(a, b);
+    console.log(a.y);                               // 2
+    ```
+    ```javascript
+    let a = { a: 1 }, b = { b: 2 };
+    let target = {};
+    Object.assign(target, a, b);
+    console.log(target);                            // {a: 1, b: 2}
+    ```
+    ```javascript
+    let a = { a: 1 }, b = { a: 5, b: 2 };
+    let target = {};
+    Object.assign(target, a, b);
+    console.log(target);                            // {a: 5, b: 2}
+    ```
+    ```javascript
+    // property's enumerable should be set to true to work with assign
+    let a = { a: 1 }, b = { a: 5, b: 2 };
+    Object.defineProperty(b, 'c', {
+        value: 10,
+        enumerable: false
+    });
+    let target = {};
+    Object.assign(target, a, b);
+    console.log(target);                            // {a: 5, b: 2}
+    ```
+* `assign` method is not going to walk the prototype chain for properties:
+
+    ```javascript
+    let a = { a: 1 }, b = { a: 5, b: 2 }, c = { c: 20 };
+    Object.setPrototypeOf(b, c);
+    let target = {};
+    Object.assign(target, a, b);
+    console.log(target);
+    ```
+
+* `Object.is` is another way to compare now that fixes some issues with `===`:
+
+    ```javascript
+    let amount = NaN;
+    console.log(amount === amount);                 // false
+
+    let amount = NaN;
+    console.log(Object.is(amount, amount));         // true
+    ```
+    ```javascript
+    let amount = 0, total = -0;
+    console.log(amount === total);                  // true
+
+    let amount = 0, total = -0;
+    console.log(Object.is(amount, total));          // false
+    ```
+
+### String Extensions
+
+* examples:
+
+    ```javascript
+    let title = 'Santa Barbara Surf Riders';
+    console.log(title.startsWith('Santa'));         // true
+
+    let title = 'Santa Barbara Surf Riders';
+    console.log(title.endsWith('Rider'));           // false
+
+    let title = 'Santa Barbara Surf Riders';
+    console.log(title.includes('ba'));              // true
+    ```
+    ```javascript
+    // unicode astral plane values
+    var title = "Surfer's \u{1f3c4} Blog";
+    console.log(title);                             // Surfer's 🏄 Blog
+    ```
+    ```javascript
+    var surfer = "\u{1f3c4}";                       // 2 (for emoji JavaScript engine still
+    console.log(surfer.length);                     // considers its actual two symbols)
+
+    var surfer = "\u{1f30a}\u{1f3c4}\u{1f433}";
+    console.log(Array.from(surfer).length);         // 3
+    console.log(surfer);                            // 🌊🏄🐳
+    ```
+    ```javascript
+    var title = "Mazatla\u0301n";
+    console.log(title + ' ' + title.length);        // Mazatlán 9
+
+    var title = "Mazatla\u0301n";
+    console.log(title + ' ' + title.normalize().length);    // Mazatlán 8
+
+    var title = "Mazatla\u0301n";
+    console.log(title.normalize().codePointAt(7).toString(16));     // 6e (unicode for á)
+    ```
+    ```javascript
+    console.log(String.fromCodePoint(0x1f3c4));     // 🏄
+    ```
+    ```javascript
+    let wave = '\u{1f30a}';
+    console.log(wave.repeat(10));                   // 🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊
+    ```
+
+* `String.raw` does the interpolation but it doesn't process any other characters in the string
+
+    ``` javascript
+    let title = 'Surfer';
+    let output = String.raw`${title} \u{1f3c4}\n`;
+    console.log(output);                            // Surfer \u{1f3c4}\n
+    ```
+
+### Number Extensions
+
+
+
+
 
