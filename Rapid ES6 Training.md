@@ -2087,7 +2087,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(it.next().value);           // undefined
     ```
 
-* we can use iterator delegation (`yield*`) to take something that is iterable and temporarily replaces the iterator for process. Once that iterator is fully consumed the previous iterator will take over again:
+* The `yield*` expression is used to delegate to another generator or iterable object. It iterates over the operand and yields each value returned by it. The value of `yield*` expression itself is the value returned by that iterator when it's closed (i.e., when `done` is `true`):
 
     ```javascript
     function *process() {
@@ -2102,22 +2102,158 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(it.next().value);           // undefined
     ```
 
-### `throw` and `return`
-
-
-
+* In following code, values yielded by `g1()` are returned from `next()` calls just like those which are yielded by `g2()`.
 
     ```javascript
+    function* g1() {
+    yield 2;
+    yield 3;
+    yield 4;
+    }
+
+    function* g2() {
+    yield 1;
+    yield* g1();
+    yield 5;
+    }
+
+    var iterator = g2();
+
+    console.log(iterator.next()); // {value: 1, done: false}
+    console.log(iterator.next()); // {value: 2, done: false}
+    console.log(iterator.next()); // {value: 3, done: false}
+    console.log(iterator.next()); // {value: 4, done: false}
+    console.log(iterator.next()); // {value: 5, done: false}
+    console.log(iterator.next()); // {value: undefined, done: true}
+    ```
+
+* Besides generator objects, `yield*` can also `yield` other kinds of iterables, e.g. arrays, strings or arguments objects.
+
+    ```javascript
+    function* g3() {
+    yield* [1, 2];
+    yield* '34';
+    yield* Array.from(arguments);
+    }
+
+    var iterator = g3(5, 6);
+
+    console.log(iterator.next()); // {value: 1, done: false}
+    console.log(iterator.next()); // {value: 2, done: false}
+    console.log(iterator.next()); // {value: "3", done: false}
+    console.log(iterator.next()); // {value: "4", done: false}
+    console.log(iterator.next()); // {value: 5, done: false}
+    console.log(iterator.next()); // {value: 6, done: false}
+    console.log(iterator.next()); // {value: undefined, done: true}
+    ```
+
+### throw and return
+
+* we can get better control over generators by using throw and return commands
+
+    ```javascript
+    function *process() {
+        try {
+            yield 9000;
+            yield 9001;
+            yield 9002;
+        }
+        catch(e)
+        {
+
+        }
+    }
+
+    let it = process();
+    console.log(it.next().value);       // 9000
+    console.log(it.throw('foo'));       // {done: true, value: undefined}
+    console.log(it.next());             // {done: true, value: undefined}
     ```
     ```javascript
+    function *process() {
+        try {
+            yield 9000;
+            yield 9001;
+            yield 9002;
+        }
+    }
+
+    let it = process();
+    console.log(it.next().value);       // 9000
+    console.log(it.throw('foo'));       // Exception: foo (execution terminates)
+    console.log(it.next());
+    ```
+
+* calling `return` on an iterator is a clean way to wrap up the iterator and complete it. Whatever value we pass to return will become the value in the returned object
+
+    ```javascript
+    function *process() {
+        yield 9000;
+        yield 9001;
+        yield 9002;
+    }
+    let it = process();
+    console.log(it.next().value);       // 9000
+    console.log(it.return('foo'));      // {value: "foo", done: true}
+    console.log(it.next());             // {value: undefined, done: true}
+    ```
+
+### Promises
+
+* a `Promise` is an object that is waiting for an asynchronous operation to complete. When the operation is complete the promise is either fulfilled or rejected
+
+    ```javascript
+    function doAsync() {
+        let p = new Promise(function (resolve, reject) {
+            console.log('in promise code');
+            setTimeout(function () {
+                console.log('resolving...');
+                resolve();
+            }, 2000);
+        });
+        return p;                           // in promise code
+    }                                       // (2 second delay)
+    let promise = doAsync();                // resolving...
     ```
     ```javascript
+    function doAsync() {
+        let p = new Promise(function (resolve, reject) {
+            console.log('in promise code');
+            setTimeout(function () {
+                console.log('rejecting...');
+                reject();
+            }, 2000);
+        });
+        return p;                           // in promise code
+    }                                       // (2 second delay)
+    let promise = doAsync();                // rejecting...
+    ```
+
+* we can use `then` to do something, depending on the application being fulfilled or rejected. `then` takes two arguments:
+  * a fulfilled function that is called when the promise is fulfilled
+  * a rejected function that is called when the promise is rejected
+
+    ```javascript
+    function doAsync() {
+        // returns a Promise, will be rejected
+    }
+    doAsync().then(function () {
+        console.log('Fulfilled!');
+    },
+    function () {                           // in promise code
+        console.log('Rejected!');           // (wait for resolution)
+    });                                     // Rejected!
     ```
     ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
+    function doAsync() {
+        // returns a Promise, will be resolved
+    }
+    doAsync().then(function () {
+        console.log('Fulfilled!');
+    },
+    function () {                           // in promise code
+        console.log('Rejected!');           // (wait for resolution)
+    });                                     // Fulfilled!
     ```
     ```javascript
     ```
