@@ -1,3 +1,4 @@
+$x$
 # Rapid ES6 Training
 
 ## New ES6 Syntax
@@ -1737,7 +1738,130 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(Number.isInteger(3));               // true
     ```
 
-* a **safe integer** is an integer that can be accurately represented using floating point notation. Floating point values lose their precision after a certain amount of time and happen to be $$2^53$$
+* a **safe integer** is an integer that can be accurately represented using floating point notation. Floating point values lose their precision after a certain amount of time and the highest and lowest integer that can be shown happen to be 2^53:
 
+    ```javascript
+    let a = Math.pow(2, 53) - 1;
+    console.log(Number.isSafeInteger(a));           // true
+    a = Math.pow(2, 53);
+    console.log(Number.isSafeInteger(a));           // false
+
+    console.log(Number.EPSILON);                    // 2.220446049250313e-16
+    console.log(Number.MAX_SAFE_INTEGER);           // 9007199254740991
+    console.log(Number.MIN_SAFE_INTEGER);           // -9007199254740991
+    ```
+
+### Math Extensions
+
+* some extensions to math object:
+  * **Hyperbolic Functions:**
+    * `cosh()`
+    * `acosh()`
+    * `sinh()`
+    * `asinh()`
+    * `tanh()`
+    * `atanh()`
+    * `hypot()`
+
+  * **Arithmetic Functions:**
+    * `cbrt()`: cube root
+    * `clz32()`: count leading zeros (32 bit integers)
+    * `expm1()`: equal to `exp(x) - 1`
+    * `log2()`: log base 2
+    * `log10()`: log base 10
+    * `log1p()`: equal to `log(x + 1)`
+    * `imul()`: 32 bit integer multiplication
+
+  * **Miscellaneous Functions:**
+    * `sign()`: the number's sign: 1, -1, 0, -0, NaN
+    * `trunc()`: the integer part of a number
+    * `fround()`: round to nearest 32 bit floating-point value
+
+* examples:
+
+    ```javascript
+    console.log(Math.sign(0));                      // 0
+    console.log(Math.sign(-0));                     // -0 (0 in Edge)
+    console.log(Math.sign(-20));                    // -1
+    console.log(Math.sign(20));                     // 1
+    console.log(Math.sign(NaN));                    // NaN
+
+    console.log(Math.cbrt(27));                     // 3
+
+    console.log(Math.trunc(27.1));                  // 27
+    console.log(Math.trunc(-27.9));                 // -27
+    ```
+
+### RegExp Extensions
+
+* for backward compatibility reasons there is a new flag (`u`) that we need to use if we are going to work with these astral plane unicode characters
+
+    ```javascript
+    let pattern = /\u{1f3c4}/;
+    console.log(pattern.test('🏄'));                // false
+
+    let pattern = /\u{1f3c4}/u;
+    console.log(pattern.test('🏄'));                // true
+    ```
+    ```javascript
+    // astral plane character is wrongly considered as 2 characters
+    let pattern = /^.Surfer/;
+    console.log(pattern.test('🏄Surfer'));          // false
+
+    let pattern = /^.Surfer/u;
+    console.log(pattern.test('🏄Surfer'));          // true
+    ```
+
+* the `y` flag performs the search from the last index and the last index only
+
+    ```javascript
+    let pattern = /900/y;
+    console.log(pattern.lastIndex);                 // 0
+    console.log(pattern.test('800900'));            // false
+
+    let pattern = /900/y;
+    pattern.lastIndex = 3;
+    console.log(pattern.test('800900'));            // true
+
+    let pattern = /900/yg;
+    console.log(pattern.flags);                     // gy (Order will be "gimuy")
+    ```
+
+### Function Extensions
+
+* the function has one important extension which is the `name` property that can be useful for logging, etc.
+
+    ```javascript
+    let fn = function calc() {
+        return 0;
+    };
+    console.log(fn.name);                           // calc
+
+    let fn = function() {
+        return 0;
+    };
+    console.log(fn.name);                           // fn
+
+    let fn = function() {
+        return 0;
+    };
+    let newFn = fn;
+    console.log(newFn.name);                        // fn
+    ```
+    ```javascript
+    class Calculator {
+        constructor() {
+        }
+        add() {
+        }
+    }
+    let c = new Calculator();
+    console.log(Calculator.name);                   // Calculator
+    console.log(c.add.name);                        // add
+    ```
+
+* `Function.name` is not writable and we can't change it directly, however we can configure it with `Object.defineProperty()`
+
+## Iterators, Generators and Promises
 
 
