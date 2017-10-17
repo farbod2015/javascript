@@ -2312,9 +2312,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### More Promise Features
 
-
-
-
+* we can chain asynchronous calls together:
 
     ```javascript
     function doAsync() {
@@ -2326,45 +2324,98 @@ for this section we use the following `HTML` for testing our examples. as you ca
         });
         return p;
     }
-    doAsync().then(function () { console.log('Ok') }, 
-            function () { console.log('Nope')});
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
+    doAsync().then(function () { console.log('Ok') },           // in promise code
+            function () { console.log('Nope')});                // Nope
     ```
 
+* we can return a `Promise` without actually doing an asynchronous call:
 
+    ```javascript
+    function doAsync() {
+        return Promise.resolve('Some String');
+    }
+    doAsync().then(
+        function (value) { console.log('Ok: ' + value) },       // Ok: Some String
+        function (reason) { console.log('Nope: ' + reason)}
+    );
+    ```
+    ```javascript
+    function doAsync() {
+        return Promise.reject('Some Error');
+    }
+    doAsync().then(
+        function (value) { console.log('Ok: ' + value) },       // Nope: Some Error
+        function (reason) { console.log('Nope: ' + reason)}
+    );
+    ```
 
+* `all` is another `static` function on `Promise`. It waits until all promises are complete. If all of them are fulfilled it'll call the fulfilled function of `then` otherwise the rejected function is called as soon as one of the promises that we pass is rejected:
 
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.all([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (5 second delay)
+        function (reason) { console.log('Nope') }               // Ok
+    );
+    // assume p1 resolves after 3 seconds,
+    // assume p2 resolves after 5 seconds
+    ```
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.all([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (2 second delay)
+        function (reason) { console.log('Nope') }               // Nope
+    );
+    // assume p1 resolves after 1 second,
+    // assume p2 is rejected after 2 seconds
+    ```
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.all([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (3 second delay)
+        function (reason) { console.log('Nope') }               // Nope
+    );
+    // assume p1 is rejected after 3 second,
+    // assume p2 is rejected after 5 seconds
+    ```
+
+* with `Promise.race` whichever `Promise` that completes first is the `Promise` that gets handled by `then` (it doesn't matter if it's fulfilled or rejected):
+
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.race([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (3 second delay)
+        function (reason) { console.log('Nope') }               // Ok
+    );
+    // assume p1 resolves after 3 second,
+    // assume p2 resolves after 5 seconds
+    ```
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.race([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (3 second delay)
+        function (reason) { console.log('Nope') }               // Nope
+    );
+    // assume p1 is rejected after 3 second,
+    // assume p2 resolves after 5 seconds
+    ```
+    ```javascript
+    let p1 = new Promise(...);
+    let p2 = new Promise(...);
+    Promise.race([p1, p2]).then(
+        function (value) { console.log('Ok') },                 // (4 second delay)
+        function (reason) { console.log('Nope') }               // Ok
+    );
+    // assume p1 resolves after 4 second,
+    // assume p2 is rejected after 5 seconds
+    ```
+
+## Arrays and Collections
 
 
 
