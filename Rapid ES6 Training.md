@@ -2229,9 +2229,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let promise = doAsync();                // rejecting...
     ```
 
-* we can use `then` to do something, depending on the application being fulfilled or rejected. `then` takes two arguments:
-  * a fulfilled function that is called when the promise is fulfilled
-  * a rejected function that is called when the promise is rejected
+* we can use `then` to do something, depending on the `Promise` being fulfilled or rejected.
+
+* `then` takes up to two arguments: callback functions for the success and failure cases of the `Promise`
 
     ```javascript
     function doAsync() {
@@ -2255,15 +2255,79 @@ for this section we use the following `HTML` for testing our examples. as you ca
         console.log('Rejected!');           // (wait for resolution)
     });                                     // Fulfilled!
     ```
+
+* these argument functions can have an argument that is the parameter that is passed to the resolve or the reject functions in the `Promise` code
+
     ```javascript
+    function doAsync() {
+        // returns a Promise, will be rejected using:
+        // reject('Database Error');
+    }
+    doAsync().then(function (value) {
+        console.log('Fulfilled! ' + value);
+    },
+    function (reason) {                             // in promise code
+        console.log('Rejected! ' + reason);         // (wait for resolution)
+    });                                             // Rejected! Database Error
     ```
     ```javascript
+    function doAsync() {
+        // returns a Promise, will be resolved using:
+        // resolve('OK');
+    }
+    doAsync().then(function (value) {
+        console.log('Fulfilled! ' + value);
+    },
+    function (reason) {                             // in promise code
+        console.log('Rejected! ' + reason);         // (wait for resolution)
+    });                                             // Fulfilled! OK
     ```
+
+* The `then()` method returns a `Promise`, so we can chain the `then` function calls. When we return a `String` in the `then` function it get wrapped up as a new `Promise`. This `Promise` is fulfilled/rejected if the original `Promise`is fulfilled/rejected:
+
+  ```javascript
+  function doAsync() {
+      // returns a Promise, will be resolved using:
+      // resolve('OK');
+  }
+  doAsync().then(function (value) {
+      console.log('Fulfilled! ' + value);
+      return 'For Sure';                          // in promise code
+  }).then(function(value) {                       // (wait for resolution)
+      console.log('Really! ' + value);            // Fulfilled! OK
+  });                                             // Really! For Sure
+  ```
+
+* in addition to calling `then` on our `Promise` we can call `catch`. It is called when the `Promise` is rejected:
+
     ```javascript
+    function doAsync() {
+        // returns a Promise, will be rejected using:
+        // reject('No Go');
+    }
+    doAsync().catch(function (reason) {
+        console.log('Error: ' + reason);            // (wait for resolution)
+    });                                             // Error: No Go
     ```
+
+### More Promise Features
+
+
+
+
+
     ```javascript
-    ```
-    ```javascript
+    function doAsync() {
+        let p = new Promise(function (resolve, reject) {
+            console.log('in promise code');
+            setTimeout(function () {
+                resolve( getAnotherPromise() );
+            }, 2000);
+        });
+        return p;
+    }
+    doAsync().then(function () { console.log('Ok') }, 
+            function () { console.log('Nope')});
     ```
     ```javascript
     ```
