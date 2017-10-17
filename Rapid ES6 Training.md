@@ -2285,18 +2285,18 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 * The `then()` method returns a `Promise`, so we can chain the `then` function calls. When we return a `String` in the `then` function it get wrapped up as a new `Promise`. This `Promise` is fulfilled/rejected if the original `Promise`is fulfilled/rejected:
 
-  ```javascript
-  function doAsync() {
-      // returns a Promise, will be resolved using:
-      // resolve('OK');
-  }
-  doAsync().then(function (value) {
-      console.log('Fulfilled! ' + value);
-      return 'For Sure';                          // in promise code
-  }).then(function(value) {                       // (wait for resolution)
-      console.log('Really! ' + value);            // Fulfilled! OK
-  });                                             // Really! For Sure
-  ```
+    ```javascript
+    function doAsync() {
+        // returns a Promise, will be resolved using:
+        // resolve('OK');
+    }
+    doAsync().then(function (value) {
+        console.log('Fulfilled! ' + value);
+        return 'For Sure';                          // in promise code
+    }).then(function(value) {                       // (wait for resolution)
+        console.log('Really! ' + value);            // Fulfilled! OK
+    });                                             // Really! For Sure
+    ```
 
 * in addition to calling `then` on our `Promise` we can call `catch`. It is called when the `Promise` is rejected:
 
