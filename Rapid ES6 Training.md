@@ -1964,5 +1964,208 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 * Generator is a special type of function that doesn't run all the way through necessarily and it is able to yield and be called multiple times throughout all of your code. It doesn't exist on the stack the way most functions do and we actually use an iterator to call a generator multiple times
 
+* when we run a generator the result is actually an iterator and it starts off in a pause state:
+
+    ```javascript
+    function *process() {
+        yield 8000;
+        yield 8001;
+    }
+    let it = process();
+    console.log(it.next());                 // {done: false, value: 8000}
+    ```
+    ```javascript
+    function *process() {
+        yield 8000;
+        yield 8001;
+    }
+    let it = process();
+    it.next();
+    console.log(it.next());                 // {done: false, value: 8001}
+    ```
+    ```javascript
+    function *process() {
+        yield 8000;
+        yield 8001;
+    }
+    let it = process();
+    it.next();
+    it.next();
+    console.log(it.next());                 // {done: true, value: undefined}
+    ```
+    ```javascript
+    function *process() {
+        let nextId = 7000;
+        while(true)
+            yield(nextId++);
+    }
+    let it = process();
+    it.next();
+    console.log(it.next().value);           // 7001
+    ```
+    ```javascript
+    function *process() {
+        let nextId = 7000;
+        while(true)
+            yield(nextId++);
+    }
+    for (let id of process()) {             // 7000
+        if (id > 7002) break;               // 7001
+        console.log(id);                    // 7002
+    }
+    ```
+
+### Yielding in Generators
+
+* we don't have to specify any values for yield:
+
+    ```javascript
+    function *process() {
+        yield;
+    }
+    let it = process();
+    console.log(it.next());                 // {done: false, value: undefined}
+    ```
+
+* We can pass an expression as yield value but we need to run `.next()` first to kick off the generator:
+
+    ```javascript
+    function *process() {
+        let result = yield;
+        console.log(`result is ${result}`);
+    }
+    let it = process();
+    it.next();
+    it.next(200);                           // result is 200
+    ```
+    ```javascript
+    function *process() {
+        let result = yield;
+        console.log(`result is ${result}`);
+    }
+    let it = process();
+    it.next();                              // result is 200
+    console.log(it.next(200));              // {done: true, value: undefined}
+    ```
+    ```javascript
+    function *process() {
+        let newArray = [yield, yield, yield];
+        console.log(newArray[2]);
+    }
+    let it = process();
+    it.next();
+    it.next(2);
+    it.next(4);
+    it.next(42);                            // 42
+    ```
+    ```javascript
+    function *process() {
+        let value = 4 * yield 42;
+        console.log(value);
+    }
+    let it = process();
+    it.next();
+    it.next (10);                           // Syntax Error
+    ```
+    ```javascript
+    function *process() {
+        let value = 4 * (yield 42);
+        console.log(value);
+    }
+    let it = process();
+    it.next();
+    it.next (10);                           // 40
+    ```
+    ```javascript
+    function *process() {
+        yield 42;
+        yield [1,2,3];
+    }
+    let it = process();
+    console.log(it.next().value);           // 42
+    console.log(it.next().value);           // [1,2,3]
+    console.log(it.next().value);           // undefined
+    ```
+
+* we can use iterator delegation (`yield*`) to take something that is iterable and temporarily replaces the iterator for process. Once that iterator is fully consumed the previous iterator will take over again:
+
+    ```javascript
+    function *process() {
+        yield 42;
+        yield* [1,2,3];
+    }
+    let it = process();
+    console.log(it.next().value);           // 42
+    console.log(it.next().value);           // 1
+    console.log(it.next().value);           // 2
+    console.log(it.next().value);           // 3
+    console.log(it.next().value);           // undefined
+    ```
+
+### `throw` and `return`
+
+
+
+
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+
+
+
+
+
+
 
 
