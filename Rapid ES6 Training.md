@@ -1864,4 +1864,103 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ## Iterators, Generators and Promises
 
+### Iterators
+
+* arrays now have a property called `Symbol.iterator`. One of the major functions of symbols is to add properties to classes while guaranteeing that the property name is unique, so `Symbol.iterator` will be unique.
+
+    ```javascript
+    let ids = [9000, 9001, 9002];
+    console.log(typeof ids[Symbol.iterator] );      // function
+
+    let ids = [9000, 9001, 9002];
+    let it = ids[Symbol.iterator]();
+    console.log(it.next());                         // {done: false, value: 9000}
+
+    let ids = [9000, 9001, 9002];
+    let iter = ids[Symbol.iterator]();
+    iter.next();
+    iter.next();
+    console.log(iter.next());                       // {done: false, value: 9002}
+
+    let ids = [9000, 9001, 9002];
+    let iter = ids[Symbol.iterator]();
+    iter.next();
+    iter.next();
+    iter.next();
+    console.log(iter.next());                       // {done: true, value: undefined}
+    ```
+
+* iterators are built into arrays but we can also create our own iterators:
+
+    ```javascript
+    let idMaker = {
+        [Symbol.iterator]() {
+            let nextId = 8000;
+            return {
+                next() {
+                    return {
+                        value: nextId++,
+                        done: false
+                    };
+                }
+            };
+        }
+    };
+    let it = idMaker[Symbol.iterator]();
+    console.log(it.next().value);                   // 8000
+    console.log(it.next().value);                   // 8001
+    ```
+
+* `for ... of` are meant to work with iterators:
+
+    ```javascript
+    let idMaker = {
+        [Symbol.iterator]() {
+            let nextId = 8000;
+            return {
+                next() {
+                    return {
+                        value: nextId++,
+                        done: false
+                    };
+                }
+            };
+        }
+    };
+    for (let v of idMaker) {                        // 8000
+        if (v > 8002) break;                        // 8001
+        console.log(v);                             // 8002
+    }
+    ```
+    ```javascript
+    let idMaker = {
+        [Symbol.iterator]() {
+            let nextId = 8000;
+            return {
+                next() {
+                    let value = nextId>8002 ? undefined : nextId++;
+                    let done = !value;
+                    return { value, done };
+                }
+            };
+        }
+    };
+    for (let v of idMaker) {                        // 8000
+        console.log(v);                             // 8001
+    }                                               // 8002
+    ```
+
+* spread operator works off of iterator:
+
+    ```javascript
+    let ids = [8000, 8001, 8002];
+    function process(id1, id2, id3) {
+        console.log(id3);                           // 8002
+    }
+    process(...ids);
+    ```
+
+
+
+
 
