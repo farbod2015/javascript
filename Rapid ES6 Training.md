@@ -1960,7 +1960,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     process(...ids);
     ```
 
+### Generators
 
+* Generator is a special type of function that doesn't run all the way through necessarily and it is able to yield and be called multiple times throughout all of your code. It doesn't exist on the stack the way most functions do and we actually use an iterator to call a generator multiple times
 
 
 
