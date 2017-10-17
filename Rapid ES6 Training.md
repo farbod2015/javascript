@@ -1713,7 +1713,31 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Number Extensions
 
+* examples:
 
+    ```javascript
+    console.log(Number.parseInt === parseInt);      // true
+
+    console.log(Number.parseFloat === parseFloat);  // true
+
+    let s = 'NaN';
+    console.log(isNaN(s));                          // true
+    console.log(Number.isNaN(s));                   // false
+
+    let s = '8000';
+    console.log(isFinite(s));                       // true
+    console.log(Number.isFinite(s));                // false
+
+    let sum = 408.2;
+    console.log(Number.isInteger(sum));             // false
+
+    console.log(Number.isInteger(NaN));             // false
+    console.log(Number.isInteger(Infinity));        // false
+    console.log(Number.isInteger(undefined));       // false
+    console.log(Number.isInteger(3));               // true
+    ```
+
+* a **safe integer** is an integer that can be accurately represented using floating point notation. Floating point values lose their precision after a certain amount of time and happen to be $$2^53$$
 
 
 
