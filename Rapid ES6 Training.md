@@ -2416,6 +2416,178 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ## Arrays and Collections
 
+### Array Extensions
+
+* examples:
+
+    ```javascript
+    let salaries = Array(90000);
+    console.log(salaries.length);                       // 9000
+
+    let salaries = Array.of(90000);
+    console.log(salaries.length);                       // 1
+    ```
+    ```javascript
+    let amounts = [800, 810, 820];
+    let salaries = Array.from(amounts, v => v+100 );
+    console.log(salaries);                              // [900,910,920]
+
+    // the third argument is passed to the function as 'this'
+    let amounts = [800, 810, 820];
+    let salaries = Array.from(amounts, function (v) {
+        return v + this.adjustment;
+    }, { adjustment: 50 });
+    console.log(salaries);                              // [850,860,870]
+
+    // arrow function doesn't change 'this'
+    let amounts = [800, 810, 820];
+    let salaries = Array.from(amounts, v => v + this.adjustment,
+    { adjustment: 50 });
+    console.log(salaries);                              // [NaN, NaN, NaN]
+    ```
+    ```javascript
+    let salaries = [600, 700, 800];
+    salaries.fill(900);
+    console.log(salaries);                              // [900, 900, 900]
+
+    // second argument indicates the starting index
+    let salaries = [600, 700, 800];
+    salaries.fill(900, 1);
+    console.log(salaries);                              // [600, 900, 900]
+
+    // third argument indicates where to stop filling (exclusive)
+    let salaries = [600, 700, 800];
+    salaries.fill(900, 1, 2);
+    console.log(salaries);                              // [600, 900, 800]
+
+    // -1 means start filling from the end of the array
+    let salaries = [600, 700, 800];
+    salaries.fill(900, -1);
+    console.log(salaries);                              // [600, 700, 900]
+    ```
+    ```javascript
+    let salaries = [600, 700, 800];
+    let result = salaries.find(value => value >= 750);
+    console.log(result);                                // 800
+
+    // it'll stop at the first value that it finds
+    let salaries = [600, 700, 800];
+    let result = salaries.find(value => value >= 650);
+    console.log(result);                                // 700
+    ```
+    ```javascript
+    let salaries = [600, 700, 800];
+    let result = salaries.findIndex(function (value, index, array) {
+        return value == this;
+    }, 700);
+    console.log(result);                                // 1
+    ```
+    ```javascript
+    // copyWithin(copyDestination, copySourceStarting index, numberOfValues)
+    let salaries = [600, 700, 800];
+    salaries.copyWithin(2, 0);
+    console.log(salaries);                              // [600, 700, 600]
+
+    let ids = [1, 2, 3, 4, 5];
+    ids.copyWithin(0, 1);
+    console.log(ids);                                   // [2, 3, 4, 5, 5]
+
+    let ids = [1, 2, 3, 4, 5];
+    ids.copyWithin(3, 0, 2);
+    console.log(ids);                                   // [1, 2, 3, 1, 2]
+    ```
+    ```javascript
+    let ids = ['A', 'B', 'C'];
+    console.log(...ids.entries());                      // [0,"A"], [1,"B"], [2,"C"]
+    ```
+    ```javascript
+    let ids = ['A', 'B', 'C'];
+    console.log(...ids.keys());                         // 0 1 2
+    ```
+    ```javascript
+    let ids = ['A', 'B', 'C'];
+    console.log(...ids.values());                       // A B C
+    ```
+
+### ArrayBuffer and Typed Arrays
+
+* an ArrayBuffer is an array of 8-bit bytes. Typed arrays are numeric types that exist on top of the ArrayBuffer (integer and float)
+
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    console.log(buffer.byteLength);                     // 1024
+
+    let buffer = new ArrayBuffer(1024);
+    buffer[0] = 0xff;
+    console.log(buffer[0]);                             // 255
+    ```
+
+* once we have ArrayBuffer setup with 8-bit bytes, we can add a typed array on top of it and use those bytes
+
+* here is the list of the typed arrays:
+  * 8-bit integer:
+    * `Int8Array()`
+    * `Uint8Array()`: U stands for Unsigned
+    * `Uint8ClampedArray()`: clamped means if we set a high value it'll get clamped to 255 and if we set a low value (e.g. -1) it'll get clamped to 0
+  * 16-bit integer:
+    * `Int16Array()`
+    * `Uint16Array()`
+  * 32-bit integer:
+    * `Int32Array()`
+    * `Uint32Array()`
+  * Float:
+    * `Float32Array()`
+    * `Float64Array()`
+
+* examples:
+
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let a = new Int8Array(buffer);
+    a[0] = 0xff;
+    console.log(a[0]);                              // -1
+    ```
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let a = new Uint8Array(buffer);
+    a[0] = 0xff;
+    console.log(a[0]);                              // 255
+    ```
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let a = new Uint8ClampedArray(buffer);
+    a[0] = -12;
+    console.log(a[0]);                              // 0
+    ```
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let a = new Uint8Array(buffer);
+    let b = new Uint16Array(buffer);
+    a[0] = 1;
+    console.log(b[0]);                              // 1
+    ```
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let a = new Uint8Array(buffer);
+    let b = new Uint16Array(buffer);
+    a[1] = 1;
+    console.log(b[0]);                              // 256
+    ```
+
+
+
+### DataView and Endianness
+
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+
+
 
 
 
