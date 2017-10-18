@@ -1,4 +1,3 @@
-$x$
 # Rapid ES6 Training
 
 ## New ES6 Syntax
