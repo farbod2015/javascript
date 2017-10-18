@@ -2620,41 +2620,200 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Map and WeakMap
 
+* The `Map` object holds key-value pairs. Any value (both objects and primitive values) may be used as either a key or a value.
+
+* `Object`s are similar to `Map`s in that both let you set keys to values, retrieve those values, delete keys, and detect whether something is stored at a key. Because of this (and because there were no built-in alternatives), `Object`s have been used as `Map`s historically; however, there are important differences that make using a `Map` preferable in certain cases:
+  * The keys of an `Object` are `Strings` and `Symbols`, whereas they can be any value for a `Map`, including functions, objects, and any primitive.
+  * You can get the size of a `Map` easily with the `size` property, while the number of properties in an `Object` must be determined manually.
+  * A `Map` is an iterable and can thus be directly iterated, whereas iterating over an `Object` requires obtaining its keys in some fashion and iterating over them.
+  * An `Object` has a prototype, so there are default keys in the map that could collide with your keys if you're not careful. As of ES5 this can be bypassed by using `map = Object.create(null)`, but this is seldom done.
+  * A `Map` may be perform better in scenarios involving frequent addition and removal of key pairs.
+
+* The `WeakMap` object is a collection of key/value pairs in which the keys are weakly referenced. The keys must be objects and the values can be arbitrary values:
+  * Keys of `WeakMap`s are of the type Object only. Primitive data types as keys are not allowed (e.g. a Symbol can't be a `WeakMap` key).
+  * In native `WeakMap`s, references to key objects are held "weakly", which means that they do not prevent garbage collection in case there would be no other reference to the object.
+  * Because of references being weak, `WeakMap` keys are not enumerable (i.e. there is no method giving you a list of the keys). If they were, the list would depend on the state of garbage collection, introducing non-determinism. If you want to have a list of keys, you should use a Map.
+
+* examples:
 
     ```javascript
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let employees = new Map();
+    employees.set(employee1, 'ABC');
+    employees.set(employee2, '123');
+
+    console.log(employees.get(employee1));      // ABC
     ```
     ```javascript
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let employees = new Map();
+    employees.set(employee1, 'ABC');
+    employees.set(employee2, '123');
+
+    console.log(employees.size);                // 2
     ```
     ```javascript
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let employees = new Map();
+    employees.set(employee1, 'ABC');
+    employees.set(employee2, '123');
+
+    employees.delete(employee2);
+    console.log(employees.size);                // 1
     ```
     ```javascript
+    // // clear(), clears up the entire Map
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let employees = new Map();
+    employees.set(employee1, 'ABC');
+    employees.set(employee2, '123');
+
+    employees.clear();
+    console.log(employees.size);                // 0
     ```
     ```javascript
+    // we can pass the Map an iterable
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let arr = [
+        [employee1, 'ABC'],
+        [employee2, '123']
+    ];
+    let employees = new Map(arr);
+
+    console.log(employees.size);                // 2
     ```
     ```javascript
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let arr = [
+        [employee1, 'ABC'],
+        [employee2, '123']
+    ];
+    let employees = new Map(arr);
+
+    console.log(employees.has(employee2));      // true
     ```
     ```javascript
+    // values(), will give us a list of all values
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let arr = [
+        [employee1, 'ABC'],
+        [employee2, '123']
+    ];
+
+    let employees = new Map(arr);
+
+    let list = [...employees.values()];
+    console.log(list);                          // ['ABC', '123']
     ```
     ```javascript
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let arr = [
+        [employee1, 'ABC'],
+        [employee2, '123']
+    ];
+
+    let employees = new Map(arr);
+
+    let list = [...employees.entries()];
+    console.log(list[0][1]);                    // ABC
     ```
     ```javascript
+    // we can't have access to the size of the WeakMap
+    let employee1 = { name: 'Jake' };
+    let employee2 = { name: 'Janet' };
+    let employees = new WeakMap([
+        [employee1, 'ABC'],
+        [employee2, '123']
+    ]);
+
+    employee1 = null;
+    // wait for GC cycle
+                                                // undefined
+    console.log(employees.size);                // (but the size is probably 1)
+    ```
+
+### Set and WeakSet
+
+* SET
+
+    ```javascript
+    let perks = new Set();
+    perks.add('Car');
+    perks.add('Super Long Vacation');
+
+    console.log(perks.size);                    // 2
     ```
     ```javascript
+    let perks = new Set();
+    perks.add('Car');
+    perks.add('Super Long Vacation');
+    perks.add('Car');
+
+    console.log(perks.size);                    // 2
     ```
     ```javascript
+    let perks = new Set([
+        'Car',
+        '10 Weeks Vacation',
+        'Jet'
+    ]);
+
+    console.log(perks.size);                    // 3
     ```
     ```javascript
+    let perks = new Set([
+        'Car',
+        '10 Weeks Vacation',
+        'Jet'
+    ]);
+
+    let newPerks = new Set(perks);
+    console.log(newPerks.size);                 // 3
     ```
     ```javascript
+    let perks = new Set([
+        'Car',
+        '10 Weeks Vacation',
+        'Jet'
+    ]);
+
+    console.log(perks.has('Jet'));              // true
+    console.log(perks.has('Cool Hat'));         // false
     ```
     ```javascript
+    let perks = new Set(['Car', 'Jet']);
+
+    console.log(...perks.keys());               // Car Jet
+    console.log(...perks.values());             // Car Jet
+    console.log(...perks.entries());            // Car,Car Jet,Jet
     ```
     ```javascript
+    let perks = new Set([
+        { id: 800 },
+        { id: 800 }
+    ]);
+
+    console.log(perks.size);                    // 2
     ```
     ```javascript
+    let perks = new Set([
+        1,
+        '1'
+    ]);
+
+    console.log(perks.size);                    // 2
     ```
-    ```javascript
-    ```
+
+### WeakSet
+
     ```javascript
     ```
     ```javascript
