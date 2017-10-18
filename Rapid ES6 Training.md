@@ -2511,7 +2511,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### ArrayBuffer and Typed Arrays
 
-* an ArrayBuffer is an array of 8-bit bytes. Typed arrays are numeric types that exist on top of the ArrayBuffer (integer and float)
+* an `ArrayBuffer` is an array of 8-bit bytes. Typed arrays are numeric types that exist on top of the `ArrayBuffer` (integer and float)
 
     ```javascript
     let buffer = new ArrayBuffer(1024);
@@ -2522,7 +2522,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(buffer[0]);                             // 255
     ```
 
-* once we have ArrayBuffer setup with 8-bit bytes, we can add a typed array on top of it and use those bytes
+* once we have `ArrayBuffer` setup with 8-bit bytes, we can add a typed array on top of it and use those bytes
 
 * here is the list of the typed arrays:
   * 8-bit integer:
@@ -2542,6 +2542,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 * examples:
 
     ```javascript
+    // 0xff is -1 for an 8-bit signed integer
     let buffer = new ArrayBuffer(1024);
     let a = new Int8Array(buffer);
     a[0] = 0xff;
@@ -2578,6 +2579,80 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### DataView and Endianness
 
+* endiandess is very important when working with bytes an arrays of integers:
+  * **big endian:** the most significant byte is stored first
+  * **little endian:** the least significant byte is stored first
+
+* we use `DataView` object to set endianness when setting and getting values
+
+* `DataView` is like a helper object that works with the buffer. It takes on the characteristic of the `ArrayBuffer` (`size` in the following example):
+
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let dv = new DataView(buffer);
+    console.log(dv.byteLength);                     // 1024
+    ```
+
+* we can have the `DataView` work with a subsection of the `ArrayBuffer`:
+
+    ```javascript
+    // DataView(buffer, startIndex, length)
+    let buffer = new ArrayBuffer(1024);
+    let dv = new DataView(buffer, 0, 32);
+    console.log(dv.byteLength);                     // 32
+    ```
+* when we working with `DataView` we are not working by default with the endianness of the system. We are working with big endian data by default:
+
+    ```javascript
+    let buffer = new ArrayBuffer(1024);
+    let dv = new DataView(buffer);
+    dv.setUint8(0, 1);
+    console.log(dv.getUint16(0));                   // 256
+    ```
+    ```javascript
+    // by passing true we are telling the method 
+    // to use little endian formatting
+    let buffer = new ArrayBuffer(1024);
+    let dv = new DataView(buffer);
+    dv.setUint8(0, 1);
+    console.log(dv.getUint16(0, true));             // 1
+    ```
+
+### Map and WeakMap
+
+
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
     ```javascript
     ```
     ```javascript
