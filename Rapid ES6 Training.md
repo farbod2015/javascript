@@ -2742,7 +2742,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Set and WeakSet
 
-* SET
+* `Set` objects are collections of values of any type, whether primitive values or object references. You can iterate through the elements of a set in insertion order. A value in the `Set` **may only occur once**; it is unique in the `Set`'s collection.
+
+* examples:
 
     ```javascript
     let perks = new Set();
@@ -2759,6 +2761,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(perks.size);                    // 2
     ```
+
+* the constructor for `Set` can take an iterator:
+
     ```javascript
     let perks = new Set([
         'Car',
@@ -2788,6 +2793,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(perks.has('Jet'));              // true
     console.log(perks.has('Cool Hat'));         // false
     ```
+
+* the items in the `Set` work both as the key and the value:
+
     ```javascript
     let perks = new Set(['Car', 'Jet']);
 
@@ -2795,6 +2803,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(...perks.values());             // Car Jet
     console.log(...perks.entries());            // Car,Car Jet,Jet
     ```
+
+* object references are stored in `Set`s
+
     ```javascript
     let perks = new Set([
         { id: 800 },
@@ -2812,8 +2823,121 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(perks.size);                    // 2
     ```
 
-### WeakSet
+* `WeakSet` objects are collections of objects. An object in the `WeakSet` may only occur once; it is unique in the `WeakSet`'s collection.
 
+* The main differences to the `Set` object are:
+  * In contrast to `Set`s, `WeakSet`s are **collections of objects only** and not of arbitrary values of any type.
+  * The `WeakSet` is weak: References to objects in the collection are held weakly. If there is no other reference to an object stored in the `WeakSet`, they can be garbage collected. That also means that there is no list of current objects stored in the collection so we cannot get the size. `WeakSet`s are not enumerable.
+
+    ```javascript
+    let perks = new WeakSet([1, 2, 3]);         // Runtime Error: WeakSet.prototype.add:
+    console.log(perks.size);                    // 'key' is not an object
+    ```
+    ```javascript
+    let p1 = { name: 'Car' };
+    let p2 = { name: 'Jet' };
+    let perks = new WeakSet([p1, p2]);
+    console.log(perks.size);                    // undefined
+    ```
+    ```javascript
+    let p1 = { name: 'Car' };
+    let p2 = { name: 'Jet' };
+    let perks = new WeakSet([p1, p2]);
+    console.log(perks.has(p1));                 // true
+    ```
+    ```javascript
+    let p1 = { name: 'Car' };
+    let p2 = { name: 'Jet' };
+    let perks = new WeakSet([p1, p2]);
+    p1 = null;
+    console.log(perks.has(p1));                 // false
+    ```
+
+### Subclassing
+
+* subclassing means extending objects and add our own properties and method to them. It is not well supported by browsers and transpilers yet.
+
+* these objects are subclassable:
+  * `Array`
+  * `RegExp`
+  * `Function`
+  * `Promise`
+  * `Boolean`
+  * `Number`
+  * `String`
+  * `Map`
+  * `Set`
+
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
+    ```javascript
+    ```
     ```javascript
     ```
     ```javascript
