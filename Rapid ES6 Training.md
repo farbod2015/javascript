@@ -2918,13 +2918,15 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(typeof Reflect);                // object
     ```
 
-* `Reflect.construct(target, argumentsList[, newTarget])`
+### Construction and Method Calls
+
+* `Reflect.construct(target, argumentsList[, newTarget])`: The `new` operator as a function. Equivalent to calling `new target(...args)`:
 
     ```javascript
     class Restaurant {
     }
 
-    let r = Reflect.construct(Restaurant);
+    let r = Reflect.construct(Restaurant);      // the same as 'new Restaurant'
     console.log(r instanceof Restaurant);       // true
     ```
     ```javascript
@@ -2948,6 +2950,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     let r = Reflect.construct(Restaurant, ["Zoey's", "Goleta"], restaurantMaker);
     ```
+
+  * `Reflect.apply(target, thisArgument, argumentsList)`: calls a target function with arguments as specified:
+
     ```javascript
     class Restaurant {
         constructor() {
@@ -2970,6 +2975,11 @@ for this section we use the following `HTML` for testing our examples. as you ca
     }
     Reflect.apply(Restaurant.prototype.show, { id: 22 }, ['REST:']);
     ```
+
+### Reflect and Prototypes
+
+* `Reflect.getPrototypeOf(target)`: It returns the prototype of the specified object:
+
     ```javascript
     class Location {
         constructor() {
@@ -2984,6 +2994,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     //     console.log('constructing Location');
     // }
     ```
+
+* `Reflect.setPrototypeOf(target, prototype)`: It sets the prototype of a specified object to another object or to null:
+
     ```javascript
     class Restaurant {
     }
@@ -2995,6 +3008,11 @@ for this section we use the following `HTML` for testing our examples. as you ca
     Reflect.setPrototypeOf(r, setup);
     console.log(r.getId());                     // 88
     ```
+
+### Reflect and Properties
+
+* `Reflect.get(target, propertyKey[, receiver])`: A function that returns the value of properties:
+
     ```javascript
     class Restaurant {
         constructor() {
@@ -3018,6 +3036,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let r = new Restaurant();
     console.log(Reflect.get(r, 'id', { _id: 88 }));     // 88
     ```
+
+* `Reflect.set(target, propertyKey, value[, receiver])`: A function that assigns values to properties. Returns a `Boolean` that is `true` if the update was successful:
+
     ```javascript
     class Restaurant {
         constructor() {
@@ -3037,13 +3058,16 @@ for this section we use the following `HTML` for testing our examples. as you ca
             this._id = value;
         }
     }
-    
+
     let r = new Restaurant();
     let alt = { id: 88 };
     Reflect.set(r, '_id', 88, alt);
     console.log(r._id);                         // 9000
     console.log(alt._id);                       // 88
     ```
+
+* `Reflect.has(target, propertyKey)`: Returns a boolean indicating whether an own or inherited property exists:
+
     ```javascript
     class Location {
         constructor() {
@@ -3061,6 +3085,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(Reflect.has(r, 'id'));          // true
     console.log(Reflect.has(r, 'city'));        // true
     ```
+
+* `Reflect.ownKeys(target)`: Returns an array of the target object's own (not inherited) property keys:
+
     ```javascript
     class Location {
         constructor() {
@@ -3077,6 +3104,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let r = new Restaurant();
     console.log(Reflect.ownKeys(r));            // ["city", "id"]
     ```
+
+* `Reflect.defineProperty(target, propertyKey, attributes)`: defines a new property directly on an object, or modifies an existing property on an object, and returns a `Boolean`:
+
     ```javascript
     class Restaurant {
     }
@@ -3091,6 +3121,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(r['id']);                       // 2000
     ```
+
+* `Reflect.deleteProperty(target, propertyKey)`: The `delete` operator as a function. Equivalent to calling `delete target[name]`:
+
     ```javascript
     let rest = {
         id: 2000
@@ -3099,6 +3132,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     Reflect.deleteProperty(rest, 'id');         // 2000
     console.log(rest.id);                       // undefined
     ```
+
+* `Reflect.getOwnPropertyDescriptor(target, propertyKey)`: Returns a property descriptor of the given property if it exists on the object, `undefined` otherwise:
+
     ```javascript
     let rest = {                                // { configurable: true,
         id: 2000                                //   enumerable: true,
@@ -3108,6 +3144,11 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(d);
     ```
+
+### Reflect and Property Extensions
+
+* `Reflect.preventExtensions(target)`: prevents new properties from ever being added to an object:
+
     ```javascript
     let rest = {
         id: 2000
@@ -3127,6 +3168,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(rest.location);                 // undefined
     ```
+
+* `Reflect.isExtensible(target)`: determines if an object is extensible (whether it can have new properties added to it):
+
     ```javascript
     let rest = {
         id: 2000
@@ -3138,34 +3182,108 @@ for this section we use the following `HTML` for testing our examples. as you ca
                                                 // true
     console.log(Reflect.isExtensible(rest));    // false
     ```
+
+### The Proxy API
+
+* wwwwww
+
     ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
+    function Employee() {
+        this.name = 'Milton Waddams';
+        this.salary = 0;
+    }
+    var e = new Employee();
+
+    var p = new Proxy(e, {
+        get: function(target, prop, receiver) {
+            return "Attempted access: " + prop;
+        }
+    });
+
+    console.log(p.salary);                      // Attempted access: salary
     ```
 
 
+    ```javascript
+    function Employee() {
+        this.name = 'Milton Waddams ';
+        this.salary = 0;
+    }
+    var e = new Employee();
+
+    var p = new Proxy(e, {
+        get: function(target, prop, receiver) {
+            return Reflect.get(target, prop, receiver);
+        }
+    });
+
+    console.log(p.salary);                      // 0
+    ```
 
 
+    ```javascript
+    function Employee() {
+        this.name = 'Milton Waddams ';
+        this.salary = 0;
+    }
+    var e = new Employee();
 
+    var p = new Proxy(e, {
+        get: function(target, prop, receiver) {
+            if (prop === 'salary') return 'Denied';
+            return Reflect.get(target, prop, receiver);
+        }
+    });
+
+    console.log(p.salary);                      // Denied
+    console.log(p.name);                        // Milton Waddams
+    ```
+
+
+    ```javascript
+    function getId() {
+        return 55;
+    }
+
+    var p = new Proxy(getId, {
+        apply: function(target, thisArg, argumentsList) {
+            return Reflect.apply(target, thisArg, argumentsList);
+        }
+    });
+
+    console.log(p());                           // 55
+    ```
+
+
+    ```javascript
+    var t = {
+        tableId: 99
+    }
+    var p = new Proxy({}, {
+        get: function(target, prop, receiver) {
+            return 'Property ' + prop + ' doesn\'t exist...';
+        }
+    });
+
+    Object.setPrototypeOf(t, p);
+
+    console.log(t.tableId);                     // 99
+    console.log(t.size);                        // Property size doesn't exist
+    ```
+
+
+    ```javascript
+    var t = {
+        tableId: 99
+    }
+
+    let { proxy, revoke } = Proxy.revocable(t, {
+        get: function(target, prop, receiver) {
+            return Reflect.get(target, prop, receiver) + 100;
+        }
+    });
+
+    console.log(proxy.tableId);
+    revoke();                                   // 199
+    console.log(proxy.tableId);                 // Property size doesn't exist
+    ```
