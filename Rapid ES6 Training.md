@@ -3183,7 +3183,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(Reflect.isExtensible(rest));    // false
     ```
 
-### The Proxy API
+## The Proxy API
 
 * wwwwww
 
