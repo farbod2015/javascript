@@ -2857,66 +2857,286 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 * subclassing means extending objects and add our own properties and method to them. It is not well supported by browsers and transpilers yet.
 
-* these objects are subclassable:
-  * `Array`
-  * `RegExp`
-  * `Function`
-  * `Promise`
-  * `Boolean`
-  * `Number`
-  * `String`
-  * `Map`
-  * `Set`
+* these objects are subclassable: `Array`, `RegExp`, `Function`, `Promise`, `Boolean`, `Number`, `String`, `Map`, and `Set`
+
+* example:
 
     ```javascript
+    class Perks extends Array {
+    }
+
+    let a = Perks.from([5, 10, 15]);
+
+    console.log(a instanceof Perks);            // true
     ```
     ```javascript
+    class Perks extends Array {
+    }
+
+    let a = Perks.from([5, 10, 15]);
+
+    console.log(a.length);                      // 3
     ```
     ```javascript
+    class Perks extends Array {
+    }
+
+    let a = Perks.from([5, 10, 15]);
+    let newArray = a.reverse();
+
+    console.log(newArray instanceof Perks);     // true
     ```
     ```javascript
+    class Perks extends Array {
+    }
+
+    let a = Perks.from([5, 10, 15]);
+    let newArray = a.reverse();
+
+    console.log(newArray instanceof Array);     // true
     ```
     ```javascript
+    class Perks extends Array {
+        sum() {
+            let total = 0;
+            this.map(v => total += v);
+            return total;
+        }
+    }
+
+    let a = Perks.from([5, 10, 15]);
+    console.log(a.sum());                       // 30
+    ```
+
+## The Reflect API
+
+* `Reflect` is a built-in object that provides methods for interceptable JavaScript operations.
+
+* Unlike most global objects, `Reflect` is not a constructor. You can not use it with a `new` operator or invoke the `Reflect` object as a function. All properties and methods of `Reflect` are static (just like the Math object).
+
+    ```javascript
+    console.log(typeof Reflect);                // object
+    ```
+
+* `Reflect.construct(target, argumentsList[, newTarget])`
+
+    ```javascript
+    class Restaurant {
+    }
+
+    let r = Reflect.construct(Restaurant);
+    console.log(r instanceof Restaurant);       // true
     ```
     ```javascript
+    class Restaurant {
+        constructor(name, city) {
+            console.log(`${name} in ${city}`);
+        }
+    }                                           // Zoey's in Goleta
+
+    let r = Reflect.construct(Restaurant, ["Zoey's", "Goleta"]);
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+        console.log(`new.target: ${new.target}`);
+        }
+    }                                           // new.target:
+    function restaurantMaker() {                // function restaurantMaker() {
+        console.log(`in restaurantMaker`);      //     console.log(`in restaurantMaker`);                      // }
+    }
+
+    let r = Reflect.construct(Restaurant, ["Zoey's", "Goleta"], restaurantMaker);
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this.id = 33;
+        }
+        show() {
+            console.log(this.id);               // 99
+        }
+    }
+    Reflect.apply(Restaurant.prototype.show, { id: 99 });
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this.id = 33;
+        }
+        show(prefix) {
+            console.log(prefix + this.id);      // REST:22
+        }
+    }
+    Reflect.apply(Restaurant.prototype.show, { id: 22 }, ['REST:']);
     ```
     ```javascript
+    class Location {
+        constructor() {
+            console.log('constructing Location');
+        }
+    }
+    class Restaurant extends Location {
+    }
+    console.log(Reflect.getPrototypeOf(Restaurant));
+
+    // constructor() {
+    //     console.log('constructing Location');
+    // }
     ```
     ```javascript
+    class Restaurant {
+    }
+    let setup = {
+        getId() { return 88; }
+    }
+
+    let r = new Restaurant();
+    Reflect.setPrototypeOf(r, setup);
+    console.log(r.getId());                     // 88
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this.id = 8000;
+        }
+    }
+
+    let r = new Restaurant();
+    console.log(Reflect.get(r, 'id'));          // 8000
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this._id = 9000;
+        }
+        get id() {
+            return this._id;
+        }
+    }
+
+    let r = new Restaurant();
+    console.log(Reflect.get(r, 'id', { _id: 88 }));     // 88
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this.id = 9000;
+        }
+    }
+    let r = new Restaurant();
+    Reflect.set(r, 'id', 88);
+    console.log(r.id);                          // 88
     ```
     ```javascript
+    class Restaurant {
+        constructor() {
+            this._id = 9000;
+        }
+        set id(value) {
+            this._id = value;
+        }
+    }
+    
+    let r = new Restaurant();
+    let alt = { id: 88 };
+    Reflect.set(r, '_id', 88, alt);
+    console.log(r._id);                         // 9000
+    console.log(alt._id);                       // 88
     ```
     ```javascript
+    class Location {
+        constructor() {
+            this.city = 'Goleta';
+        }
+    }
+    class Restaurant extends Location {
+        constructor() {
+            super();
+            this.id = 9000;
+        }
+    }
+
+    let r = new Restaurant();
+    console.log(Reflect.has(r, 'id'));          // true
+    console.log(Reflect.has(r, 'city'));        // true
     ```
     ```javascript
+    class Location {
+        constructor() {
+            this.city = 'Goleta';
+        }
+    }
+    class Restaurant extends Location {
+        constructor() {
+            super();
+            this.id = 9000;
+        }
+    }
+
+    let r = new Restaurant();
+    console.log(Reflect.ownKeys(r));            // ["city", "id"]
     ```
     ```javascript
+    class Restaurant {
+    }
+
+    let r = new Restaurant();
+
+    Reflect.defineProperty(r, 'id', {
+        value: 2000,
+        configurable: true,
+        enumerable: true
+    });
+
+    console.log(r['id']);                       // 2000
     ```
     ```javascript
+    let rest = {
+        id: 2000
+    };
+    console.log(rest.id);
+    Reflect.deleteProperty(rest, 'id');         // 2000
+    console.log(rest.id);                       // undefined
     ```
     ```javascript
+    let rest = {                                // { configurable: true,
+        id: 2000                                //   enumerable: true,
+    };                                          //   value: 2000,
+                                                //   writable: true }
+    let d = Reflect.getOwnPropertyDescriptor(rest, 'id');
+
+    console.log(d);
     ```
     ```javascript
+    let rest = {
+        id: 2000
+    };
+
+    rest.location = 'Goleta';
+
+    console.log(rest.location);                 // Goleta
     ```
     ```javascript
+    let rest = {
+        id: 2000
+    };
+
+    Reflect.preventExtensions(rest);
+    rest.location = 'Goleta';
+
+    console.log(rest.location);                 // undefined
     ```
     ```javascript
-    ```
-    ```javascript
-    ```
-    ```javascript
+    let rest = {
+        id: 2000
+    };
+
+    console.log(Reflect.isExtensible(rest));
+
+    Reflect.preventExtensions(rest);
+                                                // true
+    console.log(Reflect.isExtensible(rest));    // false
     ```
     ```javascript
     ```
