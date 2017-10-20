@@ -2951,7 +2951,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
     let r = Reflect.construct(Restaurant, ["Zoey's", "Goleta"], restaurantMaker);
     ```
 
-  * `Reflect.apply(target, thisArgument, argumentsList)`: calls a target function with arguments as specified:
+* `Reflect.apply(target, thisArgument, argumentsList)`: calls a target function with arguments as specified:
 
     ```javascript
     class Restaurant {
@@ -3185,7 +3185,46 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ## The Proxy API
 
-* wwwwww
+* a Proxy is an object that wraps another object or function so that we can monitor access to that object or function that is being wrapped
+
+* there are a lot of uses for Proxy:
+  * we can use this for security of our application
+  * we can use it for profiling; determining how long function run an logging things out
+  * creating some kind of security logging system
+
+* Terminology:
+  * **handler**: The handler object is a placeholder object which contains traps for `Proxy`.
+  * **traps**: The methods that provide property access. This is analogous to the concept of traps in operating systems.
+  * **target**: Object which the proxy virtualizes. It is often used as storage backend for the proxy. Invariants (semantics that remain unchanged) regarding object non-extensibility or non-configurable properties are verified against the target.
+
+* All traps are optional. If a trap has not been defined, the default behavior is to forward the operation to the target.
+
+### Available Traps
+
+* here is a list of available traps. `handler` is just a reference to the `Proxy` object:
+  * `handler.construct()`
+  * `handler.apply()`
+  * `handler.getPrototypeOf()`
+  * `handler.setPrototypeOf()`
+  * `handler.get()`
+  * `handler.set()`
+  * `handler.has()`
+  * `handler.ownKeys()`
+  * `handler.defineProperty()`
+  * `handler.deleteProperty()`
+  * `handler.getOwnPropertyDescriptor()`
+  * `handler.preventExtensions()`
+  * `handler.isExtensible()`
+
+* there are certain things that we can't trap:
+  * Comparisons ( `==` and `===` )
+  * `typeof` and `instanceof`
+  * Operations ( `target + " "` )
+  * `String( target )`
+
+### Get by Proxy
+
+* when we try to access a property, we can trap it with `get` function in the `handler` object:
 
     ```javascript
     function Employee() {
@@ -3202,8 +3241,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(p.salary);                      // Attempted access: salary
     ```
-
-
     ```javascript
     function Employee() {
         this.name = 'Milton Waddams ';
@@ -3219,8 +3256,6 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
     console.log(p.salary);                      // 0
     ```
-
-
     ```javascript
     function Employee() {
         this.name = 'Milton Waddams ';
@@ -3239,6 +3274,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(p.name);                        // Milton Waddams
     ```
 
+### Calling Functions by Proxy
+
+* in this example the target is a function:
 
     ```javascript
     function getId() {
@@ -3254,6 +3292,9 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(p());                           // 55
     ```
 
+### A Proxy as a Prototype
+
+* `Proxy` as a prototype gives us control over the prototype mechanism. Instead of working like a normal prototype now we can execute any code that we want:
 
     ```javascript
     var t = {
@@ -3271,6 +3312,13 @@ for this section we use the following `HTML` for testing our examples. as you ca
     console.log(t.size);                        // Property size doesn't exist
     ```
 
+### Revocable Proxies
+
+* A revocable `Proxy` is an object with following two properties `{proxy: proxy, revoke: revoke}`:
+  * **`proxy`**: A Proxy object created with `new Proxy(target, handler)` call.
+  * **`revoke`**: A function with no argument to invalidate (switch off) the `proxy`.
+
+* If the `revoke()` function gets called, the proxy becomes unusable: Any trap to a handler will throw a `TypeError`. Once a proxy is revoked, it will remain revoked and can be garbage collected. Calling `revoke()` again has no effect.
 
     ```javascript
     var t = {
