@@ -123,7 +123,51 @@ Why react?
 
 ### React: Creating Components Introduction
 
+* `React.createClass` allows us define a class which contains our component
+* `render` is the function that we need to define our component. It is required on any React component
+* `render` function is where we put our JSX
+* whatever the `render` function returns is what will display on the screen
+* use parentheses when returning something with multiple lines
+* example:
 
+  ```javascript
+  // homePage.js
+  "use strict";
 
+  var React = require('react');
 
+  var Home = React.createClass({
+    render: function() {
+      return (
+        <div className="jumbotron">
+          <h1>Pluralsight Administration</h1>
+          <p>React, React Router, and Flux for ultra-responsive web apps.</p>
+        </div>
+      );
+    }
+  });
 
+  module.exports = Home;
+  ```
+  ```javascript
+  // main.js
+  $ = jQuery = require('jquery');
+  var React = require('react');
+  var Home = require('./components/homePage');
+
+  React.render(<Home />, document.getElementById('app'));
+  ```
+  ```html
+  <!-- index.html -->
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <title>Pluralsight Administration</title>
+      <link rel="stylesheet" href="css/bundle.css" />
+    </head>
+    <body>
+      <div id="app"></div>
+      <script src="scripts/bundle.js"></script>
+    </body>
+  </html>
+  ```
