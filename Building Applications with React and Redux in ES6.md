@@ -111,3 +111,8 @@
 </center>
 
 * **Container** components are the components that will typically connect to our Redux store and then pass that data down to our child components
+
+## Initial App Structure
+
+
+
