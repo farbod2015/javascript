@@ -202,7 +202,7 @@ Let's look at how actions, reducers, the store, and container components will in
   // Example
   Object.assign({}, state, {role: 'admin'});
   ```
-* Also Object.assign is part of ES6, it's a feature that Babel can't transpile. So be sure that you include babel-polyfill at the root of your app like we did in the environment setup module.
+* Also `Object.assign` is part of ES6, it's a feature that Babel can't transpile. So be sure that you include babel-polyfill at the root of your app like we did in the environment setup module.
 
 ### Why Immutability?
 
@@ -224,7 +224,14 @@ Let's look at how actions, reducers, the store, and container components will in
 
 ### Handling Immutability
 
-Let's discuss some concrete ways to handle immutability. There are many ways to handle immutability, but Object.assign and the spread operator for arrays are the most popular approach when working in ES6. We'll primarily use these throughout our reducers as we build our app in the next few modules. But if you're working directly in ES5, there are various alternative ways to clone an object such as lodash's merge or extend functions or the object-assign package on npm, which provides the same functionality as ES6's native Object.assign. Another option is to consider libraries that make working with immutable data easier such as react-addons-update or immutable.js. In my experience, ES6's Object.assign and spread operator are all I typically need to work with immutable state in Redux. So that's what we'll use throughout this course. But if you find the work you're doing in your Redux reducers burdensome, then check out react-addons-update or immutable.js. One final note to keep in mind. JavaScript's primitive data types like number, string, Boolean, undefined, and null are already immutable. So that's taken care of for free. So, great! Now we have a clear way to easily make a new copy of an object that includes some updates. This will be useful when we need to update state in our reducers, which we'll discuss next. However, how do we make sure that we don't accidentally mutate state? JavaScript doesn't have immutable data structures built in, so you're likely wondering, If stores are mutable, how do we enforce immutability? There are three approaches to consider. First, the simplest way is to just educate your team and trust them. If you're on a small team, this might be sufficient. But you have to hope that everyone remembers because if state is mutated in Redux, it will introduce a bug. If you want to put in a safety net, you can install redux-immutable-state-invariant. This library displays an error when you try to mutate state anywhere in your app. We'll run this in our app so it can warn us if we accidentally mutate state. However, one important note: Be sure you only run this in development because it does a lot of object copying, which would degrade performance in production. Finally, if you want to programmatically enforce immutability, you can consider a library like immutable.js. Immutable.js creates immutable JavaScript data structures. This library also happens to be by Facebook but can be useful on any project. Immutable.js is powerful and interesting, but there's too much going on there to cover in this course. So we'll just use redux-immutable-state-invariant on our app. Now that we have a good understanding of immutability, we're ready to explore how state updates are handled in Redux. Let's talk about reducers.
+* There are many ways to handle immutability for arrays but the most popular ways are:
+  * `Object.assign`
+  * the spread operator
+* JavaScript doesn't have immutable data structures built in, so how do we enforce immutability? There are three approaches to consider:
+  1. the simplest way is to just educate your team and trust them.
+  1. If you want to put in a safety net, you can install `redux-immutable-state-invariant`. This library displays an error when you try to mutate state anywhere in your app.. However, one important note: Be sure you only run this in development because it does a lot of object copying, which would degrade performance in production.
+  1. If you want to programmatically enforce immutability, you can consider a library like `immutable.js`. It creates immutable JavaScript data structures. This library also happens to be by Facebook but can be useful on any project.
+* So we'll just use `redux-immutable-state-invariant` in this course.
 
 Reducers
 
