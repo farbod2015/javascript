@@ -112,6 +112,142 @@
 
 * **Container** components are the components that will typically connect to our Redux store and then pass that data down to our child components
 
+## Intro to Redux
+
+### Do I Need Redux?
+
+Now as data flows get more complex, you may find yourself displaying the same data in multiple places. You may have a large number of potential state changes that are hard to manage. You may find it helpful to handle state changes in a single spot for consistency, testability, and, your own sanity. This is where React with Redux really shines. 
+
+Flux and Redux are really useful for applications that have:
+
+* **complex data flows:** when you're writing an app that merely displays simple static data then Redux isn't likely to be useful
+* **Inter-component communication:**  if you need to handle interactions between two components that don't have a parent-child relationship, Redux offers a clear and elegant solution.
+* **Non-hierarchical data:** when you find two disparate components are manipulating the same data, Redux becomes really helpful. This scenario is often the case when your application has non-hierarchical data.
+* **Many actions:** as your application offers an increasing number of actions, the structure and scalability of Redux can become really useful.
+* **Same data used in multiple places:** the most obvious sign that you'll want something like Redux is if you're utilizing the same data in multiple places. If your components need to utilize the same data and they don't have a simple parent-child relationship, Redux helps solve that problem.
+
+### Three Core Redux Principles
+
+Redux has three core principles:
+
+1. **One immutable store:** all your application state is placed in a single immutable store (the state can't be changed). Having one immutable store aids debugging, supports server rendering, and makes things like undo/redo easily possible.
+1. **Actions trigger changes:** in Redux, the only way to mutate state is to emit an action, which describes a user's intent.
+1. **Reducers update state:** state is changed by pure functions that are called reducers. In Redux, a reducer is just a function that _accepts the current state_ in an action and _returns a new state_.
+
+### Redux Flow Overview
+
+Let's look at how actions, reducers, the store, and container components will interact to create unidirectional data flows:
+
+* An action describes user intent. It's an object with a type property and some data. You could pass multiple separate pieces of data here or in one or more objects:
+  ```js
+  { type: RATE_COURSE, rating: 5}
+  ```
+* This action will ultimately be handled by a reducer. A reducer is just a fancy name for a function that returns new state. So as you can see, the reducer receives the current state and an action, and then it returns a new state. Reducers typically contain a switch statement that checks the type of the action passed. This determines what new state should be returned
+  ```js
+  function appReducer(state = defaultState, action) {
+    switch(action.type) {
+      case RATE_COURSE:
+      // return new state
+    }
+  }
+  ```
+* Once this new state is returned from a reducer, the store is updated. React re-renders any components that are utilizing the data. Your React components are connected to the store using React-Redux.
+
+## Actions, Stores, and Reducers
+
+### Actions
+
+* In Redux, the events happening in the application are called actions.
+* Actions are just plain objects containing a description of an event:
+  ```js
+  { type: RATE_COURSE, rating: rating }
+  ```
+* An action must have a type property. The data could be a complex object, a simple number, a Boolean, any value that's serializable. The only things that you shouldn't try passing around in your actions are things that won't serialize to JSON like functions or promises.
+* Actions are made by convenience functions called action creators. Here, the action creator is called `RATE_COURSE`. Typically, the action creator has the same name as the action's type:
+  ```js
+  rateCourse(rating) {
+    return { type: RATE_COURSE, rating: rating }
+  }
+  ```
+* Action creators are considered convenience functions because they're not required. But I recommend following this simple convention. By using these action creators to create your actions, the spot where you dispatched the action does not need to know the action creator structure.
+
+### Store
+
+* In Redux, you create a store by calling createStore in your application's entry point. You pass the createStore function to your reducer function:
+  ```js
+  let store = createStore(reducer);
+  ```
+* The Redux store simply stores data while reducers, which we'll discuss in a moment, handle the state changes.
+* There's only one store in Redux. Having a single source of truth makes the application easier to manage and understand.
+* The Redux store API is very simple:
+  * The store can dispatch an action: `store.dispatch(action)`
+  * subscribe to a listener: `store.subscribe(listener)`
+  * return its current state: `store.getState()`
+  * replace a reducer: `replaceReducer(nextReducer)`
+* This last feature is useful to support hot reloading.
+* The most interesting omission here is that there is no API for changing data in the store. It means the only way that you can change the store is by dispatching an action and you can't change it directly.
+* The store doesn't actually handle the actions that you dispatch. Actions are ultimately handled by reducers.
+
+### What Is Immutability?
+
+* if I can't mutate state, doesn't that mean that no data can ever change? Not at all. It just means that instead of changing your state object, you must return a new object that represents your application's new state.
+* Some types of JavaScript are immutable already, such as `number`, `string`, `Boolean`, `undefined`, and `null`. In other words, every time you change the value of one of these types, a new copy is created.
+* Mutable JavaScript types are things like `object`s, `array`s, and `function`s.
+* Do I have to build a new copy of state by hand every time I want to change it? Thankfully, no. * There are some easy ways to create copies of objects in JavaScript. The approach I recommend is Object.assign:
+  ```none
+  Signature
+  Object.assign(target, ...sources)
+  ```
+  ```js
+  // Example
+  Object.assign({}, state, {role: 'admin'});
+  ```
+* Also Object.assign is part of ES6, it's a feature that Babel can't transpile. So be sure that you include babel-polyfill at the root of your app like we did in the environment setup module.
+
+### Why Immutability?
+
+* There are three core benefits to having immutable state: clarity, performance, and what I like to call awesome sauce:
+  1. **Clarity:** Redux's centralized immutable store means any time state changes in a Redux app, you know where and how it occurred. You know someone wrote some code in a reducer that returned a new copy of state. It means you're clear about what file to open to actually see state changes.
+  1. **Performance:** If state were mutable, Redux would have to do an expensive operation to check every single property on your state object to determine if state had actually changed. But if state is immutable, Redux can simply do a reference comparison. If the old state isn't referencing the same object in memory, then React-Redux knows that the state has changed and notifies React of state changes. It uses the `shouldComponentUpdate` method to quickly bail out if nothing has changed. React-Redux includes a variety of complex performance optimizations behind the scenes that rely on immutable state.
+  1. **Awesome Sauce (Amazing Debugging Experience):** Time travel debugging is a powerful way to see exactly how your application state is changing over time. This means that you can travel through time as you debug. So you can go back in history and see each specific state change as it occurred. And as you go back in time, you can undo specific state changes and see how that changes the final state. You can even turn off individual actions that occurred so you can see what the state would look like if a specific action in history had never happened. And, finally, you can play all your interactions back with the click of a button and even select the speed at which it plays back.
+
+
+
+
+
+
+
+
+
+
+
+
+### Handling Immutability
+
+Let's discuss some concrete ways to handle immutability. There are many ways to handle immutability, but Object.assign and the spread operator for arrays are the most popular approach when working in ES6. We'll primarily use these throughout our reducers as we build our app in the next few modules. But if you're working directly in ES5, there are various alternative ways to clone an object such as lodash's merge or extend functions or the object-assign package on npm, which provides the same functionality as ES6's native Object.assign. Another option is to consider libraries that make working with immutable data easier such as react-addons-update or immutable.js. In my experience, ES6's Object.assign and spread operator are all I typically need to work with immutable state in Redux. So that's what we'll use throughout this course. But if you find the work you're doing in your Redux reducers burdensome, then check out react-addons-update or immutable.js. One final note to keep in mind. JavaScript's primitive data types like number, string, Boolean, undefined, and null are already immutable. So that's taken care of for free. So, great! Now we have a clear way to easily make a new copy of an object that includes some updates. This will be useful when we need to update state in our reducers, which we'll discuss next. However, how do we make sure that we don't accidentally mutate state? JavaScript doesn't have immutable data structures built in, so you're likely wondering, If stores are mutable, how do we enforce immutability? There are three approaches to consider. First, the simplest way is to just educate your team and trust them. If you're on a small team, this might be sufficient. But you have to hope that everyone remembers because if state is mutated in Redux, it will introduce a bug. If you want to put in a safety net, you can install redux-immutable-state-invariant. This library displays an error when you try to mutate state anywhere in your app. We'll run this in our app so it can warn us if we accidentally mutate state. However, one important note: Be sure you only run this in development because it does a lot of object copying, which would degrade performance in production. Finally, if you want to programmatically enforce immutability, you can consider a library like immutable.js. Immutable.js creates immutable JavaScript data structures. This library also happens to be by Facebook but can be useful on any project. Immutable.js is powerful and interesting, but there's too much going on there to cover in this course. So we'll just use redux-immutable-state-invariant on our app. Now that we have a good understanding of immutability, we're ready to explore how state updates are handled in Redux. Let's talk about reducers.
+
+Reducers
+
+We now have a good foundational understanding of immutability, so let's discuss how data changes are handled with reducers. To change the store, you dispatch an action that is ultimately handled by a reducer. A reducer is quite simple. It's a function that takes state and an action and returns new state. That's it. You can think of a reducer like a meat grinder. With a meat grinder, you put in some ingredients and turn the handle, and then the results come out the other side. In the same way, with reducers, you pass in some ingredients--in this case, the current state and an action-- and it spits out a new state. Don't like the meat grinder metaphor? Let's try one that's more cuddly. Reducers sound scary, but they're actually like a fluffy bunny. They're so approachable, they're so simple and so tasty. Wait! I don't eat rabbits. I swear. Never mind. Here's an example of a reducer that's handling incrementing a counter. Reducer functions just look at the action passed and return a new copy of state. So, for example, if the action passed was INCREMENT_COUNTER, then it would increment the counter and return the new state. The reducer knew what state needed to be changed by looking at the action passed, and it updated state accordingly. However, there's one thing wrong with my example--I'm mutating state right here. As we've discussed, in Redux, state is immutable. So, in other words, it cannot be changed. So let's update this example to return a new copy of state instead. Here's an updated example. This example doesn't mutate state. I'm using Object.assign to create a new copy of state. Let's dissect this line. Here I'm saying create a new empty object. The first parameter's the target, so we're just creating a new empty object. But then we're mixing that new object together with our existing state and also changing the counter property by incrementing it by 1. So the result is effectively a deep clone of our state object but with the counter incremented by 1. Remember, reducers must be pure functions. This means they should produce no side effects. You know you have a pure function if calling it with the same set of arguments always returns the same value. Because reducers are supposed to be pure functions, there are three things that you should never do in a reducer--mutate arguments, perform side effects like API calls and routing transitions, or call non-pure functions. A reducer's return value should depend solely on the values of its parameters. It shouldn't call non-pure functions like date.now or math.random. This way the reducer stays pure. It simply takes the current state and an action and returns the new state. No mutations or side effects, just a pure predictable result. I mentioned earlier that you can only have one store in Redux. The original Flux pattern describes having multiple stores in an app, each one holding a different area of domain data. That sounded good, but it has downsides such as needing one store to wait for another store to update. This isn't necessary in Redux because the separation between data domains is already achieved by splitting a single reducer into multiple smaller reducers. So while you might think having one store might be limiting and lead to huge monolithic stores that are hard to manage, in practice, it's not a problem because you can manage slices of your state changes via multiple reducers. That said, it's technically possible to create multiple stores when working in Redux, but it's not recommended and only useful in rare instances. In short, assume you can only have one store when working in Redux. Only try creating another after very carefully investigating the implications. When the store is created, Redux calls the reducers and uses their return values as initial state. But you might be wondering, If we have multiple reducers, which one is called when an action is dispatched? The answer? All of them. All reducers get called when an action is dispatched. The switch statement inside each reducer looks at the action type to determine if it has anything to do. That's why it's important that all reducers return untouched state as the default if no switch case matched the action type passed. So, for example, if I dispatched the DELETE_COURSE action and my app has three reducers, one for courses, one for authors, and one that handles loading status, all three of these reducers will be called. But only the reducers that actually handle the DELETE_COURSE action type will do anything. The others will simply return the state that was passed to them. Remember, each reducer only handles its slice of state. In fact, each reducer is only passed its slice of state so that it can only access the portion of state that it manages. So while there is only a single store for Redux, creating multiple reducers allows you to handle changes to different pieces of the store in isolation. This makes state changes easy to understand and avoids issues with side effects. Just remember, all the reducers together form the complete picture of what's in your store. I like to think of my store like a pie chart, and all of my reducers are handling a piece of the pie. One final note on reducers before we wrap this up. You might wonder if there's always a 1:1 mapping between reducers and actions. Nope. In fact, the Redux FAQ recommends using reducer composition. This means a given action can be handled by more than one reducer. We'll see an example of this in a later module when building our example app. As the FAQ says, "Write independent small reducer functions that are each responsible for updates to a specific slice of state. We call this pattern 'reducer composition.' A given action could be handled by all, some, or none of them."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Connecting React to Redux
 
 ### Container vs. Presentational Component
@@ -203,10 +339,14 @@ There are two component types in React:
 * `bindActionCreators` function is part of Redux
 
 * Handling `mapDispatchToProps`: there are three ways to handle mapping your actions to props in Redux container components (this is simply a decision about how you want to expose your actions to your components):
-  1. The first option is to ignore it since `mapDispatchToProps` is an optional parameter on the Connect function. When you omit it, then the `dispatch` function will be attached to your container component. This means you can call `dispatch` manually and pass it an action creator:
+  1. The first option is to ignore it since `mapDispatchToProps` is an optional parameter on the Connect function. When you omit it, then the `dispatch` function will be attached to your container component (props). This means you can call `dispatch` manually and pass it an action creator:
       ```js
       this.props.dispatch(loadCourses());
       ```
+      It has tow downsides:
+        * First, it requires more boilerplate each time you want to fire off an action because you have to explicitly call `dispatch` and pass it the action you'd like to fire.
+        * Second, this means your child components need to reference Redux-specific concepts like the `dispatch` function, as well as your action creators. If you want to keep your child components as simple as possible and avoid tying them to Redux, then this approach is not ideal.
+
   1. The second option is to manually wrap your action creators in `dispatch` calls within the `mapDispatchToProps` function:
       * Here, we are wrapping `loadCourses` action creator in a function that calls `dispatch`.
       ```js
@@ -217,6 +357,9 @@ There are two component types in React:
           }
         };
       }
+
+      //In component:
+      this.props.loadCourses();
       ```
       * Compared to option 1, it keeps the calls in my actual component shorter at the cost of some extra coding here in `mapDispatchToProps`.
 
@@ -227,10 +370,25 @@ There are two component types in React:
           actions: bindActionCreators(actions, dispatch)
         };
       }
+
+      //In component:
+      this.props.actions.loadCourses();
       ```
 
+* The bottom line is approaches 2 and 3 both produce the same result. They wrap your actions in a `dispatch` call so that they're easy to pass down to child components. But there's a notable advantage to options 2 and 3 over option 1, and that is that with options 2 and 3, your child components don't have to know anything about Redux. Child components can simply call the actions that are passed down to them via props. Remember, with option 1, we had to import action creators into our child components so that we could call Redux's `dispatch` directly.
 
-  
-  
-   Let's look at examples of each of these approaches in more detail to help clear things up. As I just mentioned, one simple option is to ignore the mapDispatchToProps function altogether. Calling Connect on your component automatically adds a dispatch prop to your component. You can use this dispatch prop to call your action creators as I'm doing here. However, there're a couple of downsides with this approach. First, it requires more boilerplate each time you want to fire off an action because you have to explicitly call dispatch and pass it the action you'd like to fire. Second, this means your child components need to reference Redux-specific concepts like the dispatch function, as well as your action creators. If you want to keep your child components as simple as possible and avoid tying them to Redux, then this approach is not ideal. The second option is to manually wrap your action creators in dispatch calls. Here I'm specifying the actions I want to expose to my component explicitly. One by one, I wrap each action creator in a dispatch call, and then this is how my call would look within the component. When you're getting started, I recommend using this option because manually wrapping action creators makes it clear what you're doing. But as you can see, it's quite redundant. That's why you may prefer to use option 3, which is bindActionCreators. This function ships with Redux to handle this redundancy for you. With this approach, the bindActionCreators function will wrap all the actions pass to it in a dispatch call for you. Of course, the props created by these two examples is slightly different. Notice that the prop that will be exposed to the component here is called actions. But if we go back to the previous slide, we are exposing this.props.loadCourses, this.props.createCourse, and so on. So it's a minor difference in the way that I chose to wire this up. The bottom line is approaches 2 and 3 both produce the same result. They wrap your actions in a dispatch call so that they're easy to pass down to child components. But there's a notable advantage to options 2 and 3 over option 1, and that is that with options 2 and 3, your child components don't have to know anything about Redux. Child components can simply call the actions that are passed down to them via props. Remember, with option 1, we had to import action creators into our child components so that we could call Redux's dispatch directly. I know this is confusing without an example that's in proper context. So don't worry. In the next module, we'll use all three of these approaches. And before we close out this module, let's have a quick chat with Redux to wrap up everything that we've learned. 
+### A Chat with Redux
+
+I find it helpful to think about the major players as people with different roles who interact with each other. Here's an example conversation that I played through my head:
+
+* <span style="color:STEELBLUE">**Reach:**</span> Hey, CourseAction, someone clicked this "Save Course" button.
+* <span style="color:darkred">**Action:**</span> thanks, React! I'll update an action so reducers that care can update state.
+* <span style="color:YELLOWGREEN">**Reducer:**</span> Ah, thanks action. I see you passed me the current state and the action to perform. I'll make a new copy of state and return it.
+* <span style="color:ORANGERED">**Store:**</span> Thank you for updating the state, Mr. Reducer. I'll make sure that all connected components are aware.
+* <span style="color:DARKBLUE">**React-Redux:**</span> Whoa, thanks for the new data, Mr. Store. I'll now intelligently determine if I should tell React about this change so that it only has to bother with updating the UI if it's necessary.
+* <span style="color:STEELBLUE">**React:**</span> Ooh! Shiny new data has been passed down via props from the store! I'll update the UI to reflect this!
+
+And that's how data flows through Redux in a unidirectional manner.
+
+
 
