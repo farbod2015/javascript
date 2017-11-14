@@ -211,17 +211,6 @@ Let's look at how actions, reducers, the store, and container components will in
   1. **Performance:** If state were mutable, Redux would have to do an expensive operation to check every single property on your state object to determine if state had actually changed. But if state is immutable, Redux can simply do a reference comparison. If the old state isn't referencing the same object in memory, then React-Redux knows that the state has changed and notifies React of state changes. It uses the `shouldComponentUpdate` method to quickly bail out if nothing has changed. React-Redux includes a variety of complex performance optimizations behind the scenes that rely on immutable state.
   1. **Awesome Sauce (Amazing Debugging Experience):** Time travel debugging is a powerful way to see exactly how your application state is changing over time. This means that you can travel through time as you debug. So you can go back in history and see each specific state change as it occurred. And as you go back in time, you can undo specific state changes and see how that changes the final state. You can even turn off individual actions that occurred so you can see what the state would look like if a specific action in history had never happened. And, finally, you can play all your interactions back with the click of a button and even select the speed at which it plays back.
 
-
-
-
-
-
-
-
-
-
-
-
 ### Handling Immutability
 
 * There are many ways to handle immutability for arrays but the most popular ways are:
@@ -233,9 +222,6 @@ Let's look at how actions, reducers, the store, and container components will in
   1. If you want to programmatically enforce immutability, you can consider a library like `immutable.js`. It creates immutable JavaScript data structures. This library also happens to be by Facebook but can be useful on any project.
 * So we'll just use `redux-immutable-state-invariant` in this course.
 
-Reducers
-
-We now have a good foundational understanding of immutability, so let's discuss how data changes are handled with reducers. To change the store, you dispatch an action that is ultimately handled by a reducer. A reducer is quite simple. It's a function that takes state and an action and returns new state. That's it. You can think of a reducer like a meat grinder. With a meat grinder, you put in some ingredients and turn the handle, and then the results come out the other side. In the same way, with reducers, you pass in some ingredients--in this case, the current state and an action-- and it spits out a new state. Don't like the meat grinder metaphor? Let's try one that's more cuddly. Reducers sound scary, but they're actually like a fluffy bunny. They're so approachable, they're so simple and so tasty. Wait! I don't eat rabbits. I swear. Never mind. Here's an example of a reducer that's handling incrementing a counter. Reducer functions just look at the action passed and return a new copy of state. So, for example, if the action passed was INCREMENT_COUNTER, then it would increment the counter and return the new state. The reducer knew what state needed to be changed by looking at the action passed, and it updated state accordingly. However, there's one thing wrong with my example--I'm mutating state right here. As we've discussed, in Redux, state is immutable. So, in other words, it cannot be changed. So let's update this example to return a new copy of state instead. Here's an updated example. This example doesn't mutate state. I'm using Object.assign to create a new copy of state. Let's dissect this line. Here I'm saying create a new empty object. The first parameter's the target, so we're just creating a new empty object. But then we're mixing that new object together with our existing state and also changing the counter property by incrementing it by 1. So the result is effectively a deep clone of our state object but with the counter incremented by 1. Remember, reducers must be pure functions. This means they should produce no side effects. You know you have a pure function if calling it with the same set of arguments always returns the same value. Because reducers are supposed to be pure functions, there are three things that you should never do in a reducer--mutate arguments, perform side effects like API calls and routing transitions, or call non-pure functions. A reducer's return value should depend solely on the values of its parameters. It shouldn't call non-pure functions like date.now or math.random. This way the reducer stays pure. It simply takes the current state and an action and returns the new state. No mutations or side effects, just a pure predictable result. I mentioned earlier that you can only have one store in Redux. The original Flux pattern describes having multiple stores in an app, each one holding a different area of domain data. That sounded good, but it has downsides such as needing one store to wait for another store to update. This isn't necessary in Redux because the separation between data domains is already achieved by splitting a single reducer into multiple smaller reducers. So while you might think having one store might be limiting and lead to huge monolithic stores that are hard to manage, in practice, it's not a problem because you can manage slices of your state changes via multiple reducers. That said, it's technically possible to create multiple stores when working in Redux, but it's not recommended and only useful in rare instances. In short, assume you can only have one store when working in Redux. Only try creating another after very carefully investigating the implications. When the store is created, Redux calls the reducers and uses their return values as initial state. But you might be wondering, If we have multiple reducers, which one is called when an action is dispatched? The answer? All of them. All reducers get called when an action is dispatched. The switch statement inside each reducer looks at the action type to determine if it has anything to do. That's why it's important that all reducers return untouched state as the default if no switch case matched the action type passed. So, for example, if I dispatched the DELETE_COURSE action and my app has three reducers, one for courses, one for authors, and one that handles loading status, all three of these reducers will be called. But only the reducers that actually handle the DELETE_COURSE action type will do anything. The others will simply return the state that was passed to them. Remember, each reducer only handles its slice of state. In fact, each reducer is only passed its slice of state so that it can only access the portion of state that it manages. So while there is only a single store for Redux, creating multiple reducers allows you to handle changes to different pieces of the store in isolation. This makes state changes easy to understand and avoids issues with side effects. Just remember, all the reducers together form the complete picture of what's in your store. I like to think of my store like a pie chart, and all of my reducers are handling a piece of the pie. One final note on reducers before we wrap this up. You might wonder if there's always a 1:1 mapping between reducers and actions. Nope. In fact, the Redux FAQ recommends using reducer composition. This means a given action can be handled by more than one reducer. We'll see an example of this in a later module when building our example app. As the FAQ says, "Write independent small reducer functions that are each responsible for updates to a specific slice of state. We call this pattern 'reducer composition.' A given action could be handled by all, some, or none of them."
 
 
 
@@ -245,15 +231,50 @@ We now have a good foundational understanding of immutability, so let's discuss 
 
 
 
+### Reducers
 
-
-
-
-
-
-
-
-
+* To change the store, you dispatch an action that is ultimately handled by a reducer.
+* A reducer is a function that takes state and an action and returns new state:
+  ```js
+  function myReducer(state, action) {
+    // return new state based on action passed
+  }
+  ```
+* Here's an example of a reducer that's handling incrementing a counter:
+  * The following version is wrong because it is mutating the state at `state.couter++`:
+    ```js
+    function myReducer(state, action) {
+      switch(action.type) {
+        case 'INCREMENT_COUNTER':
+          state.counter++;
+          return state;
+      }
+    }
+    ```
+  * Here is the correct example:
+    ```js
+    function myReducer(state, action) {
+      switch(action.type) {
+        case 'INCREMENT_COUNTER':
+          return (Object.assign(
+            {},
+            state,
+            {counter: state.counter + 1}
+          ));
+      }
+    }
+    ```
+  * Reducers must be pure functions. This means they should produce no side effects. You know you have a pure function if calling it with the same set of arguments always returns the same value.
+  * Because reducers are supposed to be pure functions, there are three things that you should never do in a reducer:
+    1. mutate arguments
+    1. perform side effects: like API calls and routing transitions
+    1. call non-pure functions: a reducer's return value should depend solely on the values of its parameters. It shouldn't call non-pure functions like `date.now` or `math.random`.
+  * it's technically possible to create multiple stores when working in Redux, but it's not recommended and only useful in rare instances. In short, assume you can only have one store when working in Redux. Only try creating another after very carefully investigating the implications.
+  * When the store is created, Redux calls the reducers and uses their return values as initial state.
+  * If we have multiple reducers, all of them get called when an action is dispatched. The switch statement inside each reducer looks at the action type to determine if it has anything to do.
+  * it's important that all reducers return untouched state as the default if no switch case matched the action type passed.
+  * the Redux FAQ recommends using reducer composition. This means a given action can be handled by more than one reducer.
+  * Write independent small reducer functions that are each responsible for updates to a specific slice of state. We call this pattern 'reducer composition.' A given action could be handled by all, some, or none of them.
 
 ## Connecting React to Redux
 
