@@ -418,5 +418,8 @@ I find it helpful to think about the major players as people with different role
 
 And that's how data flows through Redux in a unidirectional manner.
 
+## Redux Flow
 
+* we can initialize state for the form in the constructor.
+* Now to keep this example simple, we'll assume that a course simply has a title for now. And I'll just paste in the constructor up here. So we can see we are setting some local state, and we are going to have a course. And title is the only property that it will have. So courses are very simple at this point. And next up, let's place our form on the page. I'm going to paste that in right here below the h1. And what we can see here (I've got one extra div I can remove) is we have an h1 for courses, an h2 for Add Course, and then an input and another input, one input for submitting our form and another one that will take our course's title. Now you can see we are calling out to a function that doesn't exist yet, actually two functions that don't exist yet because we don't have onClickSave or onTitleChange yet. So the next step is to create our onTitleChange function. To do that, let's move up here above render and add in onTitleChange. What we can see is that this does something pretty standard. We pull in the event, and we will pull the value out of that event off of the target. And then we will set that to the title and then update our state by calling setState. So this will effectively update our state every time that somebody presses a key when their focused on our title input field. So this creates our initial form structure. In the next clip, we'll add our onClickSave function and see how to use bind when working in ES6 classes.
 
