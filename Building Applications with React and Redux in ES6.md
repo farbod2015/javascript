@@ -599,6 +599,8 @@ And that's how data flows through Redux in a unidirectional manner.
 * in the following example, state isn't defined in `onTitleChange` because of the `this` context that's getting passed
 
   ```js
+  // CoursesPage.js
+
   class CoursesPage extends React.Component {
     constructor(props, context) {
       super(props, context);
@@ -665,6 +667,8 @@ And that's how data flows through Redux in a unidirectional manner.
 * inside the function we define our action. Our action is an object that has a property of `type`. This `type` property is required:
 
   ```js
+  // courseActions.js
+
   export function createCourse(course) {
     return { type: 'CREATE_COURSE', course};
   }
@@ -681,6 +685,8 @@ And that's how data flows through Redux in a unidirectional manner.
 * to set our initial state, we can use the default parameters feature that's part of ES6 (in this example an array):
 
   ```js
+  // courseReducer.js
+  
   export default function courseReducer(state = [], action) {
     switch(action.type) {
       case types.CREATE_COURSE:
@@ -702,7 +708,57 @@ And that's how data flows through Redux in a unidirectional manner.
 
 ### Root Reducer
 
-We only have one reducer so far, but as I mentioned, Redux supports multiple reducers, and most apps will end up using more than one reducer. So for now, let's create our rootReducer just so we have it set up. We'll go over here to our reducer's folder and create a new file. And traditionally the rootReducer is called index.js. Inside, we're going to reference a function that comes from Redux called combineReducers, and we're also going to need to import our courseReducer that we just created. Now we can define our rootReducer right here, and we'll use the combineReducers function that we just imported. Inside of here, we define all of the reducers that we're wanting to combine for our application. Of course, we only have one reducer right now called courses, so I'll place it here. A couple of things that we should notice. The first is that I call my course reducer courseReducer. I could have called it course or courses, but I chose to call it courseReducer just so that it would be clear up here in my tab structure that I'm clearly looking at a reducer file. But you can see since it is export a default, I can go ahead and alias it however I want. I'm calling it courses here. And you'll find that this is important because on my rootReducer, the name that I supply right here, or I should say the property that I supply here, will impact that way that I access this state throughout my application. So in my container components, I'll be saying state.courses here. If I had called this instead courseReducer, then I would have to say state.courseReducer, which doesn't read as well. So I recommend thinking carefully about the property name that you choose here. And, again, we're using shorthand properties because what we're defining here is an object, but I could do this instead. I'm defining an object that maps courses to courses in this case. So I don't need this right-hand side. I can just say courses, and it's a little bit more terse. Of course, the final piece that I'm missing is exporting from our file the rootReducer. Now, admittedly, we didn't need this code right now, but as soon as we wanted to add a second reducer, then we would need to create our rootReducer. So I just decided it was a good time to go ahead and take care of this. And one thing I should have stated slightly differently here--this is called the shorthand property name. So if you want to Google on this, we are using ES6 shorthand property names in this case. Great! So we've created our first reducer and our rootReducer. In the next clip, let's shift our focus to creating our Redux store.
+* Redux supports multiple reducers, and most apps will end up using more than one reducer.
+* traditionally the rootReducer is called `index.js`.
+* we're going to reference a function that comes from Redux called `combineReducers` and inside we define all of the reducers that we're wanting to combine for our application:
+
+  ```js
+  // index.js
+
+  import {combineReducers} from 'redux';
+  import courses from './courseReducer';
+
+  const rootReducer = combineReducers({
+    courses     // shorthand property name (instead of 'courses: courses')
+  });
+
+  export default rootReducer;
+  ```
+
+* it would be better if we use the word *Reducer* in the filename of the reducers (e.g. `courseReducer`) so that it would be clear by the name that we are looking at a reducer file. But since the exported reducer is a `default`, we can alias it however we want. This is important because on the `rootReducer`, the name that we supply for reducer (the property) will impact the way that we access this state throughout the application. So in the container components, we'll be saying `state.courses` instead of `state.courseReducer`, which doesn't read as well. So I recommend thinking carefully about the property name that you choose.
+
+### Store
+
+* In Redux, there's a single store. When creating a store, it's useful to define a function that configures the store. We'll call this function at our application's entry point. This way, the store is configured when the app starts up.
+* so we'll create a folder called `store` in our source directory and inside, we'll create a file called `configureStore.js` to configure our Redux store:
+
+  ```js
+  // configureStore.js
+
+  import {createStore, applyMiddleware} from 'redux';
+  import rootReducer from '../reducers';
+  import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
+
+  export default function configureStore(initialState) {
+    return createStore(
+      rootReducer,
+      initialState,
+      applyMiddleware(reduxImmutableStateInvariant())
+    );
+  }
+  ```
+
+* The `configureStore` function should accept one parameter, which is the initial state for your app. Inside this function, we're going to return a call to `createStore` that will take two parameters: `rootReducer` and the `initialState`.
+* We can add an optional piece of middleware as the third parameter to enhance our store. To do this, we're going to need a function that comes with Redux called `applyMiddleware`.
+* we can pass all of the middleware that we'd like to utilize in our application to the `applyMiddleware` function (the middleware that we'd like to apply is `reduxImmutableStateInvariant`).
+* make sure that we have parentheses to `reduxImmutableStateInvariant` so that we actually invoke it within `applyMiddleware` function.
+* Check out React Slingshot on GitHub for an example of how to configure the other pieces of middleware.
+
+### Instantiate Store and Provider
+
+Great! We have nearly all the major pieces of Redux wired up now. We've created our first action. We've created our first reducer. And we've set up our store configuration. The last detail is to update our app's entry point to work with Redux. So let's go over to the source directory and open index.js. The first thing we need to do is add an import for our configureStore function. So I will say import configureStore from ./store/configureStore, and I can call configureStore right here. I will create a constant and call it store, and I'll just call configureStore. So now we've created an instance of our store. In this case, I'm not going to pass initial state to the store. But that is an optional parameter that I could pass right here. If you were creating a server-rendered app, you might choose to do so. Now let me explain. You might be confused about the difference between passing initial state here and setting initial state within our reducer. Currently, our reducer already sets its initial state using an ES6 default parameter, and we can go over to our courseReducer and see that occurring right here. We are setting the initial state for this reducer to an array. So you can imagine that each one of our reducers would handle their initial state right here in their method signature as a default parameter. So if I passed initial state here, what I'd be doing is overriding the default parameters that we specify in our reducers. The question is, When would you pass initial state to this configureStore call? Well, if you're wanting to rehydrate your store using some separate state that's passed down from the server or stored in local storage, then this is a good place to do so. We're not going to do either of those things in this course, so I'm just not going to pass in a parameter here. With that clarified, let's move on. We now have a configured instance of our store that's set to a constant right here called store. But the question is, what do we do with it? That's where a companion library comes into play. If you're using Redux with React, then you're going to want to use the React-Redux library. So let me add an import for that as well. And I'm going to import a component called Provider from React-Redux. So React-Redux provides this special component called Provider. What Provider is is a higher-order component that attaches our store to our React container components. So let's wrap our Router component with the Provider component. The way I can do that is come down here to our render function and reference Provider. Provider takes one prop, which is the store. And in this case, I will just pass the store in. Of course, we need to close our wrap right here, so I will close the Provider. And let me just fix my formatting a bit. There we go. As you can see, the Provider component accepts a store as a prop and just wraps our Router component. So, effectively the Provider component is wrapping our entire application so that it can be connected to our Redux store. So this is what our final application entry point looks like now that we've set up React-Redux and our Redux store. And because our application is now wrapped in the Provider component, we'll be able to access our Redux store in our components. And the great news is, this wraps up the boilerplate of our Redux configuration. Now it's time to put our store to use by connecting our first container component to work with Redux.
+
+
 
 
 
