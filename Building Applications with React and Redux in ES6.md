@@ -709,7 +709,7 @@ And that's how data flows through Redux in a unidirectional manner.
 ### Root Reducer
 
 * Redux supports multiple reducers, and most apps will end up using more than one reducer.
-* traditionally the rootReducer is called `index.js`.
+* traditionally the rootReducer is called `index.js` in `reducers` folder.
 * we're going to reference a function that comes from Redux called `combineReducers` and inside we define all of the reducers that we're wanting to combine for our application:
 
   ```js
@@ -756,7 +756,96 @@ And that's how data flows through Redux in a unidirectional manner.
 
 ### Instantiate Store and Provider
 
-Great! We have nearly all the major pieces of Redux wired up now. We've created our first action. We've created our first reducer. And we've set up our store configuration. The last detail is to update our app's entry point to work with Redux. So let's go over to the source directory and open index.js. The first thing we need to do is add an import for our configureStore function. So I will say import configureStore from ./store/configureStore, and I can call configureStore right here. I will create a constant and call it store, and I'll just call configureStore. So now we've created an instance of our store. In this case, I'm not going to pass initial state to the store. But that is an optional parameter that I could pass right here. If you were creating a server-rendered app, you might choose to do so. Now let me explain. You might be confused about the difference between passing initial state here and setting initial state within our reducer. Currently, our reducer already sets its initial state using an ES6 default parameter, and we can go over to our courseReducer and see that occurring right here. We are setting the initial state for this reducer to an array. So you can imagine that each one of our reducers would handle their initial state right here in their method signature as a default parameter. So if I passed initial state here, what I'd be doing is overriding the default parameters that we specify in our reducers. The question is, When would you pass initial state to this configureStore call? Well, if you're wanting to rehydrate your store using some separate state that's passed down from the server or stored in local storage, then this is a good place to do so. We're not going to do either of those things in this course, so I'm just not going to pass in a parameter here. With that clarified, let's move on. We now have a configured instance of our store that's set to a constant right here called store. But the question is, what do we do with it? That's where a companion library comes into play. If you're using Redux with React, then you're going to want to use the React-Redux library. So let me add an import for that as well. And I'm going to import a component called Provider from React-Redux. So React-Redux provides this special component called Provider. What Provider is is a higher-order component that attaches our store to our React container components. So let's wrap our Router component with the Provider component. The way I can do that is come down here to our render function and reference Provider. Provider takes one prop, which is the store. And in this case, I will just pass the store in. Of course, we need to close our wrap right here, so I will close the Provider. And let me just fix my formatting a bit. There we go. As you can see, the Provider component accepts a store as a prop and just wraps our Router component. So, effectively the Provider component is wrapping our entire application so that it can be connected to our Redux store. So this is what our final application entry point looks like now that we've set up React-Redux and our Redux store. And because our application is now wrapped in the Provider component, we'll be able to access our Redux store in our components. And the great news is, this wraps up the boilerplate of our Redux configuration. Now it's time to put our store to use by connecting our first container component to work with Redux.
+* The last detail is to update our app's entry point to work with Redux.
+* we can create an instance of our store by calling `configureStore` function:
+
+  ```js
+  const store = configureStore();
+  ```
+
+* you can pass initial state to `configureStore` (i.e. `createStore`) if you're wanting to rehydrate your store using some separate state that's passed down from the server or stored in local storage.
+* Our reducers already set their initial state using an ES6 default parameter (e.g. `export default function courseReducer(state = [], action)`). So, if we do not pass the initial state to the store, each one of the reducers will handle their initial state themselves.
+* React-Redux provides this special component called `Provider`. What `Provider` is a higher-order component that attaches our store to our React container components.
+* the `Provider` component accepts a store as a prop and just wraps our Router component. So, effectively the Provider component is wrapping our entire application so that it can be connected to our Redux store:
+
+  ```js
+  import 'babel-polyfill';
+  import React from 'react';
+  import { render } from 'react-dom';
+  import configureStore from './store/configureStore';
+  import {Provider} from 'react-redux';
+  import { Router, browserHistory } from 'react-router';
+  import routes from './routes';
+  import './styles/styles.css';
+  import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+  const store = configureStore();
+
+  render(
+    <Provider store={store}>
+      <Router history={browserHistory} routes={routes} />
+    </Provider>,
+    document.getElementById('app')
+  );
+  ```
+
+### Connect Container
+
+* We now have all the Redux infrastructure set up except for this remaining piece, which is to update our component to work with Redux. To do that, we need to reference the connection function which comes with React-Redux.
+* in our component we import `connect` from React-Redux and at the bottom of our component, instead of exporting a plain component, we're going to export a component that's decorated by the React-Redux Connect function.
+
+  ```js
+  // CoursesPage.js
+
+  function mapStateToProps(state, ownProps) {
+    return {
+      courses: state.courses
+    };
+  }
+
+  function mapDispatchToProps(dispatch) {
+    return {
+      actions: bindActionCreators(courseActions, dispatch)
+    };
+  }
+
+  export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
+  ```
+
+* The `connect` function is what we use to create components that can interact with Redux.
+* we refer to these components as container components.
+* `connect` is a higher-order component that's going to wrap our CoursesPage. It takes two parameters, the first being `mapStateToProps` and the second being `mapDispatchToProps`. Each of these parameters is a function.
+* two parentheses side by side is just two function calls. The Connect function right here ends up returning a function, and that function immediately calls our container component with the result of the first function.
+* `mapStateToProps` takes two parameters, the first being `state` and the second being `ownProps`. Inside this function, we're going to define an object that returns the properties that we'd like to see exposed on our component. So, by defining `courses: state.courses` now we can have `this.props.courses` in the component.
+* `state.courses` is the course data that's within our Redux store.
+* in `rootReducer` if we had instead called it the reducer, `courseReducer`, then this here we had to use `state.courseReducer` instead of state.courses
+* `mapStateToProps`' second parameter, `ownProps`, lets us access props that are being attached to the component. It's called ownProps because it's a reference to the component's own props.
+* `mapDispatchToProps` is for deciding what actions you want to expose on your component. This is an optional parameter. When we omit this parameter, component automatically gets a `dispatch` property attached to it which is injected by `connect`. So if you don't put `mapStateToProps` as the second parameter, then you can use `this.props.dispatch` inside the component to manually do the dispatch ourselves.
+* `dispatch` is a function that allows you to fire off your actions. So we will be able to dispatch different actions that we've defined in our actions file.
+* in the above example we need to add some props validation for `dispatch` and `courses`:
+
+  ```js
+  // CoursesPage.js
+
+  CoursesPage.PropTypes = {
+    courses: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
+  };
+  ```
+
+### Step Through Redux Flow
+
+* Here is the Redux flow when we dispatch an action:
+  1. first the action creator
+  1. then the reducer
+  1. then `mapStateToProps` function
+  1. finally, the `render` function
+
+### mapDispatchToProps Manual Mapping
+
+When we wired up the call to dispatch the createCourse action earlier, I mentioned that there was a cleaner way to get it done. How? Well that's accomplished with the second function that we pass to Connect, which is mapDispatchToProps. Remember, we left it out down here initially. The mapDispatchToProps function determines what actions are available in the component. I'm going to add a reference right here and then define it right here. Say mapDispatchToProps, and mapDispatchToProps takes one parameter, which is dispatch. This will get injected in by the Connect function. Now as I said, this function determines what actions are available in our component. So in this function, we will also wrap our action creators in a call to dispatch. And let me show you how we'll get that done. There're actually a couple of ways to do it, but for now I'm going to do the mapping manually just so that you can see what I'm doing. Of course, the action that we want here is going to be createCourse, so we will call it createCourse, and we will define an arrow function. That arrow function will take a course as its sole parameter. Of course with arrow functions, you can omit the parentheses for the arguments when there is a single parameter. So I'm just going to omit this here. What we're declaring here is an anonymous function and using the arrow function syntax, and I'm going to call dispatch and then call courseActions.createCourse, and I will pass it the course. So this call ends up replacing what we had up above. It moves the noise that we created here down to here and replaces it with something a little bit different. I prefer this approach because now it means that we can come up to here and say this.props.createCourse and just pass it the course. So now our call here is much cleaner. It's already wrapped in dispatch for us down here in the mapDispatchToProps function. So all I'm really doing here is wrapping our action in a call to dispatch so that it's easy to use up above in our component. I'll show you an even simpler way of handling this is in a moment. Now note: If I didn't wrap this in a call to dispatch, then nothing would happen up above. Right here if I called this.props.createCourse, what I would end up calling would be this function, which returns an object. This object by itself would do nothing. I would just end up holding onto a reference to an object. What we need to do is call dispatch, and that's exactly why we have this call to dispatch here. So we wrap our actions in a call to dispatch, and that triggers our flow through Redux. And now that we have this mapping setup, we've declared that our component above will receive createCourse as a prop, and it will be wrapped in a call to dispatch for us. So let's open the terminal back up and just make sure everything is still working. Now you will note, though, that we have a couple of linting issues--createCourse is missing in props validation. So we can add that in. And we also need to fix our missing semicolon down here on 66. Now we should be able to come over here to our browser and just make sure that we can still add course. Now that is still working, but we should note here that the required prop dispatch was not specified in the CoursesPage. This is important to note because dispatch is no longer injected as a property now that we've defined the mapDispatchToProps function. And I'm going to say that again because this is an important quirk that may confuse you at first. Once we started defining the mapDispatchToProps function, Connect will no longer add a dispatch property on our component. So this is no longer getting injected. Of course, that's okay because now that we've defined mapDispatchToProps, we no longer need to use dispatch in our component. We're using it right here in mapDispatchToProps, so this is a completely logical thing. But it is something that can confuse you at first. So now I can take out the props validation on dispatch, and I should be able to come over here and say, Yes, the app's up to date, and we no longer have any issues or warnings in our browser. So I just showed you the second way to handle mapDispatchToProps by defining createCourse. The first way that we looked at, to clarify, was just omitting mapDispatchToProps altogether since it's an optional component. And in that case, we used dispatch directly. Here I showed you manually using dispatch and doing your map here. In the next clip, I'll show you a third way that's a little more terse.
+
+
 
 
 
