@@ -13,6 +13,178 @@
 
 * this is the link to [react-slingshot](https://github.com/coryhouse/react-slingshot) (starter kit)
 
+## React Core Concepts
+
+This section is from the following modules of *Building Applications with React and Flux*:
+
+* React Core Concepts
+* React: Creating Components Introduction
+* React Lifecycle
+* React Composition
+* Flux
+
+**Why react?**
+
+* Fast
+* Composable
+* Pluggable
+* Isomorphic Friendly
+* Simple
+* Battle Proven
+
+### React and MVC
+
+* React doesn't dictate how you handle data flows, routing or other concerns in your applications.
+* It focuses solely on being a simple, composable component library.
+* some people say that React is the V in MVC, but in actuality, well-composed React Components will fill both the V and the C in MVC
+* controller views promote reuse and separation of concern
+
+### JSX Introduction
+
+* React offers an optional XML-like syntax, called JSX, for markup. It looks almost identical to HTML. Example:
+  ```jsx
+  var React = require('react');
+
+  var AboutPage = React.createClass({
+    render: function() {
+      return (
+        <div>
+          <h1>About</h1>
+          <p>This is a React and Flux demo project.</p>
+        </div>
+      );
+    }
+  });
+  ```
+* There are some minor differences, such as using `className` instead of class, and `htmlFor` instead of for.
+* JSX compiles down to JavaScript
+  ```jsx
+  // JSX
+  <h1 color="red">Headinghere </h1>
+
+  // Compiled version
+  React.createElement("h1", {color: "red"}, "Heading here")
+  ```
+* It is totally optional, but most people prefer JSX because it looks like the final HTML, which makes it easier to write, easier to read
+
+* The following are the JSX and JavaScript varion of the same code:
+
+  ```jsx
+  var createAuthorRow = function(author) {
+    return (
+      <tr key={author.id}>
+        <td>{author.id}</td>
+        <td>{author.firstName} {author.lastName}</td>
+      </tr>
+    );
+  };
+  return (
+    <table className="table">
+      <thead>
+        <th>ID</th>
+        <th>Name</th>
+      </thead>
+      <tbody>
+        {this.props.authors.map(createAuthorRow)}
+      </tbody>
+    </table>
+  );
+  ```
+  ```javascript
+  var createAuthorRow = function(author) {
+    return (
+      React.createElemet("tr", {key: author.id},
+        React.createElemet("td", null, author.id),
+        React.createElemet("td", null, author.firstName, " ", author.lastName)
+      )
+    );
+  };
+  return (
+    React.createElemet("table", {className: "table"},
+      React.createElemet("thead", null,
+        React.createElemet("th", null, "ID"),
+        React.createElemet("th", null, "Name")
+      ),
+      React.createElemet("tbody", null,
+        {this.props.authors.map(createAuthorRow)}
+      )
+    )
+  );
+  ```
+
+### HTML in JS: A Justification
+
+* Angular, Ember or Knockout frameworks effectively put JavaScript in your HTML, so they're doing the exact opposite of JSX.
+* Question: instead of effectively putting JavaScript in your HTML, why not put your HTML in JavaScript instead? And that's just what React does with JSX.
+* In JavaScript, we enjoy clear error messages that point us toward the line number where the error occurred, but think about HTML. When you make a typo in HTML, things typically just silently fail.
+* Since JSX is just JavaScript, when you make a typo, the JSX often won't even compile, but if you make these same mistakes in HTML-oriented frameworks, it's very tricky to track down. 
+* JSX honors the philosophy of "Fail fast, fail loudly."
+
+### Virtual DOM
+
+* in today's Two-Way Binding libraries, like Angular or Knockout, when a piece of data changes, the UI is redrawn
+* updating the DOM is an expensive operation and requires a lot of processing because redrawing a large section of the DOM is inefficient
+* React recognized this problem, which is why they created an abstraction over the DOM that they call the Virtual DOM
+* React's Virtual DOM compares the current state of the DOM to the new desired state and determines the most efficient way to update the DOM
+* When you update the state of a component, the comparison happens automatically in memory, so it's typically very fast.
+* This approach avoids layout thrashing, which is when a browser has to recalculate the position of everything when a DOM element changes.
+* Being efficient is increasingly important in a world where more people are using mobile devices. Mobile devices vary widely in their CPU power and conserving battery life is a concern as well.
+* You can use `shouldComponentUpdate` on your components to improve the performance even more by telling React not to update the DOM at all even when certain data changes. This is useful when you know the DOM shouldn't change even though the data just changed.
+* And you can also consider using immutable data structures to make React even faster. Immutable data structures can't be changed, instead, a fresh copy is made when you need to change data. This makes React even faster because it can do reference comparisons.
+* React also offers Synthetic Events. Synthetic Events abstract away browser-specific event quirks and allow React to optimize the performance of attaching event handlers behind the scenes.
+* The Virtual DOM also allows React to render on the server, where no DOM exists at all, and because the DOM is abstracted away, React can even be used for implementing components in native applications using React Native.
+
+### React: Creating Components Introduction
+
+* `React.createClass` allows us define a class which contains our component
+* `render` is the function that we need to define our component. It is required on any React component
+* `render` function is where we put our JSX
+* whatever the `render` function returns is what will display on the screen
+* use parentheses when returning something with multiple lines
+* example:
+
+  ```javascript
+  // homePage.js
+  "use strict";
+
+  var React = require('react');
+
+  var Home = React.createClass({
+    render: function() {
+      return (
+        <div className="jumbotron">
+          <h1>Pluralsight Administration</h1>
+          <p>React, React Router, and Flux for ultra-responsive web apps.</p>
+        </div>
+      );
+    }
+  });
+
+  module.exports = Home;
+  ```
+  ```javascript
+  // main.js
+  $ = jQuery = require('jquery');
+  var React = require('react');
+  var Home = require('./components/homePage');
+
+  React.render(<Home />, document.getElementById('app'));
+  ```
+  ```html
+  <!-- index.html -->
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <title>Pluralsight Administration</title>
+      <link rel="stylesheet" href="css/bundle.css" />
+    </head>
+    <body>
+      <div id="app"></div>
+      <script src="scripts/bundle.js"></script>
+    </body>
+  </html>
+  ```
+
 ## React Component Approaches
 
 * there are at least four ways to create React components:
@@ -49,7 +221,7 @@
   }
   ```
 
-* unlike ES5 createClass, ES6 Class does not autobind class' `this` to the functions. So we need to know how the context of 'this' changes depending on the caller.
+* unlike ES5 createClass, ES6 Class does not autobind class' `this` to the functions. So we need to know how the context of `this` changes depending on the caller.
 
 * we can bind `this` to the function by calling `.bind` inline within the render function, but for performance reasons, it would be better to do this in the constructor
 
@@ -420,6 +592,117 @@ And that's how data flows through Redux in a unidirectional manner.
 
 ## Redux Flow
 
-* we can initialize state for the form in the constructor.
-* Now to keep this example simple, we'll assume that a course simply has a title for now. And I'll just paste in the constructor up here. So we can see we are setting some local state, and we are going to have a course. And title is the only property that it will have. So courses are very simple at this point. And next up, let's place our form on the page. I'm going to paste that in right here below the h1. And what we can see here (I've got one extra div I can remove) is we have an h1 for courses, an h2 for Add Course, and then an input and another input, one input for submitting our form and another one that will take our course's title. Now you can see we are calling out to a function that doesn't exist yet, actually two functions that don't exist yet because we don't have onClickSave or onTitleChange yet. So the next step is to create our onTitleChange function. To do that, let's move up here above render and add in onTitleChange. What we can see is that this does something pretty standard. We pull in the event, and we will pull the value out of that event off of the target. And then we will set that to the title and then update our state by calling setState. So this will effectively update our state every time that somebody presses a key when their focused on our title input field. So this creates our initial form structure. In the next clip, we'll add our onClickSave function and see how to use bind when working in ES6 classes.
+* we can initialize state for the form in the `constructor` and set it later using `setState`.
+
+### Binding in ES6
+
+* in the following example, state isn't defined in `onTitleChange` because of the `this` context that's getting passed
+
+  ```js
+  class CoursesPage extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+
+      this.state = {
+        course: { title: "" }
+      };
+    }
+
+    onTitleChange (event) {
+      const course = this.state.course;
+      course.title = event.target.value;
+      this.setState({course: course});
+    }
+
+    onClickSave() {
+      alert(`Saving ${this.state.course.title}`);
+    }
+
+    render() {
+      return (
+        <div>
+          <h1>Courses</h1>
+          <h2>Add Course</h2>
+          <input
+            type="text"
+            onChange={this.onTitleChange}
+            value={this.state.course.title} />
+
+          <input
+            type="submit"
+            value="Save"
+            onClick={this.onClickSave} />
+          </div>
+      );
+    }
+  }
+  ```
+
+* when you use React's createClass function, then functions are autobound for you, so you didn't have to use bind in instances like this. However, React doesn't autobind in ES6 classes, so we have to handle binding ourselves.
+* The issue in this case is that the `this` context is currently wrong in our change handler. Our function is inheriting the `this` context of the caller, which in this case is the change handler.
+* Every time that a change event occurs on the `input` (first `input` in the `render` function), it is passing the `this` context of the `input` over to our change handler for `onTitleChange`, and that's why `this` in `onTitleChange` function is not the `this` that we're expecting.
+* It needs to be bound to the instance of our component. One way to fix it is doing the bind within `render`. we can say `this.onTitleChange.bind(this)`. This approach does work but the downside to this is performance. Every time that you do a bind in `render`, you're impacting performance because using bind in `render` causes a new function to be created on each `render`.
+* For performance, we should avoid defining new functions in our `render` function. Instead, it's best to place your bind calls up here in the `constructor`.
+* So to fix the issue, we can bind the `this` context up in our constructor. All we have to do is binding the `onTitleChange` and `onClickSave` to the `this` of our CoursesPage component. This will solve our problem.
+
+  ```js
+    constructor(props, context) {
+      super(props, context);
+
+      this.state = {
+        course: { title: "" }
+      };
+
+      this.onTitleChange = this.onTitleChange.bind(this);
+      this.onClickSave = this.onClickSave.bind(this);
+    }
+  ```
+
+### Actions
+
+* we can put our actions in a separate file in a separate folder called actions.
+* action creators are exported functions that can accepts a payload.
+* inside the function we define our action. Our action is an object that has a property of `type`. This `type` property is required:
+
+  ```js
+  export function createCourse(course) {
+    return { type: 'CREATE_COURSE', course};
+  }
+  ```
+
+* in this example we had just hard coded the string, although we will move this out to a constant later.
+* this function is called an action creator because it creates actions.
+* The rest of the action's shape can be whatever works best for you. For this action, I'm just passing `course` data but I could have as many properties as I want.
+* note that we are simply saying `course` here because in ES6, we can omit the right-hand side if it matches the left-hand side (`course: course`).
+
+### Reducers
+
+* Now that we've created our action, we need a function that will handle that action, and that's where reducers come in. A reducer is just a function that accepts a state and an action and then returns a new state.
+* to set our initial state, we can use the default parameters feature that's part of ES6 (in this example an array):
+
+  ```js
+  export default function courseReducer(state = [], action) {
+    switch(action.type) {
+      case types.CREATE_COURSE:
+        return [
+          ...state,
+          Object.assign({}, action.course)
+        ];
+
+      default:
+        return state;
+    }
+  }
+  ```
+
+* the most common approach to structure inside the reducer is a `switch` statement
+* in our example the only case that we're going to have to handle is CREATE_COURSE the type that we hardcoded
+* any time you create a switch statement, it's a good idea to have a default because we could have multiple reducers that are handling different actions and if this reducer doesn't happen to handle the action, then we should just return the state.
+* we use the ES6 spread operator on our existing state, and then use `Object.assign`, and pass it our target object, and then the `course` that's passed on our action.
+
+### Root Reducer
+
+We only have one reducer so far, but as I mentioned, Redux supports multiple reducers, and most apps will end up using more than one reducer. So for now, let's create our rootReducer just so we have it set up. We'll go over here to our reducer's folder and create a new file. And traditionally the rootReducer is called index.js. Inside, we're going to reference a function that comes from Redux called combineReducers, and we're also going to need to import our courseReducer that we just created. Now we can define our rootReducer right here, and we'll use the combineReducers function that we just imported. Inside of here, we define all of the reducers that we're wanting to combine for our application. Of course, we only have one reducer right now called courses, so I'll place it here. A couple of things that we should notice. The first is that I call my course reducer courseReducer. I could have called it course or courses, but I chose to call it courseReducer just so that it would be clear up here in my tab structure that I'm clearly looking at a reducer file. But you can see since it is export a default, I can go ahead and alias it however I want. I'm calling it courses here. And you'll find that this is important because on my rootReducer, the name that I supply right here, or I should say the property that I supply here, will impact that way that I access this state throughout my application. So in my container components, I'll be saying state.courses here. If I had called this instead courseReducer, then I would have to say state.courseReducer, which doesn't read as well. So I recommend thinking carefully about the property name that you choose here. And, again, we're using shorthand properties because what we're defining here is an object, but I could do this instead. I'm defining an object that maps courses to courses in this case. So I don't need this right-hand side. I can just say courses, and it's a little bit more terse. Of course, the final piece that I'm missing is exporting from our file the rootReducer. Now, admittedly, we didn't need this code right now, but as soon as we wanted to add a second reducer, then we would need to create our rootReducer. So I just decided it was a good time to go ahead and take care of this. And one thing I should have stated slightly differently here--this is called the shorthand property name. So if you want to Google on this, we are using ES6 shorthand property names in this case. Great! So we've created our first reducer and our rootReducer. In the next clip, let's shift our focus to creating our Redux store.
+
+
 
