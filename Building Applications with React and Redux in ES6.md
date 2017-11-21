@@ -906,11 +906,11 @@ And that's how data flows through Redux in a unidirectional manner.
 ### Container Structure Review
 
 * here is a review of the five major pieces of a container component:
-  1. The constructor: In the constructor, we initialize state and also this is the best place to call our `bind` functions which are any functions that need to be bound to the `this` context
-  1. Child functions: which are called by `render`
-  1. `render` function: where we would typically just be calling a child component (in our example component for simplicity, we've just put the markup inline) but I recommend keeping the markup separate. Container components ideally just call a child component that contains that markup.
-  1. `propTypes`: that provide our prop type validation.
-  1. Redux `Connect` and related functions: So we have our call to `Connect`. We have our `mapStateToProps` function and our `mapDispatchToProps` function.
+  1. **The constructor:** In the constructor, we initialize state and also this is the best place to call our `bind` functions which are any functions that need to be bound to the `this` context
+  1. **Child functions:** which are called by `render`
+  1. **`render` function:** where we would typically just be calling a child component (in our example component for simplicity, we've just put the markup inline) but I recommend keeping the markup separate. Container components ideally just call a child component that contains that markup.
+  1. **`propTypes`:** that provide our prop type validation.
+  1. **Redux `Connect` and related functions:** So we have our call to `Connect`. We have our `mapStateToProps` function and our `mapDispatchToProps` function.
 
 * here is our example component:
 
@@ -991,7 +991,52 @@ And that's how data flows through Redux in a unidirectional manner.
 
 ### Action Type Constants
 
-Redux errs on the side of being un-opinionated and explicit. There're some options for reducing the boilerplate if you're interested. Check out the Redux docs after you get more comfortable. There's a section on reducing boilerplate that discusses alternative approaches. Now you likely cringed earlier when I used hard-coded strings for actionTypes. And, hey, if you didn't, you should have. Magic strings are just typos waiting to happen. Just like in Flux, we should avoid typos. We really should use constants instead. And there're a couple of different ways of handling this. We could create a constants folder over here with a dedicated constants file inside where all your actionType constants are stored in a single spot. And that way you don't clutter up your actionTypes file. But the downside is it's yet another file that you have to open and edit every time you create a new action. Placing your constants within your actions file, for instance, placing my declaration to a constant right here above my createCourse action creator is more convenient, but there are a couple of downsides. First, it would add noise to my courseActions file. And, second, when I want to use the constant, if right here I said const CREATE_COURSE = 'CREATE_COURSE', now when I want to use this constant, I would have to reference courseActions, which means I would have a reference to my courseActions from my reducer over here. You will see various people use this approach, but I personally prefer to keep my actions in a separate file. So that's what I'm going to do here. But I'm going to compromise, and rather than putting them in a folder called constants, I'm going to define my actionType constants right here in actions in a file called actionTypes. As I said, there's no right answer here, just two options with some trade-offs to consider. But I find it more logical to place actionType constants in the actions folder rather than out here in a separate constants folder. And now that we have a constant, let's update our courseActions to use the constant. So we'll need an import here. We'll import * as types from './actionTypes'. And then right here instead of having a hard-coded string, I can now say types.CREATE_COURSE, although that's not working. Ah-ha! That's why. It's very important when you define your actionType here that you export it. We'll add other actionTypes over time, but we need the export keyword so that it is available over here. I was wondering why I wasn't getting IntelliSense support there. There we go--types.CREATE_COURSE. And we can also use this on the other side in our reducer. So we'll come over here and, in fact, I'm going to be lazy. I will copy this import statement and will paste it into our reducer as well, although, of course, the path is now different. We need to go over to actions to actionTypes. Is this now right? That should work. Now we need to say types.CREATE_COURSE. So now on both sides instead of using a string, we're using our constants instead. This helps us avoid typos along the way.
+* Check out the Redux docs, the section that discusses alternative approaches for [reducing boilerplate](https://redux.js.org/docs/recipes/ReducingBoilerplate.html).
+
+* We should use constants instead hard-coded strings for actionTypes. This helps us avoid typos. There're a couple of different ways of handling this:
+  1. We could create a constants folder inside `reducers` folder with a dedicated constants file inside where all your actionType constants are stored in a single spot, but the downside is it's yet another file that you have to open and edit every time you create a new action.
+  1. Placing your constants within your actions file is more convenient, but there are a couple of downsides: First, it would add noise to my actions file and, second, when I want to use the constant, I would have to reference my action from my reducer.
+  1. Define our actionType constants in the `actions` in a file called `actionTypes.js`. I find it more logical to place actionType constants in the actions folder rather than out here in a separate constants folder:
+
+      ```js
+      //actionTypes.js
+
+      export const CREATE_COURSE = 'CREATE_COURSE';
+      ```
+
+* here is the updated `courseActions` to use the constant:
+
+  ```js
+  // courseActions.js
+
+  import * as types from './actionTypes';
+
+  export function createCourse(course) {
+    return { type: types.CREATE_COURSE, course};
+  }
+  ```
+
+* and here is the updated reducer:
+
+  ```js
+  // courseReducer.js
+
+  import * as types from '../actions/actionTypes';
+
+  export default function courseReducer(state = [], action) {
+    switch(action.type) {
+      case types.CREATE_COURSE:
+        return [...state,
+          Object.assign({}, action.course)
+        ];
+
+      default:
+        return state;
+    }
+  }
+  ```
+
+
 
 
 
