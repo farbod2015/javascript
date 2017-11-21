@@ -843,8 +843,155 @@ And that's how data flows through Redux in a unidirectional manner.
 
 ### mapDispatchToProps Manual Mapping
 
-When we wired up the call to dispatch the createCourse action earlier, I mentioned that there was a cleaner way to get it done. How? Well that's accomplished with the second function that we pass to Connect, which is mapDispatchToProps. Remember, we left it out down here initially. The mapDispatchToProps function determines what actions are available in the component. I'm going to add a reference right here and then define it right here. Say mapDispatchToProps, and mapDispatchToProps takes one parameter, which is dispatch. This will get injected in by the Connect function. Now as I said, this function determines what actions are available in our component. So in this function, we will also wrap our action creators in a call to dispatch. And let me show you how we'll get that done. There're actually a couple of ways to do it, but for now I'm going to do the mapping manually just so that you can see what I'm doing. Of course, the action that we want here is going to be createCourse, so we will call it createCourse, and we will define an arrow function. That arrow function will take a course as its sole parameter. Of course with arrow functions, you can omit the parentheses for the arguments when there is a single parameter. So I'm just going to omit this here. What we're declaring here is an anonymous function and using the arrow function syntax, and I'm going to call dispatch and then call courseActions.createCourse, and I will pass it the course. So this call ends up replacing what we had up above. It moves the noise that we created here down to here and replaces it with something a little bit different. I prefer this approach because now it means that we can come up to here and say this.props.createCourse and just pass it the course. So now our call here is much cleaner. It's already wrapped in dispatch for us down here in the mapDispatchToProps function. So all I'm really doing here is wrapping our action in a call to dispatch so that it's easy to use up above in our component. I'll show you an even simpler way of handling this is in a moment. Now note: If I didn't wrap this in a call to dispatch, then nothing would happen up above. Right here if I called this.props.createCourse, what I would end up calling would be this function, which returns an object. This object by itself would do nothing. I would just end up holding onto a reference to an object. What we need to do is call dispatch, and that's exactly why we have this call to dispatch here. So we wrap our actions in a call to dispatch, and that triggers our flow through Redux. And now that we have this mapping setup, we've declared that our component above will receive createCourse as a prop, and it will be wrapped in a call to dispatch for us. So let's open the terminal back up and just make sure everything is still working. Now you will note, though, that we have a couple of linting issues--createCourse is missing in props validation. So we can add that in. And we also need to fix our missing semicolon down here on 66. Now we should be able to come over here to our browser and just make sure that we can still add course. Now that is still working, but we should note here that the required prop dispatch was not specified in the CoursesPage. This is important to note because dispatch is no longer injected as a property now that we've defined the mapDispatchToProps function. And I'm going to say that again because this is an important quirk that may confuse you at first. Once we started defining the mapDispatchToProps function, Connect will no longer add a dispatch property on our component. So this is no longer getting injected. Of course, that's okay because now that we've defined mapDispatchToProps, we no longer need to use dispatch in our component. We're using it right here in mapDispatchToProps, so this is a completely logical thing. But it is something that can confuse you at first. So now I can take out the props validation on dispatch, and I should be able to come over here and say, Yes, the app's up to date, and we no longer have any issues or warnings in our browser. So I just showed you the second way to handle mapDispatchToProps by defining createCourse. The first way that we looked at, to clarify, was just omitting mapDispatchToProps altogether since it's an optional component. And in that case, we used dispatch directly. Here I showed you manually using dispatch and doing your map here. In the next clip, I'll show you a third way that's a little more terse.
+* The `mapDispatchToProps` function determines what actions are available in the component. It takes one parameter, which is `dispatch`. This will get injected in by the Connect function. In this function, we will also wrap our action creators in a call to dispatch:
 
+  ```js
+  // CoursesPage.js
+
+  function mapDispatchToProps(dispatch) {
+    return {
+      createCourse: course => dispatch(courseActions.createCourse(course))
+    };
+  }
+  ```
+
+* **Note:** If we didn't wrap our action in a call to dispatch (e.g. `createCourse: course => courseActions.createCourse(course)`), then nothing would happen. Because, if we called `this.props.createCourse`, what we would end up calling would be `createCourse` function in `courseActions`, which returns an object. We would just end up holding onto a reference to an object and this object by itself would do nothing. So we wrap our actions in a call to `dispatch`, and that triggers our flow through Redux.
+
+* now that we have this mapping setup, we've declared that our component above will receive `createCourse` as a prop, and it will be wrapped in a call to dispatch for us.
+
+* since we have added an new prop we need to add the validation too:
+
+  ```js
+  CoursePage.propTypes = {
+    createCourse: PropTypes.func.isRequired
+  };
+  ```
+
+* We should note that when we use `mapDispatchToProps`, `connect` will no longer inject `dispatch` to props. So we don't need to validate `dispatch` in `propTypes`.
+
+### bindActionCreators
+
+* in previous section we saw how using `mapDispatchToProps` we can manually dispatch our action within our component, but Redux comes with a helper function, `bindActionCreators`, to help save us from having to manually wrap our action creators in a `dispatch` call.
+
+  ```js
+  // CoursesPage.js
+
+  function mapDispatchToProps(dispatch) {
+    return {
+      actions: bindActionCreators(courseActions, dispatch)
+    };
+  }
+  ```
+
+* what `bindActionCreators` will do is it will go through `courseActions` and find all the actions in that file and then wrap them in a call to dispatch.
+* now we need to say `this.props.actions.createCourse` because all actions will sit under `actions`.
+* `actions` is an object so this is how we validate it:
+
+  ```js
+  CoursesPage.PropTypes = {
+    courses: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
+  };
+  ```
+
+* we can `dispatch` a single action with `bindActionCreator` if we needed:
+
+  ```js
+  createCourse: bindActionCreators(courseActions.createCourse, dispatch)
+  ```
+
+* the function names `mapStateToProps` and `mapDispatchToProps` are optional, so you can use whatever name you like. You could also define these function inline in `connect`.
+* So we've now seen three different ways that you can handle dispatching actions in your container components.
+
+### Container Structure Review
+
+* here is a review of the five major pieces of a container component:
+  1. The constructor: In the constructor, we initialize state and also this is the best place to call our `bind` functions which are any functions that need to be bound to the `this` context
+  1. Child functions: which are called by `render`
+  1. `render` function: where we would typically just be calling a child component (in our example component for simplicity, we've just put the markup inline) but I recommend keeping the markup separate. Container components ideally just call a child component that contains that markup.
+  1. `propTypes`: that provide our prop type validation.
+  1. Redux `Connect` and related functions: So we have our call to `Connect`. We have our `mapStateToProps` function and our `mapDispatchToProps` function.
+
+* here is our example component:
+
+  ```js
+  // CoursesPage.js
+
+  import React from 'react';
+  import {connect} from 'react-redux';
+  import * as courseActions from '../../actions/courseActions';
+  import {bindActionCreators} from 'redux';
+  import PropTypes from 'prop-types';
+
+  class CoursesPage extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+
+      this.state = {
+        course: { title: "" }
+      };
+
+      this.onTitleChange = this.onTitleChange.bind(this);
+      this.onClickSave = this.onClickSave.bind(this);
+    }
+
+    onTitleChange (event) {
+      const course = this.state.course;
+      course.title = event.target.value;
+      this.setState({course: course});
+    }
+
+    onClickSave () {
+      this.props.actions.createCourse(this.state.course);
+    }
+
+    courseRow(course, index) {
+      return <div key={index}>{course.title}</div>;
+    }
+
+    render() {
+      return (
+        <div>
+          <h1>Courses</h1>
+          {this.props.courses.map(this.courseRow)}
+          <h2>Add Course</h2>
+          <input
+            type="text"
+            onChange={this.onTitleChange}
+            value={this.state.course.title} />
+
+          <input
+            type="submit"
+            value="Save"
+            onClick={this.onClickSave} />
+          </div>
+      );
+    }
+  }
+
+  CoursesPage.PropTypes = {
+    courses: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
+  };
+
+  function mapStateToProps(state, ownProps) {
+    return {
+      courses: state.courses
+    };
+  }
+
+  function mapDispatchToProps(dispatch) {
+    return {
+      actions: bindActionCreators(courseActions, dispatch)
+    };
+  }
+
+  export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
+  ```
+
+### Action Type Constants
+
+Redux errs on the side of being un-opinionated and explicit. There're some options for reducing the boilerplate if you're interested. Check out the Redux docs after you get more comfortable. There's a section on reducing boilerplate that discusses alternative approaches. Now you likely cringed earlier when I used hard-coded strings for actionTypes. And, hey, if you didn't, you should have. Magic strings are just typos waiting to happen. Just like in Flux, we should avoid typos. We really should use constants instead. And there're a couple of different ways of handling this. We could create a constants folder over here with a dedicated constants file inside where all your actionType constants are stored in a single spot. And that way you don't clutter up your actionTypes file. But the downside is it's yet another file that you have to open and edit every time you create a new action. Placing your constants within your actions file, for instance, placing my declaration to a constant right here above my createCourse action creator is more convenient, but there are a couple of downsides. First, it would add noise to my courseActions file. And, second, when I want to use the constant, if right here I said const CREATE_COURSE = 'CREATE_COURSE', now when I want to use this constant, I would have to reference courseActions, which means I would have a reference to my courseActions from my reducer over here. You will see various people use this approach, but I personally prefer to keep my actions in a separate file. So that's what I'm going to do here. But I'm going to compromise, and rather than putting them in a folder called constants, I'm going to define my actionType constants right here in actions in a file called actionTypes. As I said, there's no right answer here, just two options with some trade-offs to consider. But I find it more logical to place actionType constants in the actions folder rather than out here in a separate constants folder. And now that we have a constant, let's update our courseActions to use the constant. So we'll need an import here. We'll import * as types from './actionTypes'. And then right here instead of having a hard-coded string, I can now say types.CREATE_COURSE, although that's not working. Ah-ha! That's why. It's very important when you define your actionType here that you export it. We'll add other actionTypes over time, but we need the export keyword so that it is available over here. I was wondering why I wasn't getting IntelliSense support there. There we go--types.CREATE_COURSE. And we can also use this on the other side in our reducer. So we'll come over here and, in fact, I'm going to be lazy. I will copy this import statement and will paste it into our reducer as well, although, of course, the path is now different. We need to go over to actions to actionTypes. Is this now right? That should work. Now we need to say types.CREATE_COURSE. So now on both sides instead of using a string, we're using our constants instead. This helps us avoid typos along the way.
 
 
 
