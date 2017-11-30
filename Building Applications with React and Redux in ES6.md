@@ -1036,6 +1036,392 @@ And that's how data flows through Redux in a unidirectional manner.
   }
   ```
 
+### Why a Mock API?
+
+* I recommend the mock API pattern for building a client-side app. Here's why:
+  1. this pattern allows you to start development immediately, even if the APIs that you need to consume haven't been created yet. As long as you can agree with the API team on the shape of the data that the final APIs will return, then you can create a mock API and begin development.
+  1. A mock API helps me move independently when a separate team is handling the web APIs.
+  1. A mock API gives me an easy backup plan if the API is down or broken at any given time, so I don't have to stop development.
+  1. Hitting mock data is also the fastest way to handle rapid development because you can count on all responses being instantaneous if you like. This means that you're not hampered by slow or unreliable API calls in the early stages of development. And the good news is you don't have to wait until the real APIs are complete before testing how the app feels with slow APIs because unlike a real API call, a mock API allows you to control the speed of responses.
+  1. A mock API also gives me a handy tool for automated testing. Since the data is local, it's both fast and reliable. You don't have to mock calls since your mock API is already a mock. And since the data is deterministic, you can even write tests that utilize the data, and they won't be slow since the tests are local. All the data is just sitting in memory.
+  1. Finally, you can easily point to the real API later by simply changing the import at the top of your file. Or you could even check a centralized config that allows you to toggle between the mock and real APIs via a single setting.
+
+### Async Library Options
+
+* in Redux, actions are synchronous and must return an object.
+* There are multiple libraries for handling async in Redux. The three most popular libraries for handling async calls in Redux are:
+  * **redux-thunk:** Redux-thunk is quite popular and was written by Dan Abramov, who is also the creator of Redux. Redux-thunk allows you to return functions from your action creators instead of objects.
+  * **redux-promise:** Redux-promise is a new alternative middleware library that uses Flux standard actions to bring some clear conventions to async calls. However, this project is still quite new and is currently the least popular of the three.
+  * **redux-saga:** Redux-saga takes a very different approach from these first two libraries. It uses ES6 generators and offers an impressive amount of power with what's basically a rich domain-specific language for dealing with asynchrony.
+* Let's contrast the two most popular options, thunks and sagas, in more detail:
+  * With redux-thunk, your actions can return functions instead of objects, so a thunk wraps an asynchronous operation in a function. With sagas, you handle async operations via generators instead. Generators are functions that can be paused and resumed later. A generator can contain multiple `yield` statements. At each `yield`, the generator will pause.
+  * Thunks are a bit clunky to test because you have to mock API calls, and you have no easy hooks for observing and testing individual steps in the asynchronous flow. Sagas are easier to test because you can assert on their effects because they simply return data. You don't have to mock anything, and your tests are generally more readable and clear.
+  * The benefit of thunks is that they're conceptually simple and much like Redux, the API service area is very small. This makes learning thunks quite easy. Sagas, on the other hand, have a high learning curve because you need to understand generators and a rather large API.
+* The decision between these two libraries isn't easy. I suggest using thunks initially since thunks cover many use cases well and are much easier to learn. Then consider moving to sagas as you feel pain points and get more comfortable with the power of generators.
+
+### Thunk Overview
+
+* Here's an example of a thunk for deleting an author:
+
+  ```js
+  export function deleteAuthor(authorId) {
+    return dispatch => {
+      return AuthorApi.deleteAuthor(authorId).then(() => {
+        dispatch(deleteAuthor(authorId));
+      }).catch(handleError);
+    };
+  }
+  ```
+
+* As you can see, a thunk is a function that returns a function.
+* A **thunk** is a function that wraps an expression in order to delay its evaluation. So in this case, the deleteAuthor function is wrapping our dispatch function so that dispatch can run later.
+
+### Mock API Setup
+
+* Our mock api folder is `src/api` and has three files to it: `mockAuthorApi.js`, `mockCourseApi.js`, and `delay.js`
+* The third file is called delay because it manages the simulated delay of each mock API call.
+* at the top of both the `mockAuthorApi` and the `mockCourseApi` there is some hard-coded data that's really just simulating a database that sits on the server
+* these files are mocking an API. So we're going to pretend that we're making AJAX calls to a server and that it's sending back data that it's retrieving from the database. But what these files actually do is use setTimeout to simulate the delay of making a call to the server, and then they return the data for me.
+
+### Add Thunk to Store
+
+The first step to using thunks is to enhance our store configuration. In the `configureStore.js` file add `thunk` to our middleware. To do so, we can just add it to the list of arguments that we're passing to `applyMiddleware`:
+
+```js
+// configureStore.js
+
+import {createStore, applyMiddleware} from 'redux';
+import rootReducer from '../reducers';
+import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
+import thunk from 'redux-thunk';
+
+export default function configureStore(initialState) {
+  return createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(thunk, reduxImmutableStateInvariant())
+  );
+}
+```
+
+### Create Load Courses Thunk
+
+* For our first thunk, let's create a way to load courses when the app initially loads. We can add a `thunk` to the `courseActions` file. We'll create a new function called loadCourses.
+* a thunk always returns a function that accepts a dispatch. This wrapper function will exist in every one of our thunks. Here is the modified version of our action:
+
+  ```js
+  // courseActions.js
+
+  import * as types from './actionTypes';
+  import courseApi from '../mockCourseApi';
+
+  export function loadCoursesSuccess(course) {
+    return { type: types.LOAD_COURSE_SUCCESS, course};
+  }
+
+  export function loadCourses() {
+    return function(dispatch) {
+      return courseApi.getAllCourses().then(courses => {
+        dispatch(loadCoursesSuccess(courses));
+      }).catch(error => {
+        throw(error);
+      });
+    }
+  }
+  ```
+
+### Action Naming Conventions
+
+In the above example I am using the success suffix for three reasons:
+
+* First, we already have a function called `loadCourses`
+* Second, this action doesn't fire until all authors have been successfully returned by our API call. So the suffix helps clarify that our async request was successful.
+* Third, people often create a corresponding failure action type called `loadCoursesFailure` or `loadCoursesError`
+
+### Load Courses in Reducer
+
+Now that we have a `loadCoursesSuccess` action, we need to create a corresponding handler over in our reducers file:
+
+```js
+// courseReducer.js
+
+import * as types from './actionTypes';
+import courseApi from '../mockCourseApi';
+
+export function loadCoursesSuccess(course) {
+  return { type: types.LOAD_COURSE_SUCCESS, course};
+}
+
+export function loadCourses() {
+  return function(dispatch) {
+    return courseApi.getAllCourses().then(courses => {
+      dispatch(loadCoursesSuccess(courses));
+    }).catch(error => {
+      throw(error);
+    });
+  }
+}
+```
+
+### Dispatch Action on Page Load
+
+* To fetch the course data when our app loads, we can open our application's entry point, which is `index.js`.
+* After the store is configured by the call to `configureStore` we can go ahead and dispatch actions against the store:
+
+  ```js
+  // index.js
+
+  import 'babel-polyfill';
+  import React from 'react';
+  import { render } from 'react-dom';
+  import configureStore from './store/configureStore';
+  import {Provider} from 'react-redux';
+  import { Router, browserHistory } from 'react-router';
+  import routes from './routes';
+  import {loadCourses} from './actions/courseActions';
+  import './styles/styles.css';
+  import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+  const store = configureStore();
+  store.dispatch(loadCourses());
+
+  render(
+    <Provider store={store}>
+      <Router history={browserHistory} routes={routes} />
+    </Provider>,
+    document.getElementById('app')
+  );
+  ```
+
+* I used the dispatch function (`store.dispatch(loadCourses())`), which is part of my store, and I passed it the action that wanted to dispatch, `loadCourses`.
+
+### Create Course List Component
+
+Our `CoursesPage` component is a container component, so ideally the markup in the `render` function should sit in a separate component, a presentation style component rather than a container component. Here is the modified `CoursesPage.js` and the added `CourseList.js` and `CourseListRow.js`:
+
+```js
+// CoursesPage.js
+
+import React from 'react';
+import {connect} from 'react-redux';
+import * as courseActions from '../../actions/courseActions';
+import {bindActionCreators} from 'redux';
+import PropTypes from 'prop-types';
+import CourseList from './CourseList';
+
+class CoursesPage extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+  }
+
+  courseRow(course, index) {
+    return <div key={index}>{course.title}</div>;
+  }
+
+  render() {
+    const {courses} = this.props;
+
+    return (
+      <div>
+        <h1>Courses</h1>
+        <CourseList courses={courses}/>
+      </div>
+    );
+  }
+}
+
+CoursesPage.PropTypes = {
+  courses: PropTypes.array.isRequired,
+  actions: PropTypes.object.isRequired
+};
+
+function mapStateToProps(state, ownProps) {
+  return {
+    courses: state.courses
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(courseActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
+```
+
+```js
+//CourseList.js
+
+import React, {PropTypes} from 'react';
+import CourseListRow from './CourseListRow';
+
+const CourseList = ({courses}) => {
+  return (
+    <table className="table">
+      <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Length</th>
+      </tr>
+      </thead>
+      <tbody>
+      {courses.map(course =>
+        <CourseListRow key={course.id} course={course}/>
+      )}
+      </tbody>
+    </table>
+  );
+};
+
+CourseList.PropTypes = {
+  courses: PropTypes.array.isRequired
+};
+
+export default CourseList;
+```
+
+```js
+//CourseListRow.js
+
+import React, {PropTypes} from 'react';
+import {Link} from 'react-router';
+
+const CourseListRow = ({course}) => {
+  return (
+    <tr>
+      <td><a href={course.watchHref} target="_blank">Watch</a></td>
+      <td><Link to={'/course/' + course.id}>{course.title}</Link></td>
+      <td>{course.authorId}</td>
+      <td>{course.category}</td>
+      <td>{course.length}</td>
+    </tr>
+  );
+};
+
+CourseListRow.PropTypes = {
+  course: PropTypes.object.isRequired
+};
+
+export default CourseListRow;
+```
+
+## Async Writes in Redux
+
+* When I create stateless functional components, I prefer to destructure all the `props` in the function's argument list:
+  * This keeps the calls nice and short.
+  * It also has the added benefit of making the component's dependencies clear. You can glance at the function signature and clearly see what's required, even if `PropTypes` are defined.
+
+  ```js
+  // CourseForm.js
+
+  const CourseForm = ({course, allAuthors, onSave, onChange, saving, errors}) => {
+  return (
+    <form>
+      <h1>Manage Course</h1>
+      <TextInput
+        name="title"
+        label="Title"
+        value={course.title}
+        onChange={onChange}
+        error={errors.title}/>
+  ```
+
+* The other pattern that I often follow here is I should have the same number of destructured `props` that I have as the arguments, under my `PropTypes`.
+
+* We need to create some reusable components for handling `TextInputs` and `SelectInputs` on forms:
+  * Since they're common components, I'd like to place them here in the common folder.
+  * The big benefit is there're a lot of Bootstrap-specific classes that are now being handled automatically anytime that I use a `TextInput` (e.g. things like form-group, form-control, the wrapper div, etc.) these are all useful conventions that I get right out of the box by using this TextInput control that I've created.
+  * I'm also consistently showing errors inside the `TextInput` if any exist and using some Bootstrap classes to style those errors.
+
+  ```js
+  // TextInput.js
+
+  import React, {PropTypes} from 'react';
+
+  const TextInput = ({name, label, onChange, placeholder, value, error}) => {
+    let wrapperClass = 'form-group';
+    if (error && error.length > 0) {
+      wrapperClass += " " + 'has-error';
+    }
+
+    return (
+      <div className={wrapperClass}>
+        <label htmlFor={name}>{label}</label>
+        <div className="field">
+          <input
+            type="text"
+            name={name}
+            className="form-control"
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}/>
+          {error && <div className="alert alert-danger">{error}</div>}
+        </div>
+      </div>
+    );
+  };
+
+  TextInput.propTypes = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    error: PropTypes.string
+  };
+
+  export default TextInput;
+  ```
+
+  ```js
+  // SelectInput.js
+
+  import React, {PropTypes} from 'react';
+
+  const SelectInput = ({name, label, onChange, defaultOption, value, error, options}) => {
+    return (
+      <div className="form-group">
+        <label htmlFor={name}>{label}</label>
+        <div className="field">
+          {/* Note, value is set here rather than on the option - docs: https://facebook.github.io/react/docs/forms.html */}
+          <select
+            name={name}
+            value={value}
+            onChange={onChange}
+            className="form-control">
+            <option value="">{defaultOption}</option>
+            {options.map((option) => {
+              return <option key={option.value} value={option.value}>{option.text}</option>;
+            })
+            }
+          </select>
+          {error && <div className="alert alert-danger">{error}</div>}
+        </div>
+      </div>
+    );
+  };
+
+  SelectInput.propTypes = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    defaultOption: PropTypes.string,
+    value: PropTypes.string,
+    error: PropTypes.string,
+    options: PropTypes.arrayOf(PropTypes.object)
+  };
+
+  export default SelectInput;
+  ```
+
+
+
+
+
 
 
 
