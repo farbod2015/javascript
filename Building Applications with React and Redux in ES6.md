@@ -660,6 +660,35 @@ And that's how data flows through Redux in a unidirectional manner.
     }
   ```
 
+### React State vs. Redux State: When and Why?
+
+Just about any app you write needs a way to manage state. Redux manages state and state transformations and is often used with React, but React has its own concept of state.
+
+* **The Differences**:
+  * React state is stored locally within a component. When it needs to be shared with other components, it is passed down through props. In practice, this means that the top-most component in your app needing access to a mutable value will hold that value in its state. If it can be mutated by subcomponents, you must pass a callback to handle the change into subcomponents.
+  * When using Redux, state is stored globally in the Redux store. Any component that needs access to a value may subscribe to the store and gain access to that value. Typically, this is done using container components. This centralizes all data but makes it very easy for a component to get the state it needs, without surrounding components knowing of its needs.
+
+* In [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367), Redux author Dan Abromov argues that Redux is not always necessary when using React, despite the two often being used together.
+* Assuming that your app does use Redux, you need to determine what parts of the state are stored in the Redux store, and what parts are stored in React component state. In this post, I’ll lay out a few of the factors that I use to determine where state will live.
+
+* **Duration**:
+  * Different pieces of state are persisted for different amounts of time:
+    * **Short term**: data that will change rapidly in your app
+    * **Medium term**: data that will likely persist for a while in your app
+    * **Long term**: data that should last between multiple visits to your site
+  * **Short-term state**: I think of short-term data as data that will likely change rapidly and may represent only part of an atomic change to the state. At the simplest level, this includes the characters present in a text field as the user types. I would also extend this to include data in an entire form; this data can be considered a work in progress until the form is submitted. **I like to store this type of data in local React state.**
+  * **Medium-term state**: By medium-term state, I mean state that will stick around while the user navigates your app. This could be data loaded from an API, or any changes that you want to be persisted up until a page refresh. After submitting a form, **I would store the state in the Redux store**. As an example, if a user submits a form updating their profile information, it would make sense to store this in Redux.
+  * **Long-term state**: This is state that should be persisted between refreshes of the page or between separate visits to the page. Since the Redux store will be created anew when refreshing, this type of data should be stored somewhere else—likely to a database on a server or into local storage in the browser.
+
+* **Breadth of Use**: Another consideration is how many components in your React app need to access the state. The more state needs to be shared between different components in your app, the more benefit there is to using the Redux store. If the state feels isolated to a specific component or a small part of your app, React state may be a better option:
+  * **Depth of passing down props**: React state should be stored in the most top-level component for which a subset of its subcomponents will need access to the state. Sometimes, this can mean many layers between the component storing the state and the subcomponents that render the data, and each layer means another prop must be propagated down the virtual DOM.
+  This works great if you only need to pass the state down one or two levels into the subcomponents, but beyond that, it can feel tedious and require edits to many components every time you find a subcomponent needs access to new state. In cases like this, I find it much easier to store the state in Redux and use a container component to pluck the desired data from the store.
+  * **Unrelated components needing the same state**: It could also be that multiple, relatively unrelated components need access to the same state. Take the above example of a form to update a user’s profile. The component here should receive the initial user profile in its props. You might also have a header component with a subcomponent that displays the user’s username or related data.
+  You could, of course, take passing down props to the extreme, in which your top-level component knows about the user’s profile and passes it to the header, which passes it to a subcomponent (and maybe further), and also passes it down to the profile-editing component. However, this requires a lot of management between the whole virtual DOM.
+  This type of solution is solved much more cleanly by storing the profile in the Redux store, and allowing container components around the header and profile-editing component to grab data from Redux’s store.
+  * **Ability to Track Changes to the State**: Another time to choose Redux is when you need to track changes to state. Maybe you want to replay events. Maybe you want to implement undo/redo in your app. Maybe you just want to log how state is changing.
+  In cases like these, Redux is a great solution; each action that is created is an artifact of how the state changes. Redux makes all these tasks simpler by centralizing them in a single store.
+
 ### Actions
 
 * we can put our actions in a separate file in a separate folder called actions.
@@ -1418,14 +1447,111 @@ export default CourseListRow;
   export default SelectInput;
   ```
 
+### Redirect via React Router Context
 
+* we can use React Router's `context` to redirect. To set up React Router's context, you have to declare that you want it. And we can do that by declaring the `contextTypes` that we'd like to import on our component. Since `contextTypes` is a static property, it has to be done after the class definition. We're effectively saying that we want `router` to be one of the `contextTypes` that are required. And by doing this, this makes React Router's context available to us throughout this component:
 
+  ```js
+  // ManageCoursePage.js
 
+  //Pull in the React Router `context` so router is available on `this.context.router`
+  ManageCoursePage.contextTypes = {
+    router: PropTypes.object
+  };
+  ```
 
+* If you're not already familiar with context, it's basically a global variable that library authors use but that we as library consumers should avoid. Yes, global state is generally evil, but context is used by both React Router and Redux in some places to provide easy access to the data that we need without having to write boilerplate plumbing code.
 
+* And now that we have access to the router's context, we can go back up to our save function and put it to use. After we call `saveCourse`, I'll just call `this.context.router`, and we will push a new item to the `router` on our `context` object. So this will change our URL to `/courses`:
 
+  ```js
+  // ManageCoursePage.js inside ManageCoursePage class
 
+  saveCourse(event) {
+    event.preventDefault();
 
+    if (!this.courseFormIsValid()) {
+      return;
+    }
+
+    this.setState({saving: true});
+
+    this.props.actions.saveCourse(this.state.course)
+      .then(() => this.redirect())
+      .catch(error => {
+        toastr.error(error);
+        this.setState({saving: false});
+      });
+  }
+
+  redirect() {
+    this.setState({saving: false});
+    toastr.success('Course saved');
+    this.context.router.push('/courses');
+  }
+
+  render() {
+    return (
+      <CourseForm
+        allAuthors={this.props.authors}
+        onChange={this.updateCourseState}
+        onSave={this.saveCourse}
+        course={this.state.course}
+        errors={this.state.errors}
+        saving={this.state.saving}
+      />
+    );
+  }
+  ```
+
+### Populate Form via mapStateToProps
+
+* we can populate the form using `mapStateToProps`, if the id of the course is specified as parameter in the URL
+* we can use `ownProps` to access the URL parameters. See how `courseId` is used in the following code:
+
+  ```js
+  // ManageCoursePage.js
+
+  function getCourseById(courses, id) {
+    const course = courses.filter(course => course.id == id);
+    if (course) return course[0]; //since filter returns an array, have to grab the first.
+    return null;
+  }
+
+  function mapStateToProps(state, ownProps) {
+    const courseId = ownProps.params.id; // from the path `/course/:id`
+
+    let course = {id: '', watchHref: '', title: '', authorId: '', length: '', category: ''};
+
+    if (courseId && state.courses.length > 0) {
+      course = getCourseById(state.courses, courseId);
+    }
+
+    return {
+      course: course,
+      authors: authorsFormattedForDropdown(state.authors)
+    };
+  }
+  ```
+
+* `params` property is an object with every param specified in the URL with the `ownProps` object. For example: `ownProps.params` will be equal to `{ filter: 'SHOW_COMPLETED' }` if we are navigating to `localhost:3000/SHOW_COMPLETED`.
+
+### Update State via componentWillReceiveProps
+
+* when the `props` change, we need to update our container component's state. To do that, we'll add some code in `componentWillReceiveProps`. Place this function right below the constructor. This React lifecycle function is called anytime that props have changed, as well as anytime that React thinks that props might have changed:
+
+  ```js
+  // ManageCoursePage.js
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.course.id != nextProps.course.id) {
+      // Necessary to populate form when existing course is loaded directly.
+      this.setState({course: Object.assign({}, nextProps.course)});
+    }
+  }
+  ```
+
+* So, we populated the form on page load using a combination of `mapStateToProps` to initially populate the form when mounted and `componentWillReceiveProps` to update local state when the `props` change
 
 
 
