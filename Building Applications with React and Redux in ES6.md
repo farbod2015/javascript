@@ -1553,5 +1553,50 @@ export default CourseListRow;
 
 * So, we populated the form on page load using a combination of `mapStateToProps` to initially populate the form when mounted and `componentWillReceiveProps` to update local state when the `props` change
 
+## Testing React (26m 25s)
 
+<center>
 
+|Sections|Time|
+|--------|-----------|
+|Intro|1m 7s|
+|Testing Frameworks|2m 27s|
+|Helper Libraries|6m 3s|
+|Where to Test|2m 43s|
+|Testing React with React Test Utils|9m 18s|
+|Testing React with Enzyme|3m 56s|
+|Summary|0m 48s|
+
+</center>
+
+## Testing Redux (37m 33s)
+
+<center>
+
+|Sections|Time|
+|--------|-----------|
+|Intro|0m 40s|
+|Testing Connected React Components|12m 51s|
+|Testing mapStateToProps|4m 27s|
+|Testing Action Creators|1m 57s|
+|Testing Reducers|5m 15s|
+|Testing Thunks|6m 13s|
+|Testing the Store|5m 32s|
+|Summary|0m 35s|
+
+</center>
+
+## Production Builds (19m 48s)
+
+<center>
+
+|Sections|Time|
+|--------|-----------|
+|Intro|2m 7s|
+|Setup Production Redux Store|2m 24s|
+|Setup Webpack|4m 43s|
+|Setup HTML Build|2m 6s|
+|Setup Dist Server|0m 58s|
+|Setup npm Scripts|2m 35s|
+|Review Results|2m 39s|
+|Final Challenge|2m 12s|
