@@ -11,6 +11,14 @@ Completed project for this course is here:
 
 ### What is side-effects?
 
+|Thread management|Action Creation|Data seeding|Flow control|
+|-|-|-|-|
+|call|put|select|take|
+|fork|||takeEvery|
+|spawn|||takeLatest|
+|apply||||
+|cancel||||
+
 ### What is saga?
 
 ### What is yield?
