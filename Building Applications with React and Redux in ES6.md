@@ -42,6 +42,7 @@ This section is from the following modules of *Building Applications with React 
 ### JSX Introduction
 
 * React offers an optional XML-like syntax, called JSX, for markup. It looks almost identical to HTML. Example:
+
   ```jsx
   var React = require('react');
 
@@ -56,8 +57,10 @@ This section is from the following modules of *Building Applications with React 
     }
   });
   ```
+
 * There are some minor differences, such as using `className` instead of class, and `htmlFor` instead of for.
 * JSX compiles down to JavaScript
+
   ```jsx
   // JSX
   <h1 color="red">Headinghere </h1>
@@ -65,6 +68,7 @@ This section is from the following modules of *Building Applications with React 
   // Compiled version
   React.createElement("h1", {color: "red"}, "Heading here")
   ```
+
 * It is totally optional, but most people prefer JSX because it looks like the final HTML, which makes it easier to write, easier to read
 
 * The following are the JSX and JavaScript varion of the same code:
