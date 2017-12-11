@@ -254,14 +254,14 @@ This section is from the following modules of *Building Applications with React 
 * we can use the `function` keyword instead of the arrow function
 
 * there are 9 key benefits in using stateless functional component:
-  1. there is no class needed
-  1. avoid the `this` keyword
-  1. enforced best practices: stateless functional components help programmatically enforce keeping our component pure. You're forced to put state management where it belongs in higher level container components
-  1. high signal-to-noise ratio: it requires less typing so creates less noise
-  1. enhanced code completion/intellisense: if you destructure your props in ES6 then all the data you use is now specified in a single simple function argument. This means you also get improved code completion and IntelliSense support compared to class-based components
-  1. easy to understand: When you see a stateless component, you know it's simply a function that takes props and spits out HTML. Even if it contains a lot of markup, it's conceptually simple, it's a pure function. This leads to the next
-  1. with React's stateless functional components, each component can be easily tested in isolation. No mocking, state manipulations, special libraries, or tricky test harnesses are needed
-  1. performance: stateless functional component will soon offer improved performance as well. Since there're no state or lifecycle methods to worry about, the React team plans to avoid unnecessary checks and memory allocations in future releases. So improved performance with superior syntax, testability, and readability
+    1. there is no class needed
+    1. avoid the `this` keyword
+    1. enforced best practices: stateless functional components help programmatically enforce keeping our component pure. You're forced to put state management where it belongs in higher level container components
+    1. high signal-to-noise ratio: it requires less typing so creates less noise
+    1. enhanced code completion/intellisense: if you destructure your props in ES6 then all the data you use is now specified in a single simple function argument. This means you also get improved code completion and IntelliSense support compared to class-based components
+    1. easy to understand: When you see a stateless component, you know it's simply a function that takes props and spits out HTML. Even if it contains a lot of markup, it's conceptually simple, it's a pure function. This leads to the next
+    1. with React's stateless functional components, each component can be easily tested in isolation. No mocking, state manipulations, special libraries, or tricky test harnesses are needed
+    1. performance: stateless functional component will soon offer improved performance as well. Since there're no state or lifecycle methods to worry about, the React team plans to avoid unnecessary checks and memory allocations in future releases. So improved performance with superior syntax, testability, and readability
 
 * When Should I Use Each Style?
 
