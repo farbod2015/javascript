@@ -13,6 +13,7 @@
 * `Ctrl` + `F5`: build and open in browser
 * `ctor` + `Tab`: creates the default constructor
 * `prop` + `Tab`: creates a new property
+* we can add a shortcut for _Package Manager Console_ by going to `Tools`>`Options`>`Environment`>`Keyboard` and assign the preferred shortcut (e.g. `Alt`+`/`+`.`) to `View.PackageManagerConsole`
 
 ## Database-first vs Code-first
 
@@ -95,9 +96,11 @@ namespace Vidly.Controllers
     }
 ```
 
-* in the following code, entity framework is not going to query the database when the  is executed. 
+* in the following code, entity framework is not going to query the database when the `var customers = _context.Customers;` is executed. This is what we call deferred execution. The query is executed when we iterate over the `customers` object (e.g. in the `View`):
 
 ```C#
+    // CustomersController.cs
+    
     public ViewResult Index()
     {
       var customers = _context.Customers;
@@ -105,6 +108,60 @@ namespace Vidly.Controllers
       return View(customers);
     }
 ```
+```C#
+    // Index.cshtml
+    
+    @foreach (var customer in Model) // this iterates over customer
+```
+
+* we can immediately execute the query by calling methods like `ToList` or `SingleOrDefault`.
+
+```C#
+    // CustomersController.cs
+
+    public ViewResult Index()
+    {
+      var customers = _context.Customers.ToList();
+
+      return View(customers);
+    }
+
+    public ActionResult Details(int id)
+    {
+      var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+      if (customer == null)
+        return HttpNotFound();
+
+      return View(customer);
+    }
+```
+
+## Eagerly Loading
+
+_Eager loading_ is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved by use of the `Include` method. For example, the query below will load customers and the membership type related to each customer:
+
+```C#
+    public ViewResult Index()
+    {
+      var customers = _context.Customers.Include(c => c.MembershipType).ToList();
+
+      return View(customers);
+    }
+```
+
+so, in the following example `customer` also includes the membership information:
+
+```C#
+      @foreach (var customer in Model)
+      {
+        <tr>
+          <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
+          <td>@customer.MembershipType.DiscountRate%</td>
+        </tr>
+      }
+```
+
 
 
 
