@@ -3314,7 +3314,7 @@ for this section we use the following `HTML` for testing our examples. as you ca
 
 ### Revocable Proxies
 
-* A revocable `Proxy` is an object with following two properties `{proxy: proxy, revoke: revoke}`:
+* A revocable `proxy` is an object with following two properties `{proxy: proxy, revoke: revoke}`:
   * **`proxy`**: A Proxy object created with `new Proxy(target, handler)` call.
   * **`revoke`**: A function with no argument to invalidate (switch off) the `proxy`.
 
