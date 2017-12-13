@@ -1,8 +1,34 @@
 # The Complete ASP .Net MVC 5 Course
 
+## MVC Architectural Pattern
+
+With this architecture each component has a distinct responsibility and this results in better separation of concerns and a more maintainable application.
+
+### Model
+
+Application data and behavior in terms of its problem domain, and independent of the UI. It directly manages the data, logic and rules of the application. These classes have properties and methods that purely represent the application's state and rules. They are not tight to the user interface, so they can be used in different applications like a desktop or a mobile app. They are plain old CLR objects (POCO).
+
+In our example: classes like Movie, Customer, Rental, Transaction, etc.
+
+### View
+
+A view can be any output representation of information, such as the HTML markup that we display to the user.
+
+### Controller
+
+The controller, accepts input and converts it to commands for the model or view. It is responsible for handling HTTP requests in our application.
+
+In ASP.NET MVC we refer to methods of the controllers as actions.
+
+### Router
+
+Router is also a piece to this architecture which is not in the acronym MVC but it is nearly always there. When a request comes in the application a controller will be selected for handling that request; selecting the right controller is the responsibility of the router.
+
+The router based on some rules, notes that the request with URL `/movies` should be handled by class called `MoviesController`. An action in the controller is responsible for the handling the request.
+
 ## Useful Visual Studio Extensions
 
-* Productivity Power Tools 2013
+* Productivity Power Tools 2017
 * Web Essentials 2013.5
 * ReSharper (not free but worth it)
 
