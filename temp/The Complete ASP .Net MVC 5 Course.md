@@ -463,25 +463,131 @@ Entity Framework provides a class called DbContext which is a gateway to our dat
 
 There are two workflows to use Entity Framework:
 
-* Database First
-* Code First
+1. Database First
+1. Code First
 
 ### Database-first vs Code-first
 
-...
-In code-first migration we should not add data to database manually. We should use migration to add new data.
-...
+**Database-first:** in this approach Database and tables are created first. Then you create entity Data Model using the created database.
 
-## Migration Commands
+**Code-first:** in this approach we will first create entity classes with properties defined in it. Entity framework will create the database and tables based on the entity classes defined. So database is generated from the code. When the dot net code is run database will get created.
 
-* `add-migration InitialModel`
-* `add-migration InitialModel -force`
-* `add-migration migrationName`
-* `update-database`
+#### Which approach is better?
 
-## Navigation Property
+There are few reason to favor code-first to database-first:
+
+1. Increases productivity: we don't have to waste our time with table designers. It is much faster to write codes because we don't have to manually deploy the changes to the database.
+1. Full versioning of database: we can migrate it to any version at any point in time. So, if we are maintaining an older version of our application, we can migrate the database to an earlier state.
+1. Much easier to build an integration test database simple.
+
+#### Myths about Code-first
+
+1. _It is only useful with greenfield or new projects_. This is not true because we get the full version of our database from the moment that we switch to code-first. Plus you don't waste time creating tables and migration scripts anymore. You just build your domain classes which is much faster.
+1. _It doesn't give you full control over the database_. This is not true as well.
+
+### Code-first Migrations
+
+In code-first workflow we start with a code. Every time we modify our domain model by adding a class or modifying one of the existing one, we create a migration and then run it on the database. We do migrations in _Package Management Console_. The first time we use migration we need to enable it:
+
+```none
+PM> enable-migrations
+```
+
+This will create a folder, Migrations, and all our migrations will be stored there.
+
+**Note:** In code-first migration we should not add data to database manually. We should use migration to add new data.
+
+
+Now we can create our migrations by `add-migration migration_name`. `migration_name` should be a name that identifies the kind of change we have made to our domain model (e.g. `InitialModel` for the first migration). We can overwrite an existing migration using `-force` switch:
+
+```none
+PM> add-migration InitialModel
+PM> add-migration InitialModel -force
+```
+
+The recommended way to work with context is to define a class that derives from DbContext and exposes `DbSet` properties that represent collections of the specified entities in the context. If you are working with the EF Designer, the context will be generated for you. If you are working with Code First, you will typically write the context yourself.
+
+```cs
+public class ProductContext : DbContext
+{
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Product> Products { get; set; }
+}
+```
+
+Once you have a context, you would query for, add (using `Add` or `Attach` methods ) or remove (using `Remove`) entities in the context through these properties. Accessing a `DbSet` property on a context object represent a starting query that returns all entities of the specified type. 
+
+**Note:** just accessing a property will not execute the query. A query is executed when:
+
+* It is enumerated by a `foreach` statement.
+* It is enumerated by a collection operation such as `ToArray`, `ToDictionary`, or `ToList`.
+* LINQ operators such as `First` or `Any` are specified in the outermost part of the query.
+* The following methods are called: the `Load` extension method on a `DbSet`, `DbEntityEntry.Reload`, and `Database.ExecuteSqlCommand`.
+
+In our example project, we can add a `DbSet` for customers to the `ApplicationDbContext` class (in `IdentityModels.cs`) which is derived from `IdentityDbContext` class that is derived from `DbContext`:
+
+```cs
+  public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+  {
+
+    public DbSet<Customer> Customers { get; set; }
+
+    public ApplicationDbContext()
+        : base("DefaultConnection", throwIfV1Schema: false)
+    {
+    }
+
+    public static ApplicationDbContext Create()
+    {
+      return new ApplicationDbContext();
+    }
+  }
+```
+
+This `DbSet` represents the `Customer` table in our database. Now that `DbContext` is aware of our `Customer` class we can create the table by doing a migration using `add-migration`.
+
+To create or update the database with the new migrations we need to execute the following code in the Package Management Console:
+
+```none
+PM> update-database
+```
+
+This will create or update a new database file under `App_Data` folder. We can double click on the file to see the content of the database.
+
+### Changing the Model
+
+We should avoid big bang migration because it will increase the risk of things going wrong. Instead of making all the changes to the database in one go, we should make small changes, create a migration, and run it on the database. This allows us to better version our code (just like git).
+
+**Note:** in Entity Framework, every entity must have a key that will be mapped to the primary key of the corresponding table in the database. By convention, this property should be called either `Id` or the name of the type plus `Id` (e.g. `CustomerId`).
 
 A _navigation property_ is an optional property on an entity type that allows for navigation from one end of an association to the other end. Unlike other properties, navigation properties do not carry data.
+
+For example, we can create a navigation property so that we can load the `Customer` and its `MembershipType` together. We can also add the `MembershipTypeId` as the foreign key. Even though the ID in MembershipType class is defined as `Id`, Entity Framework will recognize `MembershipTypeId` and treats it as a foreign key:
+
+```cs
+// Customer.cs
+
+public class Customer
+{
+  public int Id { get; set; }
+  public string Name { get; set; }
+  public bool IsSubscribedToNewsletter { get; set; }
+  public MembershipType MembershipType { get; set; }
+  public byte MembershipTypeId { get; set; }
+}
+```
+
+```cs
+// MembershipType.cs
+
+public class MembershipType
+{
+  public byte Id { get; set; }
+  public short SignUpFee { get; set; }
+  public byte DurationInMonths { get; set; }
+  public byte DiscountRate { get; set; }
+}
+```
 
 A navigation property definition includes the following:
 
@@ -491,7 +597,27 @@ A navigation property definition includes the following:
 
 Note that navigation properties are optional on both entity types at the ends of an association. If you define a navigation property on one entity type at the end of an association, you do not have to define a navigation property on the entity type at the other end of the association.
 
-## Overriding Conventions
+### Seeding the Database
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Overriding Conventions
 
 We can override default conventions by adding Data Annotations:
 
@@ -519,7 +645,7 @@ namespace Vidly.Models
 
 In the above example the `Name` property is of type `string` which by default is nullable and unlimited length but by using `[Required]` we can make _not nullable_ and assign maximum length by `[StringLength(255)]`
 
-## Querying Objects
+### Querying Objects
 
 * To work with a database we need a `DbContext` to have access to the database.
 
@@ -551,7 +677,7 @@ namespace Vidly.Controllers
 
 ```C#
     // CustomersController.cs
-    
+
     public ViewResult Index()
     {
       var customers = _context.Customers;
@@ -559,9 +685,10 @@ namespace Vidly.Controllers
       return View(customers);
     }
 ```
+
 ```C#
     // Index.cshtml
-    
+
     @foreach (var customer in Model) // this iterates over customer
 ```
 
@@ -588,7 +715,7 @@ namespace Vidly.Controllers
     }
 ```
 
-## Eagerly Loading
+### Eagerly Loading
 
 _Eager loading_ is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved by use of the `Include` method. For example, the query below will load customers and the membership type related to each customer:
 
