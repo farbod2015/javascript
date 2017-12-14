@@ -1,5 +1,27 @@
 # The Complete ASP .Net MVC 5 Course
 
+## General Information
+
+### Useful Visual Studio Extensions
+
+* Productivity Power Tools 2017
+* Web Essentials 2013.5
+* ReSharper (not free but worth it)
+
+### Shortcuts
+
+* `Ctrl` + `M` + `M`: collapse and expand
+* `Ctrl` + `Shift` + `B`: build
+* `Ctrl` + `F5`: build and open in browser
+* `ctor` + `Tab`: creates the default constructor
+* `prop` + `Tab`: creates a new property
+* `mvcaction4` + `Tab`: creates a new action
+* we can add a shortcut for _Package Manager Console_ by going to `Tools`>`Options`>`Environment`>`Keyboard` and assign the preferred shortcut (e.g. `Alt`+`/`+`.`) to `View.PackageManagerConsole`
+
+### Package Manager
+
+Package managers handle the dependency to external libraries. So we can install packages and update them using package manager.
+
 ## MVC Architectural Pattern
 
 With this architecture each component has a distinct responsibility and this results in better separation of concerns and a more maintainable application.
@@ -25,26 +47,6 @@ In ASP.NET MVC we refer to methods of the controllers as actions.
 Router is also a piece to this architecture which is not in the acronym MVC but it is nearly always there. When a request comes in the application a controller will be selected for handling that request; selecting the right controller is the responsibility of the router.
 
 The router based on some rules, notes that the request with URL `/movies` should be handled by class called `MoviesController`. An action in the controller is responsible for the handling the request.
-
-## Useful Visual Studio Extensions
-
-* Productivity Power Tools 2017
-* Web Essentials 2013.5
-* ReSharper (not free but worth it)
-
-## Shortcuts
-
-* `Ctrl` + `M` + `M`: collapse and expand
-* `Ctrl` + `Shift` + `B`: build
-* `Ctrl` + `F5`: build and open in browser
-* `ctor` + `Tab`: creates the default constructor
-* `prop` + `Tab`: creates a new property
-* `mvcaction4` + `Tab`: creates a new action
-* we can add a shortcut for _Package Manager Console_ by going to `Tools`>`Options`>`Environment`>`Keyboard` and assign the preferred shortcut (e.g. `Alt`+`/`+`.`) to `View.PackageManagerConsole`
-
-## Package Manager
-
-Package managers handle the dependency to external libraries. So we can install packages and update them using package manager.
 
 ## ASP.NET MVC Fundamentals
 
@@ -305,15 +307,166 @@ namespace Vidly.Controllers
 
 **Note:** do not use `ViewData` or `ViewBag`.
 
+### View Models
 
+`ViewModel` in the MVC design pattern is very similar to a model. The major difference between `Model` and `ViewModel` is that we use a `ViewModel` only in rendering views. We put all our `ViewModel` classes in a `ViewModels` named folder that we create.
 
+For example, we have a `Movie` model and a `Customer` model, but in our Random view we need to use both. So, we can create a `ViewModel` for that view that uses both models:
 
+```cs
+// RandomMovieViewModel.cs
 
+namespace Vidly.ViewModels
+{
+    public class RandomMovieViewModel
+    {
+        public Movie Movie { get; set; }
+        public List<Customer> Customers { get; set; }
+    }
+}
+```
 
+```cs
+// Random.cshtml
 
+@model Vidly.ViewModels.RandomMovieViewModel
+@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
+<h2>@Model.Movie.Name</h2>
+```
 
-## Database-first vs Code-first
+### Razor View
+
+Razor syntax is a simple programming syntax for embedding server-based code in a web page. In a web page that uses the Razor syntax, there are two kinds of content: client content and server code. Client content is the stuff you're used to in web pages: HTML markup (elements), style information such as CSS, maybe some client script such as JavaScript, and plain text.
+
+Razor syntax lets you add server code to this client content. If there's server code in the page, the server runs that code first, before it sends the page to the browser. By running on the server, the code can perform tasks that can be a lot more complex to do using client content alone, like accessing server-based databases.
+
+Main Razor syntax rules for C#:
+
+* Razor code blocks are enclosed in @{ ... }
+* Inline expressions (variables and functions) start with @
+* Code statements end with semicolon
+* Variables are declared with the var keyword
+* Strings are enclosed with quotation marks
+* C# code is case sensitive
+* C# files have the extension .cshtml
+
+We can use HTML tags inside and outside the Razor bocks:
+
+```cs
+// Render.cshtml
+
+@model Vidly.ViewModels.RandomMovieViewModel
+@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*
+    This is a comment
+    On multiple lines
+*@
+
+@{
+    var className = Model.Customers.Count > 0 ? "popular" : null;
+}
+
+<h2 class="@className">@Model.Movie.Name</h2>
+
+@if (Model.Customers.Count == 0)
+{
+    <text>No one has rented this movie before.</text>
+}
+else
+{
+    <ul>
+        @foreach (var customer in Model.Customers)
+        {
+            <li>@customer.Name</li>
+        }
+    </ul>
+}
+```
+
+### Partial Views
+
+A partial view is a view that is rendered within another view. The HTML output generated by executing the partial view is rendered into the calling (or parent) view. Like views, partial views use the `.cshtml` file extension.
+
+Partial views are an effective way of breaking up large views into smaller components. They can reduce duplication of view content and allow view elements to be reused. Common layout elements should be specified in _Layout.cshtml. Non-layout reusable content can be encapsulated into partial views.
+
+As a convention, we prefix the name of the partial views with `_`. We load partial views into our view by `Html.Partial()` method (we can pass a model to the partial view as the second argument of the `Partial` method):
+
+```cs
+// _NavBar.cshtml
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Vidly", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Customers", "Index", "Customers")</li>
+                <li>@Html.ActionLink("Movies", "Index", "Movies")</li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>
+```
+
+```cs
+// _Layout.cshtml
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    @Html.Partial("_NavBar")
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Vidly</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+```
+
+## Working with Data
+
+### Entity Framework
+
+_Entity Framework_ is an **Object-Relational Mapper** (ORM or O/RM) that enables .NET developers to work with a database using .NET objects. It maps data in a relational database into objects in our applications and eliminates the need for most of the data-access code that developers usually need to write (e.g. opening a connection to a database, executing queries, closing the connection, etc.).
+
+Entity Framework provides a class called DbContext which is a gateway to our database. A DbContext has one or more DbSets which represent tables in our database. We use _Linq_ to query these DbSets and Entity Framework will translate our Linq queries to SQL queries at runtime. It opens a connection to the database, reads the data, maps it to objects, and adds them to DbSets in our DbContext. As we add, modify, or remove objects in these DbSets, Entity Framework keeps track of these changes. When we ask it to process the changes, it will automatically generate SQL statements and executes them on our database.
+
+There are two workflows to use Entity Framework:
+
+* Database First
+* Code First
+
+### Database-first vs Code-first
 
 ...
 In code-first migration we should not add data to database manually. We should use migration to add new data.
