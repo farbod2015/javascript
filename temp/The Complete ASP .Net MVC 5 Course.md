@@ -177,133 +177,100 @@ There are three ways to pass a model to the view:
 
 1. Passing the model to the `View` method:
 
-```cs
-// MoviesController.cs
+    ```cs
+    // MoviesController.cs
 
-namespace Vidly.Controllers
-{
-  public class MoviesController : Controller
-  {
-    public ActionResult Random()
+    namespace Vidly.Controllers
     {
-      var movie = new Movie() { Name = "Shrek!" };
+      public class MoviesController : Controller
+      {
+        public ActionResult Random()
+        {
+          var movie = new Movie() { Name = "Shrek!" };
 
-      return View(movie);
+          return View(movie);
+        }
+      }
     }
-  }
-}
-```
+    ```
 
-```cs
-// Random.cshtml
+    ```cs
+    // Random.cshtml
 
-@model Vidly.Models.Movie
-@{
-    ViewBag.Title = "Random";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+    @model Vidly.Models.Movie
+    @{
+        ViewBag.Title = "Random";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 
-<h2>@Model.Name</h2>
-```
+    <h2>@Model.Name</h2>
+    ```
 
 1. Using `ViewData` dictionary. It is the old way and not recommended:
 
-```cs
-// MoviesController.cs
+    ```cs
+    // MoviesController.cs
 
-namespace Vidly.Controllers
-{
-  public class MoviesController : Controller
-  {
-    public ActionResult Random()
+    namespace Vidly.Controllers
     {
-      var movie = new Movie() { Name = "Shrek!" };
+      public class MoviesController : Controller
+      {
+        public ActionResult Random()
+        {
+          var movie = new Movie() { Name = "Shrek!" };
 
-      ViewData["Movie"] = movie;
+          ViewData["Movie"] = movie;
 
-      return View();
+          return View();
+        }
+      }
     }
-  }
-}
-```
+    ```
 
-```cs
-// Random.cshtml
+    ```cs
+    // Random.cshtml
 
-@model Vidly.Models.Movie
-@{
-    ViewBag.Title = "Random";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+    @model Vidly.Models.Movie
+    @{
+        ViewBag.Title = "Random";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 
-<h2>@( ((Movie) ViewData["Movie"]).Name )</h2>
-```
+    <h2>@( ((Movie) ViewData["Movie"]).Name )</h2>
+    ```
 
 1. Using `ViewBag`: this approach is not recommended as well:
 
-```cs
-// MoviesController.cs
+    ```cs
+    // MoviesController.cs
 
-namespace Vidly.Controllers
-{
-  public class MoviesController : Controller
-  {
-    public ActionResult Random()
+    namespace Vidly.Controllers
     {
-      var movie = new Movie() { Name = "Shrek!" };
+      public class MoviesController : Controller
+      {
+        public ActionResult Random()
+        {
+          var movie = new Movie() { Name = "Shrek!" };
 
-      ViewBag.Movie = movie;
+          ViewBag.Movie = movie;
 
-      return View();
+          return View();
+        }
+      }
     }
-  }
-}
-```
+    ```
 
-```cs
-// Random.cshtml
+    ```cs
+    // Random.cshtml
 
-@model Vidly.Models.Movie
-@{
-    ViewBag.Title = "Random";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h2>@( ((Movie) ViewBag.Movie).Name )</h2>
-```
-
-1. Using `ViewData` dictionary. It is the old way and not recommended:
-
-```cs
-// MoviesController.cs
-
-namespace Vidly.Controllers
-{
-  public class MoviesController : Controller
-  {
-    public ActionResult Random()
-    {
-      var movie = new Movie() { Name = "Shrek!" };
-
-      ViewData["Movie"] = movie;
-
-      return View();
+    @model Vidly.Models.Movie
+    @{
+        ViewBag.Title = "Random";
+        Layout = "~/Views/Shared/_Layout.cshtml";
     }
-  }
-}
-```
 
-```cs
-// Random.cshtml
-
-@model Vidly.Models.Movie
-@{
-    ViewBag.Title = "Random";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h2>@( ((Movie) ViewData["Movie"]).Name )</h2>
-```
+    <h2>@( ((Movie) ViewBag.Movie).Name )</h2>
+    ```
 
 **Note:** do not use `ViewData` or `ViewBag`.
 
