@@ -495,9 +495,6 @@ PM> enable-migrations
 
 This will create a folder, Migrations, and all our migrations will be stored there.
 
-**Note:** In code-first migration we should not add data to database manually. We should use migration to add new data.
-
-
 Now we can create our migrations by `add-migration migration_name`. `migration_name` should be a name that identifies the kind of change we have made to our domain model (e.g. `InitialModel` for the first migration). We can overwrite an existing migration using `-force` switch:
 
 ```none
@@ -602,6 +599,9 @@ Note that navigation properties are optional on both entity types at the ends of
 
 
 
+
+
+**Note:** In code-first migration we should not add data to database manually. We should use migration to add new data.
 
 
 
