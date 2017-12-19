@@ -563,30 +563,44 @@ Note that navigation properties are optional on both entity types at the ends of
 
 ### Seeding the Database
 
+* The records that we populate in database's tables should be consistence across different environments. For example, the development database, testing database, and production database, they all should have the exact same membershipTypes.
 
+* In code-first workflow, to ensure this consistency, we should not add data to the database manually. We should use migration to add new data.
 
+* here is an example for populating membership types using migrations:
 
+```none
+PM> add-migration PopulateMembershipTypes
+```
 
+```c#
+namespace Vidly.Migrations
+{
+  using System;
+  using System.Data.Entity.Migrations;
 
-**Note:** In code-first migration we should not add data to database manually. We should use migration to add new data.
+  public partial class PopulateMembershipTypes : DbMigration
+  {
+    public override void Up()
+    {
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (1, 0, 0, 0)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (2, 30, 1, 10)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (3, 90, 3, 15)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (4, 300, 12, 20)");
+    }
 
+    public override void Down()
+    {
+    }
+  }
+}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+* we can create a sql script using all or part of the migrations (e.g. only migrations added since last deployment).
 
 ### Overriding Conventions
 
-We can override default conventions by adding Data Annotations:
+We can override default conventions by adding Data Annotations and then creating a new migration:
 
 ```C#
 using System;
@@ -608,6 +622,11 @@ namespace Vidly.Models
     public byte MembershipTypeId { get; set; }
   }
 }
+```
+
+```none
+PM> add-migration ApplyAnnotationToCustomerName
+PM> Update-Database
 ```
 
 In the above example the `Name` property is of type `string` which by default is nullable and unlimited length but by using `[Required]` we can make _not nullable_ and assign maximum length by `[StringLength(255)]`
@@ -687,6 +706,8 @@ namespace Vidly.Controllers
 _Eager loading_ is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved by use of the `Include` method. For example, the query below will load customers and the membership type related to each customer:
 
 ```C#
+    // CustomersController.cs
+
     public ViewResult Index()
     {
       var customers = _context.Customers.Include(c => c.MembershipType).ToList();
@@ -698,17 +719,53 @@ _Eager loading_ is the process whereby a query for one type of entity also loads
 so, in the following example `customer` also includes the membership information:
 
 ```C#
-      @foreach (var customer in Model)
-      {
-        <tr>
-          <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
-          <td>@customer.MembershipType.DiscountRate%</td>
-        </tr>
-      }
+// Index.cshtml
+
+@foreach (var customer in Model)
+{
+  <tr>
+    <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
+    <td>@customer.MembershipType.DiscountRate%</td>
+  </tr>
+}
 ```
 
+## Building Forms
 
+* by using `Html.BeginForm` we can specify what action is going to be called when the form is submitted. It renders the `<form>` tag. This method returns a disposable object so if we wrap this call in a `using` block, at the end of the block the returned object will be disposed and in the `Dispose` method it will simply render the closing `</form>` tag.
+* There is a special markup that we need to follow to render modern and responsive forms and this is the markup that _bootstrap_ understands and we are going to use it. For example, we wrap each input field in a div with the class `form-group`:
 
+```c#
+@model Vidly.Models.Customer
+
+@{
+  ViewBag.Title = "New";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Customer</h2>
+
+@using (Html.BeginForm("Create", "Customers"))
+{
+  <div class="form-group">
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+  </div>
+  <div class="form-group">
+    @Html.LabelFor(m => m.Birthdate)
+    @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+  </div>
+  <div class="checkbox">
+    <label>
+      @Html.CheckBoxFor(m => m.IsSubscribedToNewsletter) Subscribed to Newsletter?
+    </label>
+  </div>
+}
+```
+
+* `LabelFor` helper method is a strongly typed extension method. It generates a html label element for the model object property specified using a lambda expression.
+* `TextBoxFor` helper method is a strongly typed extension method. It generates a text input element for the model property specified using a lambda expression. `TextBoxFor` method binds a specified model object property to input text. So it automatically displays a value of the model property in a textbox and visa-versa. We can pass a HTML attribute as the second parameter to this method.
+* note that we have a different declaration for `checkbox`
 
 
 
