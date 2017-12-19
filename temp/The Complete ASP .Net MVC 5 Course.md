@@ -798,7 +798,7 @@ so, in the following example `customer` also includes the membership information
       </div>
       ```
 
-    * we can add `for` manually to `label` to get the behavior. Note that if we change the property name, `Birthday`, in our `Customer` class we have to manually change this for the `for` attribute as well:
+    * we can add `for` manually to `label` to get the behavior. Note that if we change the property name, `Birthday`, in our `Customer` class we have to manually change it for the `for` attribute as well:
 
       ```c#
       <div class="form-group">
@@ -808,6 +808,98 @@ so, in the following example `customer` also includes the membership information
       ```
 
 ### Drop-down Lists
+
+* if we have a collection in our `ViewModel` that we are going to only iterate over it in our view, it would be better if we use `IEnumerable` since it works with all types of collections:
+
+```c#
+// NewCustomerViewModel.cs
+
+using System.Collections.Generic;
+using Vidly.Models;
+
+namespace Vidly.ViewModels
+{
+  public class NewCustomerViewModel
+  {
+    public IEnumerable<MembershipType> MembershipTypes { get; set; }
+    public Customer Customer { get; set; }
+  }
+}
+```
+
+```c#
+// New.cshtml
+
+<div class="form-group">
+  @Html.LabelFor(m => m.Customer.MembershipTypeId)
+  @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select Membership Type", new { @class = "form-control" })
+</div>
+```
+
+### Model Binding
+
+* Now we need to create a button to submit the form using the `Create` action that we specified before:
+
+```c#
+@using (Html.BeginForm("Create", "Customers"))
+{
+    // other form elements here
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+}
+```
+
+* We need to create the action and apply `HttpPost` attribute to it to make sure it can only be called using `HttpPost` and not `HttpGet`. As the best practice if your actions modify data they should never be accessible a `HttpGet`.
+* we can pass the `Customer` model (or also `NewCustomerViewModel`) to the action and MVC framework will automatically map request data to this object. This is what we call _Model Binding_:
+
+```c#
+// CustomersController.cs
+
+[HttpPost]
+public ActionResult Create(Customer customer)
+{
+  return View();
+}
+```
+
+### Saving Data
+
+* To add the data to the database, first we need to add it to DbContext using `Add` method. Our DbContext has a change tracking mechanism so any time you add an object to it, or modify/remove one of its existing objects it will mark them as added, modified, or deleted.
+* To persist these changes we need to call `_context.SaveChanges()`. So, our `DbContext` will go through all modified objects and based on the kind of modification, it will generate SQL statements at runtime and then it will run them on the database. All changes are wrapped in a transaction together so either all changes get persisted together or nothing will get persisted.
+
+```c#
+[HttpPost]
+public ActionResult Create(Customer customer)
+{
+  _context.Customers.Add(customer);
+  _context.SaveChanges();
+
+  return RedirectToAction("Index", "Customers");
+}
+```
+
+### Edit Form
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
