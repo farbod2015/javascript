@@ -732,6 +732,8 @@ so, in the following example `customer` also includes the membership information
 
 ## Building Forms
 
+### The Markup
+
 * by using `Html.BeginForm` we can specify what action is going to be called when the form is submitted. It renders the `<form>` tag. This method returns a disposable object so if we wrap this call in a `using` block, at the end of the block the returned object will be disposed and in the `Dispose` method it will simply render the closing `</form>` tag.
 * There is a special markup that we need to follow to render modern and responsive forms and this is the markup that _bootstrap_ understands and we are going to use it. For example, we wrap each input field in a div with the class `form-group`:
 
@@ -766,6 +768,53 @@ so, in the following example `customer` also includes the membership information
 * `LabelFor` helper method is a strongly typed extension method. It generates a html label element for the model object property specified using a lambda expression.
 * `TextBoxFor` helper method is a strongly typed extension method. It generates a text input element for the model property specified using a lambda expression. `TextBoxFor` method binds a specified model object property to input text. So it automatically displays a value of the model property in a textbox and visa-versa. We can pass a HTML attribute as the second parameter to this method.
 * note that we have a different declaration for `checkbox`
+
+### Labels
+
+* In the above example the name of the label is the name of the corresponding property in the `Customer` class. For example, `Birthday` will appear as the label in the HTML page for the following code:
+
+```c#
+<div class="form-group">
+  @Html.LabelFor(m => m.Birthdate)
+  @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+</div>
+```
+
+* To specify a different label name we can:
+  * either use `Display` data annotation to `Birthday` property in `Customer` class which needs a new build every time we change it:
+
+    ```C#
+    [Display(Name = "Date of Birth")]
+    public DateTime? Birthdate { get; set; }
+    ```
+
+  * or manually add a `label` instead of the `LabelFor`:
+    * In the following example if we click on the label the textbox is not going to get focused anymore (with `LabelFor` it does):
+
+      ```c#
+      <div class="form-group">
+        <label>Data of Birth</label>
+        @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+      </div>
+      ```
+
+    * we can add `for` manually to `label` to get the behavior. Note that if we change the property name, `Birthday`, in our `Customer` class we have to manually change this for the `for` attribute as well:
+
+      ```c#
+      <div class="form-group">
+        <label for="Birthday">Data of Birth</label>
+        @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+      </div>
+      ```
+
+### Drop-down Lists
+
+
+
+
+
+
+
 
 
 
