@@ -563,7 +563,7 @@ Note that navigation properties are optional on both entity types at the ends of
 
 ### Seeding the Database
 
-* The records that we populate in database's tables should be consistence across different environments. For example, the development database, testing database, and production database, they all should have the exact same membershipTypes.
+* The records that we populate in database's tables should be consistence across different environments. For example, the development database, testing database, and production database, they all should have the exact same membership types.
 
 * In code-first workflow, to ensure this consistency, we should not add data to the database manually. We should use migration to add new data.
 
@@ -865,7 +865,7 @@ public ActionResult Create(Customer customer)
 
 ### Saving Data
 
-* To add the data to the database, first we need to add it to DbContext using `Add` method. Our DbContext has a change tracking mechanism so any time you add an object to it, or modify/remove one of its existing objects it will mark them as added, modified, or deleted.
+* To add the data to the database, first we need to add it to `DbContext` using `Add` method. Our `DbContext` has a change tracking mechanism so any time you add an object to it, or modify/remove one of its existing objects it will mark them as added, modified, or deleted.
 * To persist these changes we need to call `_context.SaveChanges()`. So, our `DbContext` will go through all modified objects and based on the kind of modification, it will generate SQL statements at runtime and then it will run them on the database. All changes are wrapped in a transaction together so either all changes get persisted together or nothing will get persisted.
 
 ```c#
@@ -881,7 +881,25 @@ public ActionResult Create(Customer customer)
 
 ### Edit Form
 
+I we want to render a view with a different name than the action name, we need to override it. For example in the following action, the name of the action is `Edit` so by default `View` will be rendered in `EditView` but we have passed `"CustomerForm"` as the first argument and that is where it'll render. The second argument in the `View` method here is the model:
 
+```c#
+public ActionResult Edit(int id)
+{
+  var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+  if (customer == null)
+    return HttpNotFound();
+
+  var viewModel = new CustomerFormViewModel
+  {
+    Customer = customer,
+    MembershipTypes = _context.MembershipTypes.ToList()
+  };
+
+  return View("CustomerForm", viewModel);
+}
+```
 
 
 
