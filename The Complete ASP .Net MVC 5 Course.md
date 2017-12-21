@@ -881,7 +881,7 @@ public ActionResult Create(Customer customer)
 
 ### Edit Form
 
-I we want to render a view with a different name than the action name, we need to override it. For example in the following action, the name of the action is `Edit` so by default `View` will be rendered in `EditView` but we have passed `"CustomerForm"` as the first argument and that is where it'll render. The second argument in the `View` method here is the model:
+If we want to render a view with a different name than the action name, we need to override it. For example in the following action, the name of the action is `Edit` so by default `View` will be rendered in `EditView` but we have passed `"CustomerForm"` as the first argument and that is where it'll render. The second argument in the `View` method here is the model:
 
 ```c#
 public ActionResult Edit(int id)
@@ -900,6 +900,8 @@ public ActionResult Edit(int id)
   return View("CustomerForm", viewModel);
 }
 ```
+
+### Updating Data
 
 
 
