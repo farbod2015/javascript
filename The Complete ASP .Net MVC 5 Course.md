@@ -55,7 +55,7 @@ The router based on some rules, notes that the request with URL `/movies` should
 `ActionResult` is the base class for all action results in ASP.NET MVC. So depending on what an action does it would return an instance of one of the classes that is derived from `ActionResult`:
 
 |Type|Helper Method|
-|-|-|
+|:-|:-|
 |ViewResult|View()|
 |PartialViewResult|PartialView()|
 |ContentResult|Content()|
