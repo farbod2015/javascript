@@ -47,7 +47,7 @@
 
 ## Package Security
 
-* Packages can be published npm by anyone. `Reire.js` and the `Node Security Platform` (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities.
+* Packages can be published npm by anyone. `Retire.js` and the `Node Security Platform` (preferred at this time) are two ways that you can check your project's dependencies for known vulnerabilities.
 * Install Node Security Platform to automate security checks for our dependencies:
   * to run nsp directly on the command line, install it globally: `npm install -g nsp`
   * we can call this from an npm script and thus avoid having to install it globally (we'll do later)
