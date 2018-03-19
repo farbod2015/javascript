@@ -13,6 +13,24 @@
 
 * this is the link to [react-slingshot](https://github.com/coryhouse/react-slingshot) (starter kit)
 
+### Hot Reloading
+
+React and Redux have both become well known for their powerful hot reloading capabilities. There're currently multiple ways to handle hot reloading and React and Redux applications. For this course, we're going to use the `babel-preset-react-hmre`. In short, this is a Babel preset that wraps up a number of other libraries and settings in a single preset that's pretty easy to set up. It works by wrapping your components in a custom proxy using Babel. The proxies are classes that act just like your classes, but they provide hooks for injecting new implementations. So when you hit Save, your changes are immediately applied without requiring a reload. But I do want to share some warnings about hot reloading:
+
+* First of all, keep in mind that this is experimental even though many people are using it in development.
+* It doesn't hot reload functional components unless there's a class somewhere up the hierarchy tree. It also doesn't hot reload container functions like `mapStateToProps`.
+* Finally, keep in mind that there're other ways to do hot reloading, but I won't get into the alternative approaches in this course.
+* Other options exist.
+
+
+
+
+
+
+
+
+
+
 ## React Core Concepts
 
 This section is from the following modules of *Building Applications with React and Flux*:
