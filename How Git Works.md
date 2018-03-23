@@ -113,9 +113,7 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 ```
 
 * the numbers at the beginning of the line in the above example are access permissions
-
 * a blob is not really a file it is the content of a file. The file name and the file permissions are not stored in the blob. They are stored in the tree that points to the blob (you will see later why this is a good thing)
-
 * the following image show the object database. The content of the `menu.txt` and `apple_pie.txt` are the same so root and recipes trees both point to the same blob:
 
 ![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.JPG)
@@ -145,7 +143,6 @@ Add Cake
 ```
 
 * the blob for the `menu.txt` in the second commit is different than the blob in the first commit since its content has changed but the content of the `recipes` tree has not change so the hash key remains the same
-
 * Here is the file structure of the object database after the second commit:
 
 ![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.JPG)
@@ -155,6 +152,7 @@ Add Cake
 ```git
 git count-objects
 ```
+
 ```git
 //output
 
@@ -162,9 +160,7 @@ git count-objects
 ```
 
 * for huge files git maybe store the difference between the two version and it may compress multiple objects into a single blob.
-
 * There is another type of objects in git called tags. A tag is like a label for the current state of the project (i.e. a simple label for an object). There are two types of tags in git _regular tags_ and _annotated tags_.
-
 * Annotated tags are the ones that come with a message. To create an annotated tag, you could use the git tag command with the -a argument, and you need a name for the tag and a message:
 
 ```git
@@ -172,7 +168,6 @@ git tag -a mytag -m "I love cheesecake"
 ```
 
 * you can get a list of the tags using `git tag` command
-
 * Annotated tags are also objects like commit. You cat-file tags using their hash key or tag name:
 
 ```git
@@ -191,7 +186,6 @@ I love cheesecake
 ```
 
 * In the above example, the object that the tag is pointing to is a commit
-
 * Here is how the object database look after adding the tag:
 
 ![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.JPG)
@@ -204,5 +198,53 @@ In the Git object database you have:
 * Trees (the directories)
 * Commits
 * Annotated Tags
+
+## Branches Demystified
+
+* you can check the list of the branches with `git branch`
+* Git normally puts branches in `refs/heads` directory.
+* Right now the `heads` folder only contains `master`. It is not a compressed file (unlike blobs) and its content is only a hash key for the current commit.
+
+```git
+cat .git/refs/heads/master
+```
+
+```git
+// output
+f4d96566d0a09558fd04a52fb07e407c9d6e97bd
+```
+
+* so we have two linked commits in this project, and we also have a master branch which is just a simple reference (pointer) to a commit (in this case last commit) and that is why the directory is called `refs`:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch1.JPG)
+
+* now lets create a new branch called lisa that contains alternative recipes:
+
+```git
+git branch lisa
+```
+
+* the new branch is pointing to same commit that master branch is pointing to:
+
+```git
+cat .git/refs/heads/lisa
+```
+
+```git
+//output
+f4d96566d0a09558fd04a52fb07e407c9d6e97bd
+```
+
+* This is what we have now two commits and two branches, and the branches are pointing at the same commit:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.JPG)
+
+
+
+
+
+
+
+
 
 
