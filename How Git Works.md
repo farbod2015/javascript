@@ -118,7 +118,7 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 
 * the following image show the object database. The content of the `menu.txt` and `apple_pie.txt` are the same so root and recipes trees both point to the same blob:
 
-![The Object Database](./img/objectdb1.jpg)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.JPG)
 
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
@@ -136,7 +136,7 @@ Add Cake
 ```
 
 * Commits are linked. In the above example the parent is the first commit.
-* The tree of the second commit is different than the tree of the first commit. The reason is ..............................................................
+* The tree of the second commit is different than the tree of the first commit.
 * if we check the content of the tree of the second commit it will look like this:
 
 ```git
@@ -148,7 +148,7 @@ Add Cake
 
 * Here is the file structure of the object database after the second commit:
 
-![The Object Database](./img/objectdb2.jpg)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.JPG)
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
@@ -194,8 +194,15 @@ I love cheesecake
 
 * Here is how the object database look after adding the tag:
 
-![The Object Database](./img/objectdb3.jpg)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.JPG)
 
+### Recap
 
+In the Git object database you have:
+
+* Blob (arbitrary content)
+* Trees (the directories)
+* Commits
+* Annotated Tags
 
 
