@@ -6,8 +6,8 @@
   * **React**: 15.0.2
   * **Redux**: 3.5.2
   * **REACT/ROUTER**: 2.4.0
-  * **webpack**: 1.13
-  * **BABEL**: 6.*
+  * **webpack**: 1.13 (hot reloading and bundling)
+  * **BABEL**: 6.* (transpiling)
 
 * here is the link to this course's [starter kit](https://github.com/coryhouse/pluralsight-redux-starter)
 
