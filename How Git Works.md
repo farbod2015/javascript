@@ -277,3 +277,10 @@ Switched to branch 'lisa'
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.jpg)
 
+* so in short `checkout` means move `HEAD` and change the working area
+
+* if we edit the `apple_pie.txt` recipe and commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
+
+
+
+
