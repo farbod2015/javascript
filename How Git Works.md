@@ -458,7 +458,9 @@ Fast-forward
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
 
-* **Note:** This is called _fast-forward_ merge. Here are the definitions of the two different types of the merge:
+* **Note:** This is called _fast-forward_ merge. 
+
+* **Note:** Here are the definitions of the two different types of the merge:
 
   * If master has diverged since the feature branch was created, then merging the feature branch into master will create a merge commit. This is a _typical merge_:
 
