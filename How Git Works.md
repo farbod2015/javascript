@@ -260,6 +260,16 @@ ref: refs/heads/master
 
 * If we change `apple_pie.txt` and commit the new changes then the master branch will point to the new commit and the head is still pointing to the master branch:
 
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 cup sugar
+8 Granny Smith apples
+```
+
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.jpg)
 
 * use `checkout` to change the current branch:
@@ -279,14 +289,121 @@ Switched to branch 'lisa'
 
 * so in short `checkout` means move `HEAD` and change the working area
 
-* if we edit the `apple_pie.txt` recipe and commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
+* lets edit the `apple_pie.txt` recipe in lisa's branch:
+
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 cup sugar
+1 tbsp cinnamon
+10 Granny Smith apples
+```
+
+* if we commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
 
-**Note:** branches are just references to commits.
+* **Note:** branches are just references to commits.
 
 * now if we do `git checkout master` the `HEAD` will point to the master branch:
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout2.jpg)
+
+* we are going to have a conflict, if we merge lisa's changes from her branch into the master branch:
+
+```git
+git merge lisa
+
+// output
+Auto-merging recipes/apple_pie.txt
+CONFLICT (content): Merge conflict in recipes/apple_pie.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+* Here is our `apple_pie.txt` after the conflict:
+
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 cup sugar
+<<<<<<< HEAD
+8 Granny Smith apples
+=======
+1 tbsp cinnamon
+10 Granny Smith apples
+>>>>>>> lisa
+```
+
+* we need to solve the confilct manually:
+
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 cup sugar
+1 tbsp cinnamon
+9 Granny Smith apples
+```
+
+```git
+git status
+
+// output
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+        both modified:   recipes/apple_pie.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+* to tell Git that the conflict has been fixed, we need to stage the changes and then commit. The commit does not need a message in this case since it will open vim automatically to edit the message that it has generated (hit `Esc` and then `:wq` to save and quit):
+
+```git
+git add .\recipes\apple_pie.txt
+git status
+
+// output
+On branch master
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes to be committed:
+
+        modified:   recipes/apple_pie.txt
+```
+
+```git
+git commit
+
+// output
+[master db6e168] Merge branch 'lisa'
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
