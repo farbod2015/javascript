@@ -417,12 +417,20 @@ Merge branch 'lisa'
 
 ### Time Travel for Developers
 
+* so far we have learned that the objects in the database are commits, trees, blobs, and tags; and all these objects are arranged in a graph and they reference each other. The references are: from a commit to its parent, from a commit to its tree, and from trees to blobs
 
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history1.jpg)
 
+* the references are used in two ways:
+    1. references between commits are used to track history.
+    1. all other references are used to track content.
 
+* **Note:** you can have objects that are reachable from more than one commit which makes it possible to reuse contents
 
+* when we do a checkout, git doesn't care about history and the way that commits are connected to each other. It just cares about trees and blobs that can be reached from that commit which is the entire state of the project at the time of the commit:
 
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history2.jpg)
 
-
+* Git uses this information to replace the content of the working directory (this is how we travel in time in Git)
 
 
