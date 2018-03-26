@@ -2,12 +2,19 @@
 
 ## Git Is Not What You Think
 
+### Meet SHA1
+
 * Git is a map of keys and values
 * Value are objects and keys are SHA-1 hash
 
 ```git
 git hash-object filename                         // generates a hash key for a file
 echo "Apple Pie" | git hash-object --stdin       // generates a hash key for a text
+```
+
+### Storing Things
+
+```git
 git init                                         // create a git repository
 ```
 
@@ -39,6 +46,8 @@ Changes to be committed:
         new file:   recipes/apple_pie.txt
 ```
 
+### First Commit!
+
 * To commit a new file we need to first add them to the staging area
 * The staging area is a file, generally contained in your Git directory, that stores information about what will go into your next commit. Its technical name in Git parlance is the “index”, but the phrase “staging area” works just as well.
 
@@ -57,18 +66,6 @@ git commit -m "My Message!"
 // output for the first commit
 
 [master (root-commit) c3c8b07] First Commit!
- Committer: Doe <john.doe@example.com>
-Your name and email address were configured automatically based
-on your username and hostname. Please check that they are accurate.
-You can suppress this message by setting them explicitly:
-
-    git config --global user.name "Your Name"
-    git config --global user.email you@example.com
-
-After doing this, you may fix the identity used for this commit with:
-
-    git commit --amend --reset-author
-
  3 files changed, 2 insertions(+)
  create mode 100644 menu.txt
  create mode 100644 recipes/README.txt
@@ -118,6 +115,8 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 
 ![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.jpg)
 
+### Versioning Made Easy
+
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
 ```git
@@ -160,6 +159,9 @@ git count-objects
 ```
 
 * for huge files git maybe store the difference between the two version and it may compress multiple objects into a single blob.
+
+### One More Thing: Annotated Tags
+
 * There is another type of objects in git called tags. A tag is like a label for the current state of the project (i.e. a simple label for an object). There are two types of tags in git _regular tags_ and _annotated tags_.
 * Annotated tags are the ones that come with a message. To create an annotated tag, you could use the git tag command with the -a argument, and you need a name for the tag and a message:
 
@@ -201,6 +203,8 @@ In the Git object database you have:
 
 ## Branches Demystified
 
+### What Branches Really Are
+
 * you can check the list of the branches with `git branch`
 * Git normally puts branches in `refs/heads` directory.
 * Right now the `heads` folder only contains `master`. It is not a compressed file (unlike blobs) and its content is only a hash key for the current commit.
@@ -238,6 +242,8 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 * This is what we have now two commits and two branches, and the branches are pointing at the same commit:
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.jpg)
+
+### The Mechanics of the Current Branch
 
 * the current branch is marked with * on the list of branches:
 
@@ -307,6 +313,8 @@ pre-made pastry
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
 
 * **Note:** branches are just references to commits.
+
+### Let's Merge!
 
 * now if we do `git checkout master` the `HEAD` will point to the master branch:
 
@@ -407,7 +415,7 @@ Merge branch 'lisa'
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging1.jpg)
 
-
+### Time Travel for Developers
 
 
 
