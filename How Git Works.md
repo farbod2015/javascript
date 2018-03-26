@@ -283,4 +283,10 @@ Switched to branch 'lisa'
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
 
+**Note:** branches are just references to commits.
+
+* now if we do `git checkout master` the `HEAD` will point to the master branch:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout2.jpg)
+
 
