@@ -433,4 +433,49 @@ Merge branch 'lisa'
 
 * Git uses this information to replace the content of the working directory (this is how we travel in time in Git)
 
+### Merging Without Merging
+
+* now if we want to meger the master branch with lisa so that lisa would be up do date as well, we need to do a `git checkout lisa` and then `git merge master`.
+
+* Since we have resolved the conflict when we were merging it the other way (merging lisa into the master branch), git will not ask us to resolve the conflict and also it is not going to create a new commit that is a child of lisa and the master branch because master branch itself is the result of the merge. So it will only point lisa to the master branch as the result of the merge:
+
+```git
+git checkout lisa
+
+//output
+Switched to branch 'lisa'
+```
+
+```git
+git merge master
+
+//output
+Updating 00a343b..db6e168
+Fast-forward
+ recipes/apple_pie.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
+
+* **Note:** This is called _fast-forward_ merge. Here are the definitions of the two different types of the merge:
+
+  * If master has diverged since the feature branch was created, then merging the feature branch into master will create a merge commit. This is a _typical merge_:
+
+    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging3.jpg)
+
+  * If master has not diverged, instead of creating a new commit, git will just point master to the latest commit of the feature branch. This is a _fast forward_:
+
+    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging4.jpg)
+
+  **Note:** Passing `--no-ff` creates a new commit to represent the merge, even if git would normally fast forward:
+
+    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging5.jpg)
+
+
+
+
+
+
+
 
