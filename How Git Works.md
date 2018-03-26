@@ -281,6 +281,6 @@ Switched to branch 'lisa'
 
 * if we edit the `apple_pie.txt` recipe and commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
-
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
 
 
