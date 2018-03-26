@@ -239,12 +239,25 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.JPG)
 
+* the current branch is marked with * on the list of branches:
 
+```git
+git branch
 
+// output
+  lisa
+* master
+```
 
+* the current branch is stored in `.git/HEAD`. `HEAD` is a reference to a branch or a pointer to a pointer:
 
+```git
+cat .git/HEAD
 
+// output
+ref: refs/heads/master
+```
 
+* If we change `apple_pie.txt` and commit the new changes then the master branch will point to the new commit and the head is still pointing to the master branch:
 
-
-
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.JPG)
