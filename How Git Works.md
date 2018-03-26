@@ -458,7 +458,7 @@ Fast-forward
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
 
-* **Note:** This is called _fast-forward_ merge. 
+* **Note:** This is called _fast-forward_ merge.
 
 * **Note:** Here are the definitions of the two different types of the merge:
 
