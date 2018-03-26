@@ -261,3 +261,20 @@ ref: refs/heads/master
 * If we change `apple_pie.txt` and commit the new changes then the master branch will point to the new commit and the head is still pointing to the master branch:
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.JPG)
+
+* use `checkout` to change the current branch:
+
+```git
+git checkout lisa
+
+// output
+Switched to branch 'lisa'
+```
+
+* two things happen when we do a `checkout`:
+    1. `HEAD` now points to `lisa`
+    1. our working area changes to the content of the commit pointed at by `lisa`
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.JPG)
+
+
