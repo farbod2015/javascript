@@ -116,7 +116,7 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 * a blob is not really a file it is the content of a file. The file name and the file permissions are not stored in the blob. They are stored in the tree that points to the blob (you will see later why this is a good thing)
 * the following image show the object database. The content of the `menu.txt` and `apple_pie.txt` are the same so root and recipes trees both point to the same blob:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.JPG)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.jpg)
 
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
@@ -145,7 +145,7 @@ Add Cake
 * the blob for the `menu.txt` in the second commit is different than the blob in the first commit since its content has changed but the content of the `recipes` tree has not change so the hash key remains the same
 * Here is the file structure of the object database after the second commit:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.JPG)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.jpg)
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
@@ -188,7 +188,7 @@ I love cheesecake
 * In the above example, the object that the tag is pointing to is a commit
 * Here is how the object database look after adding the tag:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.JPG)
+![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.jpg)
 
 ### Recap
 
@@ -216,7 +216,7 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * so we have two linked commits in this project, and we also have a master branch which is just a simple reference (pointer) to a commit (in this case last commit) and that is why the directory is called `refs`:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch1.JPG)
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch1.jpg)
 
 * now lets create a new branch called lisa that contains alternative recipes:
 
@@ -237,7 +237,7 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * This is what we have now two commits and two branches, and the branches are pointing at the same commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.JPG)
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.jpg)
 
 * the current branch is marked with * on the list of branches:
 
@@ -260,7 +260,7 @@ ref: refs/heads/master
 
 * If we change `apple_pie.txt` and commit the new changes then the master branch will point to the new commit and the head is still pointing to the master branch:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.JPG)
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.jpg)
 
 * use `checkout` to change the current branch:
 
@@ -275,5 +275,5 @@ Switched to branch 'lisa'
     1. `HEAD` now points to `lisa`
     1. our working area changes to the content of the commit pointed at by `lisa`
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.JPG)
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.jpg)
 
