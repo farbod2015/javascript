@@ -393,8 +393,19 @@ git commit
 [master db6e168] Merge branch 'lisa'
 ```
 
+* `merge` is a commit and if we look inside this commit using `cat-file` we can see that it has two parents:
 
+```git
+tree 4de2fe2bc8400d05e060681133fd3db89712e015
+parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
+parent 00a343be57c923c9ebcf7a900454cd1210d598cf
+author Farbod <farbod@example.com> 1522080262 -0500
+committer Farbod <farbod@example.com> 1522080262 -0500
 
+Merge branch 'lisa'
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging1.jpg)
 
 
 
