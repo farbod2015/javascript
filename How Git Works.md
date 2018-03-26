@@ -277,4 +277,3 @@ Switched to branch 'lisa'
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.JPG)
 
-
