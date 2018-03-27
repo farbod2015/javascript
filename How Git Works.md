@@ -548,5 +548,5 @@ pre-made pastry
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached4.jpg)
 
-* This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just _detach HEAD_
+* This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just _detach HEAD_, do your experiment, still commit the experiment as much as you wish so that you won't lose data, and then you decide whether to keep the experiment or to do away with it. Just remember to put a branch on the stuff that you care about before you leave it behind.
 
