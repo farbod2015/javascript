@@ -549,8 +549,30 @@ Fast-forwarded mater to spaghetti.
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
 
+### An Illusion of Movement
 
+when we are doing a rebase, git cannot actually detach the current branch and move to the top of the target branch and the reason is that commits are database objects and database objects are immutable. If you change anything in a commit (its parent's), then you get a different hash, which means a different commit.
 
+so lets take a step back and imagine what happens if we change the parent of the highlighted commit:
 
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase6.jpg)
 
+The parent's SHA-1 is stored inside the commit, so the commit data must change and since commits are immutable the commit itself has to change and we are going to get a new hash for the new commit. The same thing is going to happen to the child of this commit:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase7.jpg)
+
+So, how rebasing really works is that when we rebase, Git makes copies of the commits with the same data except for their parents:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase8.jpg)
+
+ These are new files with new name in the database directory. Finally, Git moves the rebase branch (a_branch in the image) to the new commits and leaving the old commits behind:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase9.jpg)
+
+**Note:** Rebasing is an operation that creates new commits.
+
+### Taking out the Garbage
+
+An object taht cannot be reach through any references, is considered dead and will be removed by a garbage collector. So, after rebasing, if nothing is pointing at the old commits, they are going to get garbage-collected by Git.
+ 
 
