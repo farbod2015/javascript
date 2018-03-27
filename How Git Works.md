@@ -574,7 +574,7 @@ So, how rebasing really works is that when we rebase, Git makes copies of the co
 ### Taking out the Garbage
 
 An object taht cannot be reach through any references, is considered dead and will be removed by a garbage collector. So, after rebasing, if nothing is pointing at the old commits, they are going to get garbage-collected by Git.
- 
+
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase10.jpg)
 
 
