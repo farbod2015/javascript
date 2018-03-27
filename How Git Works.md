@@ -474,10 +474,79 @@ Fast-forward
 
     ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging5.jpg)
 
+### Losing Your HEAD
 
+* you can checkout a commit just like you can checkout a branch. In this case, HEAD will point to the commit instead of a branch:
 
+```git
+git checkout db6e1684
 
+// output
+Note: checking out 'db6e1684'.
 
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
 
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
 
+  git checkout -b <new-branch-name>
+
+HEAD is now at db6e168... Merge branch 'lisa'
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checking3.jpg)
+
+* this situation is called _detached HEAD_, because we don't have a current branch in this state:
+
+```git
+git branch
+* (HEAD detached at db6e168)
+  lisa
+  master
+```
+
+* now lets make changes to `apple_pie.txt` and do a commit:
+
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 cup sugar
+1 tbsp cinnamon
+20 Granny Smith apples
+```
+
+* in this case HEAD is not pointing to a branch so it will move with the commit directly. It is working exactly like branch here:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached1.jpg)
+
+* lets make more changes to `apple_pie.txt` and commit again:
+
+```txt
+Apple Pie
+
+pre-made pastry
+1/2 cup butter
+3 tablespoons flour
+1 tbsp cinnamon
+20 Granny Smith apples
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached2.jpg)
+
+* now if we checkout the master branch the two previous commits are still in the object database, but they are now unreachable and isolated unless we know their SHA-1s:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached3.jpg)
+
+* objects that can't be reached by any reference get garbage collected. Evey now and then Git decides that it is time for running a garbage collection. The garbage collector will look for objects in the database that cannot be ulimately reached from a branch, HEAD, or a tag and it will remove them to save disk space.
+
+* as mentioned before we can still save those commits using their SHA-1s by checking out the commit and then create a branch for it (e.g. nogood). These objects will never be garbage collected:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached4.jpg)
+
+* This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just _detach HEAD_
 
