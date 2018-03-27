@@ -7,7 +7,7 @@
 * Git is a map of keys and values
 * Value are objects and keys are SHA-1 hash
 
-```git
+```bash
 git hash-object filename                         // generates a hash key for a file
 echo "Apple Pie" | git hash-object --stdin       // generates a hash key for a text
 ```
@@ -560,6 +560,45 @@ pre-made pastry
 ## Rebasing Made Simple
 
 ### What a Rebase Looks Like
+
+lets say we have a new branch for a new recipe and we alaready have some commits on that branch:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase1.jpg)
+
+now we want to put the content of the two branches together. We already know one way to do this which is merging the two branches and this is how it would look like:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase2.jpg)
+
+but we are going to use the second way and that is _rebase_. In the following image the base of the spaghetti branch is shown in red color. All the history before this commit is already shared between the two branches:
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase3.jpg)
+
+ To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of master so it changes the base of this branch. Thast is why it is called rebase:
+
+```git
+git checkout spaghetti
+git rebase master
+
+// output
+First, rewinding head to replay your work on top of it...
+Applying: Add spaghetti alla carbonara
+Applying: Add carbonara ingredients
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase4.jpg)
+
+Just like merge we might have to solve a conflict for rebase. Now the spaghetti branch has all the stuff from the master branch but if we want it to work the other way as well and we want the stuff from spaghetti in the master branch, we can just do like merge and checkout the master branch and rebase the other way:
+
+```git
+git checkout master
+git rebase spaghetti
+
+// output
+First, rewinding head to replay your work on top of it...
+Fast-forwarded mater to spaghetti.
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
 
 
 
