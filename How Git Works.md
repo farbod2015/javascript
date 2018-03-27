@@ -550,3 +550,16 @@ pre-made pastry
 
 * This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just detach HEAD, do your experiment, still commit the experiment as much as you wish so that you won't lose data, and then you decide whether to keep the experiment or to do away with it. Just remember to put a branch on the stuff that you care about before you leave it behind.
 
+### Objects and References
+
+* we can summarize what we discussed in this section in three rules:
+  1. The current branch tracks new commits
+  1. When you move to another commit, Git updates your working directory
+  1. Unreachable objects are garbage collected
+
+## Rebasing Made Simple
+
+### What a Rebase Looks Like
+
+
+
