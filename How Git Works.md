@@ -27,7 +27,7 @@ Initialized empty Git repository in C:/Project/.git/
 
 * the following command creates the directory and the blob file for the text
 
-```bash
+```shell
 $ echo "Apple Pie" | git hash-object -w --stdin
 bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 ```
@@ -37,9 +37,8 @@ bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 
 * git status displays the state of the working directory and the staging area
 
-```bash
-# git status output
-
+```shell
+$ git status
 On branch master
 
 Initial commit
@@ -57,20 +56,16 @@ Changes to be committed:
 * To commit a new file we need to first add them to the staging area
 * The staging area is a file, generally contained in your Git directory, that stores information about what will go into your next commit. Its technical name in Git parlance is the “index”, but the phrase “staging area” works just as well.
 
-```bash
-git add menu.txt                 # add changes to the staging area
-                                 # the chagne here is that we have a new file
+* use `add` to add changes to the staging area:
+
+```shell
+$ git add menu.txt               # the chagne here is that we have a new file
 ```
 
 * `commit` records changes to the repository. It stores the current contents of the index in a new commit along with a log message from the user describing the changes.
 
-```bash
-git commit -m "My Message!"
-```
-
-```bash
-# output for the first commit
-
+```shell
+$ git commit -m "My Message!"
 [master (root-commit) c3c8b07] First Commit!
  3 files changed, 2 insertions(+)
  create mode 100644 menu.txt
@@ -80,7 +75,7 @@ git commit -m "My Message!"
 
 * use `git log` to look at the list of the existing commits
 
-```bash
+```shell
 commit 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c (HEAD -> master)
 Author: Doe <john.doe@example.com>
 Date:   Fri Mar 23 12:06:55 2018 -0500
@@ -90,13 +85,8 @@ Date:   Fri Mar 23 12:06:55 2018 -0500
 
 * Use `cat-file` to check the content of an object (e.g. commit, tree, blob, etc.) in the object folder (-t: type. -p: print)
 
-```bash
-git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
-```
-
-```bash
-# output
-
+```shell
+$ git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
 tree 127ea67bfaa06ad1407ff08bcbadea12e531568c
 author Doe <john.doe@example.com> 1521824815 -0500
 committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521824815 -0500
@@ -106,11 +96,8 @@ First Commit!
 
 * tree in the above example is the root directory
 
-```bash
-git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
-```
-
-```bash
+```shell
+$ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 100644 blob 9eed377bbdeb4aa5d14f8df9cd50fed042f41023    menu.txt
 040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
 ```
@@ -125,11 +112,8 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
-```bash
-git commit -m "Add Cake"
-```
-
-```bash
+```shell
+$ git commit -m "Add Cake"
 tree f6339016a5a44313c05b9e2831c4edb324a69548
 parent 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
 author Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
@@ -142,7 +126,8 @@ Add Cake
 * The tree of the second commit is different than the tree of the first commit.
 * if we check the content of the tree of the second commit it will look like this:
 
-```bash
+```shell
+$ git cat-file -p f6339016a5a44313c05b9e2831c4edb324a69548
 100644 blob b63cba247afc716104ab997704f0973823894907    menu.txt
 040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
 ```
@@ -154,13 +139,8 @@ Add Cake
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
-```bash
-git count-objects
-```
-
-```bash
-#output
-
+```shell
+$ git count-objects
 8 objects, 32 kilobytes
 ```
 
@@ -171,20 +151,15 @@ git count-objects
 * There is another type of objects in git called tags. A tag is like a label for the current state of the project (i.e. a simple label for an object). There are two types of tags in git _regular tags_ and _annotated tags_.
 * Annotated tags are the ones that come with a message. To create an annotated tag, you could use the git tag command with the -a argument, and you need a name for the tag and a message:
 
-```bash
-git tag -a mytag -m "I love cheesecake"
+```shell
+$ git tag -a mytag -m "I love cheesecake"
 ```
 
 * you can get a list of the tags using `git tag` command
 * Annotated tags are also objects like commit. You cat-file tags using their hash key or tag name:
 
-```bash
-git cat-file -p mytag
-```
-
-```bash
-# output
-
+```shell
+$ git cat-file -p mytag
 object f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 type commit
 tag mytag
@@ -215,12 +190,8 @@ In the Git object database you have:
 * Git normally puts branches in `refs/heads` directory.
 * Right now the `heads` folder only contains `master`. It is not a compressed file (unlike blobs) and its content is only a hash key for the current commit.
 
-```bash
-cat .git/refs/heads/master
-```
-
-```bash
-# output
+```shell
+$ cat .git/refs/heads/master
 f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 ```
 
@@ -230,18 +201,14 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * now lets create a new branch called lisa that contains alternative recipes:
 
-```bash
-git branch lisa
+```shell
+$ git branch lisa
 ```
 
 * the new branch is pointing to same commit that master branch is pointing to:
 
-```bash
-cat .git/refs/heads/lisa
-```
-
-```bash
-#output
+```shell
+$ cat .git/refs/heads/lisa
 f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 ```
 
@@ -253,20 +220,16 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * the current branch is marked with * on the list of branches:
 
-```bash
-git branch
-
-# output
+```shell
+$ git branch
   lisa
 * master
 ```
 
 * the current branch is stored in `.git/HEAD`. `HEAD` is a reference to a branch or a pointer to a pointer:
 
-```bash
-cat .git/HEAD
-
-# output
+```shell
+$ cat .git/HEAD
 ref: refs/heads/master
 ```
 
@@ -286,10 +249,8 @@ pre-made pastry
 
 * use `checkout` to change the current branch:
 
-```bash
-git checkout lisa
-
-# output
+```shell
+$ git checkout lisa
 Switched to branch 'lisa'
 ```
 
@@ -328,10 +289,8 @@ pre-made pastry
 
 * we are going to have a conflict, if we merge lisa's changes from her branch into the master branch:
 
-```bash
-git merge lisa
-
-# output
+```shell
+$ git merge lisa
 Auto-merging recipes/apple_pie.txt
 CONFLICT (content): Merge conflict in recipes/apple_pie.txt
 Automatic merge failed; fix conflicts and then commit the result.
@@ -367,10 +326,8 @@ pre-made pastry
 9 Granny Smith apples
 ```
 
-```bash
-git status
-
-# output
+```shell
+$ git status
 On branch master
 You have unmerged paths.
   (fix conflicts and run "git commit")
@@ -386,11 +343,9 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 * to tell Git that the conflict has been fixed, we need to stage the changes and then commit. The commit does not need a message in this case since it will open vim automatically to edit the message that it has generated (hit `Esc` and then `:wq` to save and quit):
 
-```bash
-git add .\recipes\apple_pie.txt
-git status
-
-# output
+```shell
+$ git add .\recipes\apple_pie.txt
+$ git status
 On branch master
 All conflicts fixed but you are still merging.
   (use "git commit" to conclude merge)
@@ -400,16 +355,14 @@ Changes to be committed:
         modified:   recipes/apple_pie.txt
 ```
 
-```bash
-git commit
-
-# output
+```shell
+$ git commit
 [master db6e168] Merge branch 'lisa'
 ```
 
 * `merge` is a commit and if we look inside this commit using `cat-file` we can see that it has two parents:
 
-```bash
+```shell
 tree 4de2fe2bc8400d05e060681133fd3db89712e015
 parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
 parent 00a343be57c923c9ebcf7a900454cd1210d598cf
@@ -445,17 +398,13 @@ Merge branch 'lisa'
 
 * Since we have resolved the conflict when we were merging it the other way (merging lisa into the master branch), git will not ask us to resolve the conflict and also it is not going to create a new commit that is a child of lisa and the master branch because master branch itself is the result of the merge. So it will only point lisa to the master branch as the result of the merge:
 
-```bash
-git checkout lisa
-
-#output
+```shell
+$ git checkout lisa
 Switched to branch 'lisa'
 ```
 
-```bash
-git merge master
-
-#output
+```shell
+$ git merge master
 Updating 00a343b..db6e168
 Fast-forward
  recipes/apple_pie.txt | 2 +-
@@ -484,10 +433,8 @@ Fast-forward
 
 * you can checkout a commit just like you can checkout a branch. In this case, HEAD will point to the commit instead of a branch:
 
-```bash
-git checkout db6e1684
-
-# output
+```shell
+$ git checkout db6e1684
 Note: checking out 'db6e1684'.
 
 You are in 'detached HEAD' state. You can look around, make experimental
@@ -506,8 +453,8 @@ HEAD is now at db6e168... Merge branch 'lisa'
 
 * this situation is called _detached HEAD_, because we don't have a current branch in this state:
 
-```bash
-git branch
+```shell
+$ git branch
 * (HEAD detached at db6e168)
   lisa
   master
@@ -581,11 +528,9 @@ but we are going to use the second way and that is _rebase_. In the following im
 
  To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
 
-```bash
-git checkout spaghetti
-git rebase master
-
-# output
+```shell
+$ git checkout spaghetti
+$ git rebase master
 First, rewinding head to replay your work on top of it...
 Applying: Add spaghetti alla carbonara
 Applying: Add carbonara ingredients
@@ -595,15 +540,17 @@ Applying: Add carbonara ingredients
 
 Just like merge we might have to solve a conflict for rebase. Now the spaghetti branch has all the stuff from the master branch but if we want it to work the other way as well and we want the stuff from spaghetti in the master branch, we can just do like merge and checkout the master branch and rebase the other way:
 
-```bash
-git checkout master
-git rebase spaghetti
-
-# output
+```shell
+$ git checkout master
+$ git rebase spaghetti
 First, rewinding head to replay your work on top of it...
 Fast-forwarded mater to spaghetti.
 ```
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
+
+
+
+
 
 
