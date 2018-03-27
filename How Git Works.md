@@ -9,7 +9,7 @@
 
 * use `git hash-object filename` to generate a hash key for a file. The following example generates a hash key for a text
 
-```bash
+```shell
 $ echo "Apple Pie" | git hash-object --stdin
 bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 ```
@@ -18,7 +18,7 @@ bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 
 * you can create a new git repository using `git init`:
 
-```bash
+```shell
 $ git init
 Initialized empty Git repository in C:/Project/.git/
 ```
