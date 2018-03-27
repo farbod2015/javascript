@@ -577,4 +577,4 @@ An object taht cannot be reach through any references, is considered dead and wi
 
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase10.jpg)
 
-
+### The Trade-offs of Merges
