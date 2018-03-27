@@ -7,23 +7,29 @@
 * Git is a map of keys and values
 * Value are objects and keys are SHA-1 hash
 
+* use `git hash-object filename` to generate a hash key for a file. The following example generates a hash key for a text
+
 ```bash
-git hash-object filename                         // generates a hash key for a file
-echo "Apple Pie" | git hash-object --stdin       // generates a hash key for a text
+$ echo "Apple Pie" | git hash-object --stdin
+bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 ```
 
 ### Storing Things
 
-```git
-git init                                         // create a git repository
+* you can create a new git repository using `git init`:
+
+```bash
+$ git init
+Initialized empty Git repository in C:/Project/.git/
 ```
 
 * The repository is stored in the .git directory
 
-```git
-echo "Apple Pie" | git hash-object -w --stdin    // creates the directory and
-                                                 // the blob file for the text
-// output: bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
+* the following command creates the directory and the blob file for the text
+
+```bash
+$ echo "Apple Pie" | git hash-object -w --stdin
+bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
 ```
 
 * Blob files for objects added to the repository are stored in a directory inside object directory. the directory's name starts with the first two characters of the returned hash key (e.g. in the above example)
@@ -31,8 +37,8 @@ echo "Apple Pie" | git hash-object -w --stdin    // creates the directory and
 
 * git status displays the state of the working directory and the staging area
 
-```git
-// git status output
+```bash
+# git status output
 
 On branch master
 
@@ -51,19 +57,19 @@ Changes to be committed:
 * To commit a new file we need to first add them to the staging area
 * The staging area is a file, generally contained in your Git directory, that stores information about what will go into your next commit. Its technical name in Git parlance is the “index”, but the phrase “staging area” works just as well.
 
-```git
-git add menu.txt                 // add changes to the staging area
-                                 // the chagne here is that we have a new file
+```bash
+git add menu.txt                 # add changes to the staging area
+                                 # the chagne here is that we have a new file
 ```
 
 * `commit` records changes to the repository. It stores the current contents of the index in a new commit along with a log message from the user describing the changes.
 
-```git
+```bash
 git commit -m "My Message!"
 ```
 
-```git
-// output for the first commit
+```bash
+# output for the first commit
 
 [master (root-commit) c3c8b07] First Commit!
  3 files changed, 2 insertions(+)
@@ -74,7 +80,7 @@ git commit -m "My Message!"
 
 * use `git log` to look at the list of the existing commits
 
-```git
+```bash
 commit 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c (HEAD -> master)
 Author: Doe <john.doe@example.com>
 Date:   Fri Mar 23 12:06:55 2018 -0500
@@ -84,12 +90,12 @@ Date:   Fri Mar 23 12:06:55 2018 -0500
 
 * Use `cat-file` to check the content of an object (e.g. commit, tree, blob, etc.) in the object folder (-t: type. -p: print)
 
-```git
+```bash
 git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
 ```
 
-```git
-// output
+```bash
+# output
 
 tree 127ea67bfaa06ad1407ff08bcbadea12e531568c
 author Doe <john.doe@example.com> 1521824815 -0500
@@ -100,11 +106,11 @@ First Commit!
 
 * tree in the above example is the root directory
 
-```git
+```bash
 git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 ```
 
-```git
+```bash
 100644 blob 9eed377bbdeb4aa5d14f8df9cd50fed042f41023    menu.txt
 040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
 ```
@@ -113,17 +119,17 @@ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 * a blob is not really a file it is the content of a file. The file name and the file permissions are not stored in the blob. They are stored in the tree that points to the blob (you will see later why this is a good thing)
 * the following image show the object database. The content of the `menu.txt` and `apple_pie.txt` are the same so root and recipes trees both point to the same blob:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.jpg)
+![The Object Database](https:#github.com/farbod2015/javascript/blob/master/img/objectdb1.jpg)
 
 ### Versioning Made Easy
 
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
-```git
+```bash
 git commit -m "Add Cake"
 ```
 
-```git
+```bash
 tree f6339016a5a44313c05b9e2831c4edb324a69548
 parent 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
 author Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
@@ -136,7 +142,7 @@ Add Cake
 * The tree of the second commit is different than the tree of the first commit.
 * if we check the content of the tree of the second commit it will look like this:
 
-```git
+```bash
 100644 blob b63cba247afc716104ab997704f0973823894907    menu.txt
 040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
 ```
@@ -144,16 +150,16 @@ Add Cake
 * the blob for the `menu.txt` in the second commit is different than the blob in the first commit since its content has changed but the content of the `recipes` tree has not change so the hash key remains the same
 * Here is the file structure of the object database after the second commit:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.jpg)
+![The Object Database](https:#github.com/farbod2015/javascript/blob/master/img/objectdb2.jpg)
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
-```git
+```bash
 git count-objects
 ```
 
-```git
-//output
+```bash
+#output
 
 8 objects, 32 kilobytes
 ```
@@ -165,19 +171,19 @@ git count-objects
 * There is another type of objects in git called tags. A tag is like a label for the current state of the project (i.e. a simple label for an object). There are two types of tags in git _regular tags_ and _annotated tags_.
 * Annotated tags are the ones that come with a message. To create an annotated tag, you could use the git tag command with the -a argument, and you need a name for the tag and a message:
 
-```git
+```bash
 git tag -a mytag -m "I love cheesecake"
 ```
 
 * you can get a list of the tags using `git tag` command
 * Annotated tags are also objects like commit. You cat-file tags using their hash key or tag name:
 
-```git
+```bash
 git cat-file -p mytag
 ```
 
-```git
-// output
+```bash
+# output
 
 object f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 type commit
@@ -190,7 +196,7 @@ I love cheesecake
 * In the above example, the object that the tag is pointing to is a commit
 * Here is how the object database look after adding the tag:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.jpg)
+![The Object Database](https:#github.com/farbod2015/javascript/blob/master/img/objectdb3.jpg)
 
 ### Recap
 
@@ -209,58 +215,58 @@ In the Git object database you have:
 * Git normally puts branches in `refs/heads` directory.
 * Right now the `heads` folder only contains `master`. It is not a compressed file (unlike blobs) and its content is only a hash key for the current commit.
 
-```git
+```bash
 cat .git/refs/heads/master
 ```
 
-```git
-// output
+```bash
+# output
 f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 ```
 
 * so we have two linked commits in this project, and we also have a master branch which is just a simple reference (pointer) to a commit (in this case last commit) and that is why the directory is called `refs`:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/branch1.jpg)
 
 * now lets create a new branch called lisa that contains alternative recipes:
 
-```git
+```bash
 git branch lisa
 ```
 
 * the new branch is pointing to same commit that master branch is pointing to:
 
-```git
+```bash
 cat .git/refs/heads/lisa
 ```
 
-```git
-//output
+```bash
+#output
 f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 ```
 
 * This is what we have now two commits and two branches, and the branches are pointing at the same commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/branch2.jpg)
 
 ### The Mechanics of the Current Branch
 
 * the current branch is marked with * on the list of branches:
 
-```git
+```bash
 git branch
 
-// output
+# output
   lisa
 * master
 ```
 
 * the current branch is stored in `.git/HEAD`. `HEAD` is a reference to a branch or a pointer to a pointer:
 
-```git
+```bash
 cat .git/HEAD
 
-// output
+# output
 ref: refs/heads/master
 ```
 
@@ -276,14 +282,14 @@ pre-made pastry
 8 Granny Smith apples
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/newcommit1.jpg)
 
 * use `checkout` to change the current branch:
 
-```git
+```bash
 git checkout lisa
 
-// output
+# output
 Switched to branch 'lisa'
 ```
 
@@ -291,7 +297,7 @@ Switched to branch 'lisa'
     1. `HEAD` now points to `lisa`
     1. our working area changes to the content of the commit pointed at by `lisa`
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/checkout1.jpg)
 
 * so in short `checkout` means move `HEAD` and change the working area
 
@@ -310,7 +316,7 @@ pre-made pastry
 
 * if we commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
 
 * **Note:** branches are just references to commits.
 
@@ -318,14 +324,14 @@ pre-made pastry
 
 * now if we do `git checkout master` the `HEAD` will point to the master branch:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/checkout2.jpg)
 
 * we are going to have a conflict, if we merge lisa's changes from her branch into the master branch:
 
-```git
+```bash
 git merge lisa
 
-// output
+# output
 Auto-merging recipes/apple_pie.txt
 CONFLICT (content): Merge conflict in recipes/apple_pie.txt
 Automatic merge failed; fix conflicts and then commit the result.
@@ -361,10 +367,10 @@ pre-made pastry
 9 Granny Smith apples
 ```
 
-```git
+```bash
 git status
 
-// output
+# output
 On branch master
 You have unmerged paths.
   (fix conflicts and run "git commit")
@@ -380,11 +386,11 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 * to tell Git that the conflict has been fixed, we need to stage the changes and then commit. The commit does not need a message in this case since it will open vim automatically to edit the message that it has generated (hit `Esc` and then `:wq` to save and quit):
 
-```git
+```bash
 git add .\recipes\apple_pie.txt
 git status
 
-// output
+# output
 On branch master
 All conflicts fixed but you are still merging.
   (use "git commit" to conclude merge)
@@ -394,16 +400,16 @@ Changes to be committed:
         modified:   recipes/apple_pie.txt
 ```
 
-```git
+```bash
 git commit
 
-// output
+# output
 [master db6e168] Merge branch 'lisa'
 ```
 
 * `merge` is a commit and if we look inside this commit using `cat-file` we can see that it has two parents:
 
-```git
+```bash
 tree 4de2fe2bc8400d05e060681133fd3db89712e015
 parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
 parent 00a343be57c923c9ebcf7a900454cd1210d598cf
@@ -413,13 +419,13 @@ committer Farbod <farbod@example.com> 1522080262 -0500
 Merge branch 'lisa'
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/merging1.jpg)
 
 ### Time Travel for Developers
 
 * so far we have learned that the objects in the database are commits, trees, blobs, and tags; and all these objects are arranged in a graph and they reference each other. The references are: from a commit to its parent, from a commit to its tree, and from trees to blobs
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/history1.jpg)
 
 * the references are used in two ways:
     1. references between commits are used to track history.
@@ -429,7 +435,7 @@ Merge branch 'lisa'
 
 * when we do a checkout, git doesn't care about history and the way that commits are connected to each other. It just cares about trees and blobs that can be reached from that commit which is the entire state of the project at the time of the commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/history2.jpg)
 
 * Git uses this information to replace the content of the working directory (this is how we travel in time in Git)
 
@@ -439,24 +445,24 @@ Merge branch 'lisa'
 
 * Since we have resolved the conflict when we were merging it the other way (merging lisa into the master branch), git will not ask us to resolve the conflict and also it is not going to create a new commit that is a child of lisa and the master branch because master branch itself is the result of the merge. So it will only point lisa to the master branch as the result of the merge:
 
-```git
+```bash
 git checkout lisa
 
-//output
+#output
 Switched to branch 'lisa'
 ```
 
-```git
+```bash
 git merge master
 
-//output
+#output
 Updating 00a343b..db6e168
 Fast-forward
  recipes/apple_pie.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
 
 * **Note:** This is called _fast-forward_ merge.
 
@@ -464,24 +470,24 @@ Fast-forward
 
   * If master has diverged since the feature branch was created, then merging the feature branch into master will create a merge commit. This is a _typical merge_:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging3.jpg)
+    ![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/merging3.jpg)
 
   * If master has not diverged, instead of creating a new commit, git will just point master to the latest commit of the feature branch. This is a _fast forward_:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging4.jpg)
+    ![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/merging4.jpg)
 
   **Note:** Passing `--no-ff` creates a new commit to represent the merge, even if git would normally fast forward:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging5.jpg)
+    ![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/merging5.jpg)
 
 ### Losing Your HEAD
 
 * you can checkout a commit just like you can checkout a branch. In this case, HEAD will point to the commit instead of a branch:
 
-```git
+```bash
 git checkout db6e1684
 
-// output
+# output
 Note: checking out 'db6e1684'.
 
 You are in 'detached HEAD' state. You can look around, make experimental
@@ -496,11 +502,11 @@ do so (now or later) by using -b with the checkout command again. Example:
 HEAD is now at db6e168... Merge branch 'lisa'
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checking3.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/checking3.jpg)
 
 * this situation is called _detached HEAD_, because we don't have a current branch in this state:
 
-```git
+```bash
 git branch
 * (HEAD detached at db6e168)
   lisa
@@ -522,7 +528,7 @@ pre-made pastry
 
 * in this case HEAD is not pointing to a branch so it will move with the commit directly. It is working exactly like branch here:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/detached1.jpg)
 
 * lets make more changes to `apple_pie.txt` and commit again:
 
@@ -536,17 +542,17 @@ pre-made pastry
 20 Granny Smith apples
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/detached2.jpg)
 
 * now if we checkout the master branch the two previous commits are still in the object database, but they are now unreachable and isolated unless we know their SHA-1s:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached3.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/detached3.jpg)
 
 * objects that can't be reached by any reference get garbage collected. Evey now and then Git decides that it is time for running a garbage collection. The garbage collector will look for objects in the database that cannot be ulimately reached from a branch, HEAD, or a tag and it will remove them to save disk space.
 
 * as mentioned before we can still save those commits using their SHA-1s by checking out the commit and then create a branch for it (e.g. nogood). These objects will never be garbage collected:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached4.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/detached4.jpg)
 
 * This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just detach HEAD, do your experiment, still commit the experiment as much as you wish so that you won't lose data, and then you decide whether to keep the experiment or to do away with it. Just remember to put a branch on the stuff that you care about before you leave it behind.
 
@@ -563,42 +569,42 @@ pre-made pastry
 
 lets say we have a new branch for a new recipe and we alaready have some commits on that branch:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase1.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/rebase1.jpg)
 
 now we want to put the content of the two branches together. We already know one way to do this which is merging the two branches and this is how it would look like:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase2.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/rebase2.jpg)
 
 but we are going to use the second way and that is _rebase_. In the following image the base of the spaghetti branch is shown in red color. All the history before this commit is already shared between the two branches:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase3.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/rebase3.jpg)
 
- To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of master so it changes the base of this branch. Thast is why it is called rebase:
+ To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
 
-```git
+```bash
 git checkout spaghetti
 git rebase master
 
-// output
+# output
 First, rewinding head to replay your work on top of it...
 Applying: Add spaghetti alla carbonara
 Applying: Add carbonara ingredients
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase4.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/rebase4.jpg)
 
 Just like merge we might have to solve a conflict for rebase. Now the spaghetti branch has all the stuff from the master branch but if we want it to work the other way as well and we want the stuff from spaghetti in the master branch, we can just do like merge and checkout the master branch and rebase the other way:
 
-```git
+```bash
 git checkout master
 git rebase spaghetti
 
-// output
+# output
 First, rewinding head to replay your work on top of it...
 Fast-forwarded mater to spaghetti.
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
+![The Master Branch](https:#github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
 
 
 
