@@ -578,3 +578,32 @@ An object taht cannot be reach through any references, is considered dead and wi
 ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase10.jpg)
 
 ### The Trade-offs of Merges
+
+The benefit of the merge is that it preserves the whole history, but the problem is that it sometimes get confusing if we have multiple merges with multiple commits.
+
+### The Trade-offs of Rebases
+
+Rebase history looks very simple and neat and there is no reason for commands such as git log to arbitrarily squash commits into a single timeline because commits are arranged in a single timeline already (rebase refactors history). But the truth is that this niceness is a lie because as you know rebase creates copies of commits and leaves them behind. Also, there there are some advanced Git commands that become less useful if you tamper with project history.
+
+Later we will have an example that shows how mindless rebasing can take you into trouble.
+
+**Note:** When is doubt, just merge. You should only use it, if you know what you are doing and you understand the consequences.
+
+### Tags in Brief
+
+* Git has the ability to tag specific points in history as being important. Typically people use this functionality to mark release points (v1.0, and so on). 
+
+* Tags are pointers to commits.
+
+* There are two types of tags: Annotated and Lightweight:
+
+```bash
+git tag `tagName`                       # Lightweight Tag
+git tag -a `tagName` -m `tagMessage`    # Annotated Tag
+```
+
+* The lightweight tag is just a simple label that contains the SHA-1 of the commit. The annotated tag is similar, but it contains the SHA-1 of a tag object in the database, and that object in turn is referencing a commit. Annotate tag has extra information like: the tagger information, the date the commit was tagged, and the annotation message.
+
+* `git tag` shows the list of the tags.
+
+* the difference between a tag and a branch is that a branch moves but a tag doesn't
