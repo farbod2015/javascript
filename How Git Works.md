@@ -607,3 +607,33 @@ git tag -a `tagName` -m `tagMessage`    # Annotated Tag
 * `git tag` shows the list of the tags.
 
 * the difference between a tag and a branch is that a branch moves but a tag doesn't
+
+## Distributed Version Control
+
+### A World of Peers
+
+* to make a copy of a repository on your computer use `clone`:
+
+```bash
+$ git clone https://github.com/nusco/cookbook.git
+Cloning into 'cookbook'...
+remote: Counting objects: 47, done.
+remote: Total 47 (delta 0), reused 0 (delta 0), pack-reused 47
+Unpacking objects: 100% (47/47), done.
+```
+
+* this is what `git cloen` did in the above example: it created an empty directory for the cookbook, and copied the `.git` directory from the GitHub project to this directory. After copying these stuff, Git checked out the master branch to rebuild the files in the working area.
+
+* **Note:** Git copies over the objects in the object database, but it doesn't copy each and every file on the repository. For example, in recent versions of Git, `git clone` only copies one branch (the master branch). We need to use specific commands to work with the other branches on the remote repo.
+
+```bash
+$ git branch
+* master
+```
+
+* **Note:** the working area in Git is not very important, because you can always rebuild it on the fly from the content of the `.git` directory.
+
+### Local and Remote
+
+
+
