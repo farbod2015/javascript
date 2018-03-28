@@ -635,5 +635,68 @@ $ git branch
 
 ### Local and Remote
 
+* When we issued the `git clone` command, Git added a few lines to the configuration of our repository. Here is how our `config` file looks like:
+
+```txt
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/nusco/cookbook.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+```
+
+* Each Git repository can remember information about other copies of the same repository. The other copies are called _remote_.
+
+* You can define as many remotes as you want, but when you clone a project Git immediately defines a default remote and calls it with a conventional name _origin_
+
+* if we ask Git for branches then it will just show the local branches, but Git also stores the information about the branches on the remote and commits that those branches are currently pointing at. We can see the list of all the local and remote branches, and the current position of HEAD, by using `--all` switch:
+
+```bash
+$ git branch
+* master
+$ git branch --all
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/lisa
+  remotes/origin/master
+  remotes/origin/nogood
+  remotes/origin/spaghetti
+```
+
+* So, Git tracks remote branches exactly like it tracks local branches by writing those branches as references in the `refs/remotes/origin` folder. This folder contains the references to branches, tags, and the current HEAD pointer of origin. Git will automatically update this information when we connect to a remote.
+
+* To avoid mainataing one small file for each branch, as a low-level optimization, Git sometimes compacts some of them into a single file called `packed-refs`. This can happen for both local and remote branches:
+
+```bash
+$ cat packed-refs
+# pack-refs with: peeled fully-peeled
+ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
+704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
+7160d614c16207bf132828cc39daeeec5003adbc refs/remotes/origin/nogood
+5d4a817c9294fb6507e047e3f02dd5e841cb9d2e refs/remotes/origin/spaghetti
+```
+
+![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/directory1.jpg)
+
+* you can use `git show-ref branchName` to get list of all branches (local and remote) with the name `branchName` and the commits that they are pointing at:
+
+```bash
+$ git show-ref master
+704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/heads/master
+704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
+
+$ git show-ref lisa
+ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
+```
+
+
 
 
