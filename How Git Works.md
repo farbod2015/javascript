@@ -697,6 +697,6 @@ $ git show-ref lisa
 ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
 ```
 
-
+* in conclusion both local and remote branches are just references to a commit and when you synchronize with the remote Git updates the list of remote branches.
 
 
