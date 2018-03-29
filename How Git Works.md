@@ -106,7 +106,9 @@ $ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 * a blob is not really a file it is the content of a file. The file name and the file permissions are not stored in the blob. They are stored in the tree that points to the blob (you will see later why this is a good thing)
 * the following image show the object database. The content of the `menu.txt` and `apple_pie.txt` are the same so root and recipes trees both point to the same blob:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb1.jpg)
+<p align="center">
+  <img src ="./img/objectdb1.jpg" />
+</p>
 
 ### Versioning Made Easy
 
@@ -135,7 +137,9 @@ $ git cat-file -p f6339016a5a44313c05b9e2831c4edb324a69548
 * the blob for the `menu.txt` in the second commit is different than the blob in the first commit since its content has changed but the content of the `recipes` tree has not change so the hash key remains the same
 * Here is the file structure of the object database after the second commit:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb2.jpg)
+<p align="center">
+  <img src ="./img/objectdb2.jpg" />
+</p>
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
@@ -171,7 +175,9 @@ I love cheesecake
 * In the above example, the object that the tag is pointing to is a commit
 * Here is how the object database look after adding the tag:
 
-![The Object Database](https://github.com/farbod2015/javascript/blob/master/img/objectdb3.jpg)
+<p align="center">
+  <img src ="./img/objectdb3.jpg" />
+</p>
 
 ### Recap
 
@@ -197,7 +203,9 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * so we have two linked commits in this project, and we also have a master branch which is just a simple reference (pointer) to a commit (in this case last commit) and that is why the directory is called `refs`:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch1.jpg)
+<p align="center">
+  <img src ="./img/branch1.jpg" />
+</p>
 
 * now lets create a new branch called lisa that contains alternative recipes:
 
@@ -214,7 +222,9 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * This is what we have now two commits and two branches, and the branches are pointing at the same commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branch2.jpg)
+<p align="center">
+  <img src ="./img/branch2.jpg" />
+</p>
 
 ### The Mechanics of the Current Branch
 
@@ -245,7 +255,9 @@ pre-made pastry
 8 Granny Smith apples
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/newcommit1.jpg)
+<p align="center">
+  <img src ="./img/newcommit1.jpg" />
+</p>
 
 * use `checkout` to change the current branch:
 
@@ -258,7 +270,9 @@ Switched to branch 'lisa'
     1. `HEAD` now points to `lisa`
     1. our working area changes to the content of the commit pointed at by `lisa`
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout1.jpg)
+<p align="center">
+  <img src ="./img/checkout1.jpg" />
+</p>
 
 * so in short `checkout` means move `HEAD` and change the working area
 
@@ -277,7 +291,9 @@ pre-made pastry
 
 * if we commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/branching1.jpg)
+<p align="center">
+  <img src ="./img/branching1.jpg" />
+</p>
 
 * **Note:** branches are just references to commits.
 
@@ -285,7 +301,9 @@ pre-made pastry
 
 * now if we do `git checkout master` the `HEAD` will point to the master branch:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checkout2.jpg)
+<p align="center">
+  <img src ="./img/checkout2.jpg" />
+</p>
 
 * we are going to have a conflict, if we merge lisa's changes from her branch into the master branch:
 
@@ -372,13 +390,17 @@ committer Farbod <farbod@example.com> 1522080262 -0500
 Merge branch 'lisa'
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging1.jpg)
+<p align="center">
+  <img src ="./img/merging1.jpg" />
+</p>
 
 ### Time Travel for Developers
 
 * so far we have learned that the objects in the database are commits, trees, blobs, and tags; and all these objects are arranged in a graph and they reference each other. The references are: from a commit to its parent, from a commit to its tree, and from trees to blobs
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history1.jpg)
+<p align="center">
+  <img src ="./img/history1.jpg" />
+</p>
 
 * the references are used in two ways:
     1. references between commits are used to track history.
@@ -388,7 +410,9 @@ Merge branch 'lisa'
 
 * when we do a checkout, git doesn't care about history and the way that commits are connected to each other. It just cares about trees and blobs that can be reached from that commit which is the entire state of the project at the time of the commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/history2.jpg)
+<p align="center">
+  <img src ="./img/history2.jpg" />
+</p>
 
 * Git uses this information to replace the content of the working directory (this is how we travel in time in Git)
 
@@ -411,7 +435,9 @@ Fast-forward
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging2.jpg)
+<p align="center">
+  <img src ="./img/merging2.jpg" />
+</p>
 
 * **Note:** This is called _fast-forward_ merge.
 
@@ -419,15 +445,21 @@ Fast-forward
 
   * If master has diverged since the feature branch was created, then merging the feature branch into master will create a merge commit. This is a _typical merge_:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging3.jpg)
+<p align="center">
+  <img src ="./img/merging3.jpg" />
+</p>
 
   * If master has not diverged, instead of creating a new commit, git will just point master to the latest commit of the feature branch. This is a _fast forward_:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging4.jpg)
+<p align="center">
+  <img src ="./img/merging4.jpg" />
+</p>
 
   **Note:** Passing `--no-ff` creates a new commit to represent the merge, even if git would normally fast forward:
 
-    ![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/merging5.jpg)
+<p align="center">
+  <img src ="./img/merging5.jpg" />
+</p>
 
 ### Losing Your HEAD
 
@@ -449,7 +481,9 @@ do so (now or later) by using -b with the checkout command again. Example:
 HEAD is now at db6e168... Merge branch 'lisa'
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/checking3.jpg)
+<p align="center">
+  <img src ="./img/checking3.jpg" />
+</p>
 
 * this situation is called _detached HEAD_, because we don't have a current branch in this state:
 
@@ -475,7 +509,9 @@ pre-made pastry
 
 * in this case HEAD is not pointing to a branch so it will move with the commit directly. It is working exactly like branch here:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached1.jpg)
+<p align="center">
+  <img src ="./img/detached1.jpg" />
+</p>
 
 * lets make more changes to `apple_pie.txt` and commit again:
 
@@ -489,17 +525,23 @@ pre-made pastry
 20 Granny Smith apples
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached2.jpg)
+<p align="center">
+  <img src ="./img/detached2.jpg" />
+</p>
 
 * now if we checkout the master branch the two previous commits are still in the object database, but they are now unreachable and isolated unless we know their SHA-1s:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached3.jpg)
+<p align="center">
+  <img src ="./img/detached3.jpg" />
+</p>
 
 * objects that can't be reached by any reference get garbage collected. Evey now and then Git decides that it is time for running a garbage collection. The garbage collector will look for objects in the database that cannot be ulimately reached from a branch, HEAD, or a tag and it will remove them to save disk space.
 
 * as mentioned before we can still save those commits using their SHA-1s by checking out the commit and then create a branch for it (e.g. nogood). These objects will never be garbage collected:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/detached4.jpg)
+<p align="center">
+  <img src ="./img/detached4.jpg" />
+</p>
 
 * This is a common way to use a _detached HEAD_: when you want to try out something, go down maybe and run a general experiment with your code, you can just detach HEAD, do your experiment, still commit the experiment as much as you wish so that you won't lose data, and then you decide whether to keep the experiment or to do away with it. Just remember to put a branch on the stuff that you care about before you leave it behind.
 
@@ -516,15 +558,21 @@ pre-made pastry
 
 lets say we have a new branch for a new recipe and we alaready have some commits on that branch:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase1.jpg)
+<p align="center">
+  <img src ="./img/rebase1.jpg" />
+</p>
 
 now we want to put the content of the two branches together. We already know one way to do this which is merging the two branches and this is how it would look like:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase2.jpg)
+<p align="center">
+  <img src ="./img/rebase2.jpg" />
+</p>
 
 but we are going to use the second way and that is _rebase_. In the following image the base of the spaghetti branch is shown in red color. All the history before this commit is already shared between the two branches:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase3.jpg)
+<p align="center">
+  <img src ="./img/rebase3.jpg" />
+</p>
 
  To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
 
@@ -536,7 +584,9 @@ Applying: Add spaghetti alla carbonara
 Applying: Add carbonara ingredients
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase4.jpg)
+<p align="center">
+  <img src ="./img/rebase4.jpg" />
+</p>
 
 Just like merge we might have to solve a conflict for rebase. Now the spaghetti branch has all the stuff from the master branch but if we want it to work the other way as well and we want the stuff from spaghetti in the master branch, we can just do like merge and checkout the master branch and rebase the other way:
 
@@ -547,7 +597,9 @@ First, rewinding head to replay your work on top of it...
 Fast-forwarded mater to spaghetti.
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase5.jpg)
+<p align="center">
+  <img src ="./img/rebase5.jpg" />
+</p>
 
 ### An Illusion of Movement
 
@@ -555,19 +607,27 @@ when we are doing a rebase, git cannot actually detach the current branch and mo
 
 so lets take a step back and imagine what happens if we change the parent of the highlighted commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase6.jpg)
+<p align="center">
+  <img src ="./img/rebase6.jpg" />
+</p>
 
 The parent's SHA-1 is stored inside the commit, so the commit data must change and since commits are immutable the commit itself has to change and we are going to get a new hash for the new commit. The same thing is going to happen to the child of this commit:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase7.jpg)
+<p align="center">
+  <img src ="./img/rebase7.jpg" />
+</p>
 
 So, how rebasing really works is that when we rebase, Git makes copies of the commits with the same data except for their parents:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase8.jpg)
+<p align="center">
+  <img src ="./img/rebase8.jpg" />
+</p>
 
  These are new files with new name in the database directory. Finally, Git moves the rebase branch (a_branch in the image) to the new commits and leaving the old commits behind:
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase9.jpg)
+<p align="center">
+  <img src ="./img/rebase9.jpg" />
+</p>
 
 **Note:** Rebasing is an operation that creates new commits.
 
@@ -575,7 +635,9 @@ So, how rebasing really works is that when we rebase, Git makes copies of the co
 
 An object taht cannot be reach through any references, is considered dead and will be removed by a garbage collector. So, after rebasing, if nothing is pointing at the old commits, they are going to get garbage-collected by Git.
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/rebase10.jpg)
+<p align="center">
+  <img src ="./img/rebase10.jpg" />
+</p>
 
 ### The Trade-offs of Merges
 
@@ -684,7 +746,9 @@ ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
 5d4a817c9294fb6507e047e3f02dd5e841cb9d2e refs/remotes/origin/spaghetti
 ```
 
-![The Master Branch](https://github.com/farbod2015/javascript/blob/master/img/directory1.jpg)
+<p align="center">
+  <img src ="./img/directory1.jpg" />
+</p>
 
 * you can use `git show-ref branchName` to get list of all branches (local and remote) with the name `branchName` and the commits that they are pointing at:
 
@@ -699,6 +763,3 @@ ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
 
 * in conclusion both local and remote branches are just references to a commit and when you synchronize with the remote Git updates the list of remote branches.
 
-<p align="center">
-  <img src ="./img/directory1.jpg" />
-</p>
