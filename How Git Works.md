@@ -1,5 +1,39 @@
 # How Git Works
 
+<!-- TOC -->
+
+- [How Git Works](#how-git-works)
+  - [Git Is Not What You Think](#git-is-not-what-you-think)
+    - [Meet SHA1](#meet-sha1)
+    - [Storing Things](#storing-things)
+    - [First Commit!](#first-commit)
+    - [Versioning Made Easy](#versioning-made-easy)
+    - [One More Thing: Annotated Tags](#one-more-thing-annotated-tags)
+    - [Recap](#recap)
+  - [Branches Demystified](#branches-demystified)
+    - [What Branches Really Are](#what-branches-really-are)
+    - [The Mechanics of the Current Branch](#the-mechanics-of-the-current-branch)
+    - [Let's Merge!](#lets-merge)
+    - [Time Travel for Developers](#time-travel-for-developers)
+    - [Merging Without Merging](#merging-without-merging)
+    - [Losing Your HEAD](#losing-your-head)
+    - [Objects and References](#objects-and-references)
+  - [Rebasing Made Simple](#rebasing-made-simple)
+    - [What a Rebase Looks Like](#what-a-rebase-looks-like)
+    - [An Illusion of Movement](#an-illusion-of-movement)
+    - [Taking out the Garbage](#taking-out-the-garbage)
+    - [The Trade-offs of Merges](#the-trade-offs-of-merges)
+    - [The Trade-offs of Rebases](#the-trade-offs-of-rebases)
+    - [Tags in Brief](#tags-in-brief)
+  - [Distributed Version Control](#distributed-version-control)
+    - [A World of Peers](#a-world-of-peers)
+    - [Local and Remote](#local-and-remote)
+    - [The Joy of Pushing](#the-joy-of-pushing)
+    - [The Chore of Pulling](#the-chore-of-pulling)
+    - [Rebase Revisited](#rebase-revisited)
+
+<!-- /TOC -->
+
 ## Git Is Not What You Think
 
 ### Meet SHA1
