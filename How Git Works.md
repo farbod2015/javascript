@@ -59,7 +59,7 @@
 * use `add` to add changes to the staging area:
 
   ```shell
-  $ git add menu.txt               # the chagne here is that we have a new file
+  $ git add menu.txt               # the change here is that we have a new file
   ```
 
 * `commit` records changes to the repository. It stores the current contents of the index in a new commit along with a log message from the user describing the changes.
@@ -89,7 +89,7 @@
   $ git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
   tree 127ea67bfaa06ad1407ff08bcbadea12e531568c
   author Doe <john.doe@example.com> 1521824815 -0500
-  committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521824815 -0500
+  committer Doe <john.doe@example.com> 1521824815 -0500
 
   First Commit!
   ```
@@ -118,8 +118,8 @@
   $ git commit -m "Add Cake"
   tree f6339016a5a44313c05b9e2831c4edb324a69548
   parent 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
-  author Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
-  committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
+  author Doe <john.doe@example.com> 1521834006 -0500
+  committer Doe <john.doe@example.com> 1521834006 -0500
 
   Add Cake
   ```
@@ -289,7 +289,7 @@ In the Git object database you have:
   10 Granny Smith apples
   ```
 
-* if we commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
+* if we commit the changes, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
 <p align="center">
   <img src ="./img/branching1.jpg" />
@@ -331,7 +331,7 @@ In the Git object database you have:
   >>>>>>> lisa
   ```
 
-* we need to solve the confilct manually:
+* we need to solve the conflict manually:
 
   ```txt
   Apple Pie
@@ -384,8 +384,8 @@ In the Git object database you have:
   tree 4de2fe2bc8400d05e060681133fd3db89712e015
   parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
   parent 00a343be57c923c9ebcf7a900454cd1210d598cf
-  author Farbod <farbod@example.com> 1522080262 -0500
-  committer Farbod <farbod@example.com> 1522080262 -0500
+  author Doe <john.doe@example.com> 1522080262 -0500
+  committer Doe <john.doe@example.com> 1522080262 -0500
 
   Merge branch 'lisa'
   ```
@@ -418,7 +418,7 @@ In the Git object database you have:
 
 ### Merging Without Merging
 
-* now if we want to meger the master branch with lisa so that lisa would be up do date as well, we need to do a `git checkout lisa` and then `git merge master`.
+* now if we want to merge the master branch with lisa so that lisa would be up do date as well, we need to do a `git checkout lisa` and then `git merge master`.
 
 * Since we have resolved the conflict when we were merging it the other way (merging lisa into the master branch), git will not ask us to resolve the conflict and also it is not going to create a new commit that is a child of lisa and the master branch because master branch itself is the result of the merge. So it will only point lisa to the master branch as the result of the merge:
 
@@ -535,7 +535,7 @@ In the Git object database you have:
   <img src ="./img/detached3.jpg" />
 </p>
 
-* objects that can't be reached by any reference get garbage collected. Evey now and then Git decides that it is time for running a garbage collection. The garbage collector will look for objects in the database that cannot be ulimately reached from a branch, HEAD, or a tag and it will remove them to save disk space.
+* objects that can't be reached by any reference get garbage collected. Every now and then Git decides that it is time for running a garbage collection. The garbage collector will look for objects in the database that cannot be ultimately reached from a branch, HEAD, or a tag and it will remove them to save disk space.
 
 * as mentioned before we can still save those commits using their SHA-1s by checking out the commit and then create a branch for it (e.g. nogood). These objects will never be garbage collected:
 
@@ -556,7 +556,7 @@ In the Git object database you have:
 
 ### What a Rebase Looks Like
 
-lets say we have a new branch for a new recipe and we alaready have some commits on that branch:
+lets say we have a new branch for a new recipe and we already have some commits on that branch:
 
 <p align="center">
   <img src ="./img/rebase1.jpg" />
@@ -574,7 +574,7 @@ but we are going to use the second way and that is _rebase_. In the following im
   <img src ="./img/rebase3.jpg" />
 </p>
 
-To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
+To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thats is why it is called rebase:
 
 ```shell
 $ git checkout spaghetti
@@ -633,7 +633,7 @@ So, how rebasing really works is that when we rebase, Git makes copies of the co
 
 ### Taking out the Garbage
 
-An object taht cannot be reach through any references, is considered dead and will be removed by a garbage collector. So, after rebasing, if nothing is pointing at the old commits, they are going to get garbage-collected by Git.
+An object that cannot be reach through any references, is considered dead and will be removed by a garbage collector. So, after rebasing, if nothing is pointing at the old commits, they are going to get garbage-collected by Git.
 
 <p align="center">
   <img src ="./img/rebase10.jpg" />
@@ -684,7 +684,7 @@ Later we will have an example that shows how mindless rebasing can take you into
   Unpacking objects: 100% (47/47), done.
   ```
 
-* this is what `git cloen` did in the above example: it created an empty directory for the cookbook, and copied the `.git` directory from the GitHub project to this directory. After copying these stuff, Git checked out the master branch to rebuild the files in the working area.
+* this is what `git clone` did in the above example: it created an empty directory for the cookbook, and copied the `.git` directory from the GitHub project to this directory. After copying these stuff, Git checked out the master branch to rebuild the files in the working area.
 
 * **Note:** Git copies over the objects in the object database, but it doesn't copy each and every file on the repository. For example, in recent versions of Git, `git clone` only copies one branch (the master branch). We need to use specific commands to work with the other branches on the remote repo.
 
@@ -735,7 +735,7 @@ Later we will have an example that shows how mindless rebasing can take you into
 
 * So, Git tracks remote branches exactly like it tracks local branches by writing those branches as references in the `refs/remotes/origin` folder. This folder contains the references to branches, tags, and the current HEAD pointer of origin. Git will automatically update this information when we connect to a remote.
 
-* To avoid mainataing one small file for each branch, as a low-level optimization, Git sometimes compacts some of them into a single file called `packed-refs`. This can happen for both local and remote branches:
+* To avoid maintaining one small file for each branch, as a low-level optimization, Git sometimes compacts some of them into a single file called `packed-refs`. This can happen for both local and remote branches:
 
   ```bash
   $ cat packed-refs
@@ -762,4 +762,68 @@ Later we will have an example that shows how mindless rebasing can take you into
   ```
 
 * in conclusion both local and remote branches are just references to a commit and when you synchronize with the remote Git updates the list of remote branches.
+
+### The Joy of Pushing
+
+as mentioned before each object is a sequence of bytes identified by a SHA-1 and SHA-1s are unique. This uniqueness is useful in synchronizing repositories. when we cloned, we copied the objects from the orange repo to the green repo:
+
+<p align="center">
+  <img src ="./img/synch1.jpg" />
+</p>
+
+Now imagine that we added a few new objects to the green repo (e.g. a new commit and the associated blobs and trees):
+
+<p align="center">
+  <img src ="./img/synch2.jpg" />
+</p>
+
+Synchronization is mostly about getting the same objects on all the clones. It is very easy to synchronize because each object is immutable and has a unique SHA-1, so Git will never get confused. It can just copy the missing objects from one repo to the other and also update the remote references. Use `git push` to do the synchronization:
+
+<p align="center">
+  <img src ="./img/synch3.jpg" />
+</p>
+
+```bash
+$ git push
+Counting objects: 4, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 469 bytes | 0 bytes/s, done.
+Total 4 (delta 1), reused 0 (delta 0)
+To https://github.com/doe/cookbook.git
+   5d4a817..704182f  master -> master
+```
+
+### The Chore of Pulling
+
+When we want to push our new commits to the remote repo, there might be new commits in the remote as well which is going to create a conflict:
+
+<p align="center">
+  <img src ="./img/synch4.jpg" />
+</p>
+
+We can force our changes to the remote using `git push -f` but this will create a very confusing situation for all other people synchronizing to the same remote because now their local history will be conflicting with the history in origin:
+
+<p align="center">
+  <img src ="./img/synch5.jpg" />
+</p>
+
+So, the best way to handle this situation is that first we do a `git fetch` to copy the changes on the remote repo to our local repo and then do a `git merge` and resolve the conflict:
+
+<p align="center">
+  <img src ="./img/synch6.jpg" />
+</p>
+
+Now that our local branch is updated with the remote branch we can simply push the data to synchronize the remote branch with our local changes:
+
+<p align="center">
+  <img src ="./img/synch7.jpg" />
+</p>
+
+**Note:** `git pull` is a single command that does both. It does a fetch followed by a merge.
+
+
+
+
+
 
