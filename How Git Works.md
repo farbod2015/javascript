@@ -822,7 +822,37 @@ Now that our local branch is updated with the remote branch we can simply push t
 
 **Note:** `git pull` is a single command that does both. It does a fetch followed by a merge.
 
+### Rebase Revisited
 
+Rebasing shared branches is not a good idea and here is an example why:
+
+Imagine we have this repo, freshly cloned with two branches that are both tracking branches on origin:
+
+<p align="center">
+  <img src ="./img/rebase11.jpg" />
+</p>
+
+We are working on the lisa branch, and we decide to roll the changes from master into lisa. we can do this with either a merge or a rebase, so lets try the rebase this time. So, we are going to have this new lisa commit, marked with `!` (the original lisa branch will be garbage collected at some point):
+
+<p align="center">
+  <img src ="./img/rebase12.jpg" />
+</p>
+
+Now we have a conflict again. We can't just push because we have different histories on our local repo and on origin. This particular conflict, however, doesn't seem like much. We can fix it easily, for example by doing a force push or a pull followed by a push, and then we have the same stuff on origin that we have on local:
+
+<p align="center">
+  <img src ="./img/rebase13.jpg" />
+</p>
+
+However, things break down when we introduce another user (e.g. Annie) who is also working on the same cookbook repository and she still has the original yellow commit. Not only that, she also kept working on the lisa branch and she added a commit there:
+
+<p align="center">
+  <img src ="./img/rebase14.jpg" />
+</p>
+
+Now Annie has a pretty nasty conflict to sort out the next time she synchronizes with origin. She needs to understand what happened first, and then solve the conflicts even though she didn't cause the conflicts herself. There is a good chance that even after solving the conflicts she will end up with a confusing history that includes both yellow commits even though they look exactly the same.
+
+**Note:** As a general rule, never rebase stuff that has been shared with other repositories. Though, it's okay to rebase commits that you haven't shared yet.
 
 
 
