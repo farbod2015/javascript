@@ -63,7 +63,7 @@ This section is from the following modules of *Building Applications with React 
 
   ```jsx
   // JSX
-  <h1 color="red">Headinghere </h1>
+  <h1 color="red">Heading here</h1>
 
   // Compiled version
   React.createElement("h1", {color: "red"}, "Heading here")
