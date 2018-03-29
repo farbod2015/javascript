@@ -81,7 +81,7 @@ This section is from the following modules of *Building Applications with React 
 
   ```jsx
   // JSX
-  <h1 color="red">Headinghere </h1>
+  <h1 color="red">Heading here</h1>
 
   // Compiled version
   React.createElement("h1", {color: "red"}, "Heading here")
@@ -349,24 +349,30 @@ Let's look at how actions, reducers, the store, and container components will in
 
 * In Redux, the events happening in the application are called actions.
 * Actions are just plain objects containing a description of an event:
+
   ```js
   { type: RATE_COURSE, rating: rating }
   ```
+
 * An action must have a type property. The data could be a complex object, a simple number, a Boolean, any value that's serializable. The only things that you shouldn't try passing around in your actions are things that won't serialize to JSON like functions or promises.
 * Actions are made by convenience functions called action creators. Here, the action creator is called `RATE_COURSE`. Typically, the action creator has the same name as the action's type:
+
   ```js
   rateCourse(rating) {
     return { type: RATE_COURSE, rating: rating }
   }
   ```
+
 * Action creators are considered convenience functions because they're not required. But I recommend following this simple convention. By using these action creators to create your actions, the spot where you dispatched the action does not need to know the action creator structure.
 
 ### Store
 
 * In Redux, you create a store by calling createStore in your application's entry point. You pass the createStore function to your reducer function:
+
   ```js
   let store = createStore(reducer);
   ```
+
 * The Redux store simply stores data while reducers, which we'll discuss in a moment, handle the state changes.
 * There's only one store in Redux. Having a single source of truth makes the application easier to manage and understand.
 * The Redux store API is very simple:
@@ -384,6 +390,7 @@ Let's look at how actions, reducers, the store, and container components will in
 * Some types of JavaScript are immutable already, such as `number`, `string`, `Boolean`, `undefined`, and `null`. In other words, every time you change the value of one of these types, a new copy is created.
 * Mutable JavaScript types are things like `object`s, `array`s, and `function`s.
 * Do I have to build a new copy of state by hand every time I want to change it? Thankfully, no. * There are some easy ways to create copies of objects in JavaScript. The approach I recommend is Object.assign:
+
   ```none
   Signature
   Object.assign(target, ...sources)
@@ -392,6 +399,7 @@ Let's look at how actions, reducers, the store, and container components will in
   // Example
   Object.assign({}, state, {role: 'admin'});
   ```
+
 * Also `Object.assign` is part of ES6, it's a feature that Babel can't transpile. So be sure that you include babel-polyfill at the root of your app like we did in the environment setup module.
 
 ### Why Immutability?
@@ -425,13 +433,16 @@ Let's look at how actions, reducers, the store, and container components will in
 
 * To change the store, you dispatch an action that is ultimately handled by a reducer.
 * A reducer is a function that takes state and an action and returns new state:
+
   ```js
   function myReducer(state, action) {
     // return new state based on action passed
   }
   ```
+
 * Here's an example of a reducer that's handling incrementing a counter:
   * The following version is wrong because it is mutating the state at `state.couter++`:
+
     ```js
     function myReducer(state, action) {
       switch(action.type) {
@@ -441,7 +452,9 @@ Let's look at how actions, reducers, the store, and container components will in
       }
     }
     ```
+
   * Here is the correct example:
+
     ```js
     function myReducer(state, action) {
       switch(action.type) {
@@ -454,6 +467,7 @@ Let's look at how actions, reducers, the store, and container components will in
       }
     }
     ```
+
   * Reducers must be pure functions. This means they should produce no side effects. You know you have a pure function if calling it with the same set of arguments always returns the same value.
   * Because reducers are supposed to be pure functions, there are three things that you should never do in a reducer:
     1. mutate arguments
@@ -489,23 +503,27 @@ There are two component types in React:
 * **The Provider component**:
   * is utilized at your application's root
   * it wraps your the application. This is how the Provider component attaches your app to the Redux store.
+
     ```js
     <Provider store={this.props.store}>
       <App/>
     </Provider>
     ```
+
   * Provider component uses React's context to make the store available to all of your container components in the application without having to pass it explicitly. You only need to use it once when you `render` the root component
 
 * **`connect` function**:
   * container components aren't typically created by hand, Instead, they're created by React-Redux
   * The `connect` function that's provided by React-Redux generates the container components
   * This function wraps a component so it's connected to the Redux store
+
     ```js
     export default connect(
       mapStateToProps,
       mapDespatchToProps
     )(AuthorPage)
     ```
+
   * With this function, we can declare what parts of the store we'd like attached to our component as `props`. And we declare what actions we want to expose on `props` as well.
 
 * React-Redux's `connect` function accepts two parameters, both of which are functions
@@ -518,14 +536,17 @@ There are two component types in React:
 ### mapStateToProps
 
 * The first parameter in `connect` function is `mapStateToProps`:
+
   ```js
   connect(mapStateToProps, mapDispatchToProps)
   ```
+
 * This function is useful for defining what part of the Redux store you want to expose on your component.
 * When you define this function, the component will **subscribe** to Redux store updates. Any time it updates, `mapStateToProps` will be called.
 * This function returns an object. Each property on the object you define will become a property on your container component.
 * `mapStateToProps` function determines what state is available on your container component via `props`
 * in the following example, this.props.appstate within the component has access to any state that is handled by appstate reducer:
+
   ```js
   function mapStateToProps(state) {
     return {
@@ -533,6 +554,7 @@ There are two component types in React:
     }
   };
   ```
+
 * If I only want to expose part of the store's state to the component, we can specify that specific pieces of state in the `return` section of the function and each object will become a prop on the component
 * One important thing to note is every time the component is updated, the `mapStateToProps` function is called. So if you're doing something expensive in `mapStateToProps`, you'll want to use a library like `Reselect` for **memoizing**:
   * **Memoizing**: memoization is like caching for function calls. Each time a function is called,Reselect just checks whether it's already been called with the specified parameters, and if it has, it doesn't call the function. Instead, it just returns the memoized value
@@ -543,6 +565,7 @@ There are two component types in React:
 * The second function that we pass to Connect is `mapDispatchToProps`
 * This function lets us specify what actions we want to expose as `props`
 * The `mapDispatchToProps` function receives `dispatch` as its lone parameter and it returns the **callback props** that you want to pass down:
+
   ```js
   function mapDispatchToProps(dispatch) {
     return {
@@ -550,19 +573,23 @@ There are two component types in React:
     };
   }
   ```
+
 * `bindActionCreators` function is part of Redux
 
 * Handling `mapDispatchToProps`: there are three ways to handle mapping your actions to props in Redux container components (this is simply a decision about how you want to expose your actions to your components):
   1. The first option is to ignore it since `mapDispatchToProps` is an optional parameter on the Connect function. When you omit it, then the `dispatch` function will be attached to your container component (props). This means you can call `dispatch` manually and pass it an action creator:
+
       ```js
       this.props.dispatch(loadCourses());
       ```
+
       It has tow downsides:
         * First, it requires more boilerplate each time you want to fire off an action because you have to explicitly call `dispatch` and pass it the action you'd like to fire.
         * Second, this means your child components need to reference Redux-specific concepts like the `dispatch` function, as well as your action creators. If you want to keep your child components as simple as possible and avoid tying them to Redux, then this approach is not ideal.
 
   1. The second option is to manually wrap your action creators in `dispatch` calls within the `mapDispatchToProps` function:
       * Here, we are wrapping `loadCourses` action creator in a function that calls `dispatch`.
+
       ```js
       function mapDispatchToProps(dispatch) {
         return {
@@ -575,9 +602,11 @@ There are two component types in React:
       //In component:
       this.props.loadCourses();
       ```
+
       * Compared to option 1, it keeps the calls in my actual component shorter at the cost of some extra coding here in `mapDispatchToProps`.
 
   1. Finally, you can use the `bindActionCreators` function, which is a convenience function that wraps your action creators in dispatch calls for you. `BindActionCreators` basically does what we're doing in option 2 automatically.
+
       ```js
       function mapDispatchToProps(dispatch) {
         return {
