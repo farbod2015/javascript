@@ -55,7 +55,7 @@ The router based on some rules, notes that the request with URL `/movies` should
 `ActionResult` is the base class for all action results in ASP.NET MVC. So depending on what an action does it would return an instance of one of the classes that is derived from `ActionResult`:
 
 |Type|Helper Method|
-|-|-|
+|:-|:-|
 |ViewResult|View()|
 |PartialViewResult|PartialView()|
 |ContentResult|Content()|
@@ -462,9 +462,6 @@ PM> enable-migrations
 
 This will create a folder, Migrations, and all our migrations will be stored there.
 
-**Note:** In code-first migration we should not add data to database manually. We should use migration to add new data.
-
-
 Now we can create our migrations by `add-migration migration_name`. `migration_name` should be a name that identifies the kind of change we have made to our domain model (e.g. `InitialModel` for the first migration). We can overwrite an existing migration using `-force` switch:
 
 ```none
@@ -566,27 +563,44 @@ Note that navigation properties are optional on both entity types at the ends of
 
 ### Seeding the Database
 
+* The records that we populate in database's tables should be consistence across different environments. For example, the development database, testing database, and production database, they all should have the exact same membership types.
 
+* In code-first workflow, to ensure this consistency, we should not add data to the database manually. We should use migration to add new data.
 
+* here is an example for populating membership types using migrations:
 
+```none
+PM> add-migration PopulateMembershipTypes
+```
 
+```c#
+namespace Vidly.Migrations
+{
+  using System;
+  using System.Data.Entity.Migrations;
 
+  public partial class PopulateMembershipTypes : DbMigration
+  {
+    public override void Up()
+    {
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (1, 0, 0, 0)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (2, 30, 1, 10)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (3, 90, 3, 15)");
+      Sql("INSERT INTO MembershipTypes (Id, SignUpFee, DurationInMonths, DiscountRate) VALUES (4, 300, 12, 20)");
+    }
 
+    public override void Down()
+    {
+    }
+  }
+}
+```
 
-
-
-
-
-
-
-
-
-
-
+* we can create a sql script using all or part of the migrations (e.g. only migrations added since last deployment).
 
 ### Overriding Conventions
 
-We can override default conventions by adding Data Annotations:
+We can override default conventions by adding Data Annotations and then creating a new migration:
 
 ```C#
 using System;
@@ -608,6 +622,11 @@ namespace Vidly.Models
     public byte MembershipTypeId { get; set; }
   }
 }
+```
+
+```none
+PM> add-migration ApplyAnnotationToCustomerName
+PM> Update-Database
 ```
 
 In the above example the `Name` property is of type `string` which by default is nullable and unlimited length but by using `[Required]` we can make _not nullable_ and assign maximum length by `[StringLength(255)]`
@@ -687,6 +706,8 @@ namespace Vidly.Controllers
 _Eager loading_ is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved by use of the `Include` method. For example, the query below will load customers and the membership type related to each customer:
 
 ```C#
+    // CustomersController.cs
+
     public ViewResult Index()
     {
       var customers = _context.Customers.Include(c => c.MembershipType).ToList();
@@ -698,14 +719,211 @@ _Eager loading_ is the process whereby a query for one type of entity also loads
 so, in the following example `customer` also includes the membership information:
 
 ```C#
-      @foreach (var customer in Model)
-      {
-        <tr>
-          <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
-          <td>@customer.MembershipType.DiscountRate%</td>
-        </tr>
-      }
+// Index.cshtml
+
+@foreach (var customer in Model)
+{
+  <tr>
+    <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
+    <td>@customer.MembershipType.DiscountRate%</td>
+  </tr>
+}
 ```
+
+## Building Forms
+
+### The Markup
+
+* by using `Html.BeginForm` we can specify what action is going to be called when the form is submitted. It renders the `<form>` tag. This method returns a disposable object so if we wrap this call in a `using` block, at the end of the block the returned object will be disposed and in the `Dispose` method it will simply render the closing `</form>` tag.
+* There is a special markup that we need to follow to render modern and responsive forms and this is the markup that _bootstrap_ understands and we are going to use it. For example, we wrap each input field in a div with the class `form-group`:
+
+```c#
+@model Vidly.Models.Customer
+
+@{
+  ViewBag.Title = "New";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Customer</h2>
+
+@using (Html.BeginForm("Create", "Customers"))
+{
+  <div class="form-group">
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+  </div>
+  <div class="form-group">
+    @Html.LabelFor(m => m.Birthdate)
+    @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+  </div>
+  <div class="checkbox">
+    <label>
+      @Html.CheckBoxFor(m => m.IsSubscribedToNewsletter) Subscribed to Newsletter?
+    </label>
+  </div>
+}
+```
+
+* `LabelFor` helper method is a strongly typed extension method. It generates a html label element for the model object property specified using a lambda expression.
+* `TextBoxFor` helper method is a strongly typed extension method. It generates a text input element for the model property specified using a lambda expression. `TextBoxFor` method binds a specified model object property to input text. So it automatically displays a value of the model property in a textbox and visa-versa. We can pass a HTML attribute as the second parameter to this method.
+* note that we have a different declaration for `checkbox`
+
+### Labels
+
+* In the above example the name of the label is the name of the corresponding property in the `Customer` class. For example, `Birthday` will appear as the label in the HTML page for the following code:
+
+```c#
+<div class="form-group">
+  @Html.LabelFor(m => m.Birthdate)
+  @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+</div>
+```
+
+* To specify a different label name we can:
+  * either use `Display` data annotation to `Birthday` property in `Customer` class which needs a new build every time we change it:
+
+    ```C#
+    [Display(Name = "Date of Birth")]
+    public DateTime? Birthdate { get; set; }
+    ```
+
+  * or manually add a `label` instead of the `LabelFor`:
+    * In the following example if we click on the label the textbox is not going to get focused anymore (with `LabelFor` it does):
+
+      ```c#
+      <div class="form-group">
+        <label>Data of Birth</label>
+        @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+      </div>
+      ```
+
+    * we can add `for` manually to `label` to get the behavior. Note that if we change the property name, `Birthday`, in our `Customer` class we have to manually change it for the `for` attribute as well:
+
+      ```c#
+      <div class="form-group">
+        <label for="Birthday">Data of Birth</label>
+        @Html.TextBoxFor(m => m.Birthdate, new { @class = "form-control" })
+      </div>
+      ```
+
+### Drop-down Lists
+
+* if we have a collection in our `ViewModel` that we are going to only iterate over it in our view, it would be better if we use `IEnumerable` since it works with all types of collections:
+
+```c#
+// NewCustomerViewModel.cs
+
+using System.Collections.Generic;
+using Vidly.Models;
+
+namespace Vidly.ViewModels
+{
+  public class NewCustomerViewModel
+  {
+    public IEnumerable<MembershipType> MembershipTypes { get; set; }
+    public Customer Customer { get; set; }
+  }
+}
+```
+
+```c#
+// New.cshtml
+
+<div class="form-group">
+  @Html.LabelFor(m => m.Customer.MembershipTypeId)
+  @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select Membership Type", new { @class = "form-control" })
+</div>
+```
+
+### Model Binding
+
+* Now we need to create a button to submit the form using the `Create` action that we specified before:
+
+```c#
+@using (Html.BeginForm("Create", "Customers"))
+{
+    // other form elements here
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+}
+```
+
+* We need to create the action and apply `HttpPost` attribute to it to make sure it can only be called using `HttpPost` and not `HttpGet`. As the best practice if your actions modify data they should never be accessible a `HttpGet`.
+* we can pass the `Customer` model (or also `NewCustomerViewModel`) to the action and MVC framework will automatically map request data to this object. This is what we call _Model Binding_:
+
+```c#
+// CustomersController.cs
+
+[HttpPost]
+public ActionResult Create(Customer customer)
+{
+  return View();
+}
+```
+
+### Saving Data
+
+* To add the data to the database, first we need to add it to `DbContext` using `Add` method. Our `DbContext` has a change tracking mechanism so any time you add an object to it, or modify/remove one of its existing objects it will mark them as added, modified, or deleted.
+* To persist these changes we need to call `_context.SaveChanges()`. So, our `DbContext` will go through all modified objects and based on the kind of modification, it will generate SQL statements at runtime and then it will run them on the database. All changes are wrapped in a transaction together so either all changes get persisted together or nothing will get persisted.
+
+```c#
+[HttpPost]
+public ActionResult Create(Customer customer)
+{
+  _context.Customers.Add(customer);
+  _context.SaveChanges();
+
+  return RedirectToAction("Index", "Customers");
+}
+```
+
+### Edit Form
+
+If we want to render a view with a different name than the action name, we need to override it. For example in the following action, the name of the action is `Edit` so by default `View` will be rendered in `EditView` but we have passed `"CustomerForm"` as the first argument and that is where it'll render. The second argument in the `View` method here is the model:
+
+```c#
+public ActionResult Edit(int id)
+{
+  var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+  if (customer == null)
+    return HttpNotFound();
+
+  var viewModel = new CustomerFormViewModel
+  {
+    Customer = customer,
+    MembershipTypes = _context.MembershipTypes.ToList()
+  };
+
+  return View("CustomerForm", viewModel);
+}
+```
+
+### Updating Data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
