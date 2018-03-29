@@ -9,47 +9,47 @@
 
 * use `git hash-object filename` to generate a hash key for a file. The following example generates a hash key for a text
 
-```shell
-$ echo "Apple Pie" | git hash-object --stdin
-bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
-```
+  ```shell
+  $ echo "Apple Pie" | git hash-object --stdin
+  bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
+  ```
 
 ### Storing Things
 
 * you can create a new git repository using `git init`:
 
-```shell
-$ git init
-Initialized empty Git repository in C:/Project/.git/
-```
+  ```shell
+  $ git init
+  Initialized empty Git repository in C:/Project/.git/
+  ```
 
 * The repository is stored in the .git directory
 
 * the following command creates the directory and the blob file for the text
 
-```shell
-$ echo "Apple Pie" | git hash-object -w --stdin
-bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
-```
+  ```shell
+  $ echo "Apple Pie" | git hash-object -w --stdin
+  bb3918d5053fea31fc9a58fae1e5bdeabe3ec647
+  ```
 
 * Blob files for objects added to the repository are stored in a directory inside object directory. the directory's name starts with the first two characters of the returned hash key (e.g. in the above example)
 * The name of the blob file is the rest of the hash key (i.e. remove the first two characters)
 
 * git status displays the state of the working directory and the staging area
 
-```shell
-$ git status
-On branch master
+  ```shell
+  $ git status
+  On branch master
 
-Initial commit
+  Initial commit
 
-Changes to be committed:
-  (use "git rm --cached <file>..." to unstage)
+  Changes to be committed:
+    (use "git rm --cached <file>..." to unstage)
 
-        new file:   menu.txt
-        new file:   recipes/README.txt
-        new file:   recipes/apple_pie.txt
-```
+          new file:   menu.txt
+          new file:   recipes/README.txt
+          new file:   recipes/apple_pie.txt
+  ```
 
 ### First Commit!
 
@@ -58,49 +58,49 @@ Changes to be committed:
 
 * use `add` to add changes to the staging area:
 
-```shell
-$ git add menu.txt               # the chagne here is that we have a new file
-```
+  ```shell
+  $ git add menu.txt               # the chagne here is that we have a new file
+  ```
 
 * `commit` records changes to the repository. It stores the current contents of the index in a new commit along with a log message from the user describing the changes.
 
-```shell
-$ git commit -m "My Message!"
-[master (root-commit) c3c8b07] First Commit!
- 3 files changed, 2 insertions(+)
- create mode 100644 menu.txt
- create mode 100644 recipes/README.txt
- create mode 100644 recipes/apple_pie.txt
-```
+  ```shell
+  $ git commit -m "My Message!"
+  [master (root-commit) c3c8b07] First Commit!
+  3 files changed, 2 insertions(+)
+  create mode 100644 menu.txt
+  create mode 100644 recipes/README.txt
+  create mode 100644 recipes/apple_pie.txt
+  ```
 
 * use `git log` to look at the list of the existing commits
 
-```shell
-commit 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c (HEAD -> master)
-Author: Doe <john.doe@example.com>
-Date:   Fri Mar 23 12:06:55 2018 -0500
+  ```shell
+  commit 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c (HEAD -> master)
+  Author: Doe <john.doe@example.com>
+  Date:   Fri Mar 23 12:06:55 2018 -0500
 
-    First Commit!
-```
+      First Commit!
+  ```
 
 * Use `cat-file` to check the content of an object (e.g. commit, tree, blob, etc.) in the object folder (-t: type. -p: print)
 
-```shell
-$ git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
-tree 127ea67bfaa06ad1407ff08bcbadea12e531568c
-author Doe <john.doe@example.com> 1521824815 -0500
-committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521824815 -0500
+  ```shell
+  $ git cat-file -p 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
+  tree 127ea67bfaa06ad1407ff08bcbadea12e531568c
+  author Doe <john.doe@example.com> 1521824815 -0500
+  committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521824815 -0500
 
-First Commit!
-```
+  First Commit!
+  ```
 
 * tree in the above example is the root directory
 
-```shell
-$ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
-100644 blob 9eed377bbdeb4aa5d14f8df9cd50fed042f41023    menu.txt
-040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
-```
+  ```shell
+  $ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
+  100644 blob 9eed377bbdeb4aa5d14f8df9cd50fed042f41023    menu.txt
+  040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
+  ```
 
 * the numbers at the beginning of the line in the above example are access permissions
 * a blob is not really a file it is the content of a file. The file name and the file permissions are not stored in the blob. They are stored in the tree that points to the blob (you will see later why this is a good thing)
@@ -114,25 +114,25 @@ $ git cat-file -p 127ea67bfaa06ad1407ff08bcbadea12e531568c
 
 * if we edit the `menu.txt` and add a new line "Cheesecake" and commit. The content of the new commit will look like this:
 
-```shell
-$ git commit -m "Add Cake"
-tree f6339016a5a44313c05b9e2831c4edb324a69548
-parent 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
-author Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
-committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
+  ```shell
+  $ git commit -m "Add Cake"
+  tree f6339016a5a44313c05b9e2831c4edb324a69548
+  parent 9506b33e69f3ba80e43fd79c50043b11d1c2cd4c
+  author Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
+  committer Hesaaraki <Farbod.Hesaaraki@thermon.com> 1521834006 -0500
 
-Add Cake
-```
+  Add Cake
+  ```
 
 * Commits are linked. In the above example the parent is the first commit.
 * The tree of the second commit is different than the tree of the first commit.
 * if we check the content of the tree of the second commit it will look like this:
 
-```shell
-$ git cat-file -p f6339016a5a44313c05b9e2831c4edb324a69548
-100644 blob b63cba247afc716104ab997704f0973823894907    menu.txt
-040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
-```
+  ```shell
+  $ git cat-file -p f6339016a5a44313c05b9e2831c4edb324a69548
+  100644 blob b63cba247afc716104ab997704f0973823894907    menu.txt
+  040000 tree 184c2d41e294290bcaa65d0d0960e8929a210f36    recipes
+  ```
 
 * the blob for the `menu.txt` in the second commit is different than the blob in the first commit since its content has changed but the content of the `recipes` tree has not change so the hash key remains the same
 * Here is the file structure of the object database after the second commit:
@@ -143,10 +143,10 @@ $ git cat-file -p f6339016a5a44313c05b9e2831c4edb324a69548
 
 * As you can see we have currently 8 objects in the database. We can check the number of objects using `count-objects`:
 
-```shell
-$ git count-objects
-8 objects, 32 kilobytes
-```
+  ```shell
+  $ git count-objects
+  8 objects, 32 kilobytes
+  ```
 
 * for huge files git maybe store the difference between the two version and it may compress multiple objects into a single blob.
 
@@ -155,22 +155,22 @@ $ git count-objects
 * There is another type of objects in git called tags. A tag is like a label for the current state of the project (i.e. a simple label for an object). There are two types of tags in git _regular tags_ and _annotated tags_.
 * Annotated tags are the ones that come with a message. To create an annotated tag, you could use the git tag command with the -a argument, and you need a name for the tag and a message:
 
-```shell
-$ git tag -a mytag -m "I love cheesecake"
-```
+  ```shell
+  $ git tag -a mytag -m "I love cheesecake"
+  ```
 
 * you can get a list of the tags using `git tag` command
 * Annotated tags are also objects like commit. You cat-file tags using their hash key or tag name:
 
-```shell
-$ git cat-file -p mytag
-object f4d96566d0a09558fd04a52fb07e407c9d6e97bd
-type commit
-tag mytag
-tagger Doe <john.doe@example.com> 1521835840 -0500
+  ```shell
+  $ git cat-file -p mytag
+  object f4d96566d0a09558fd04a52fb07e407c9d6e97bd
+  type commit
+  tag mytag
+  tagger Doe <john.doe@example.com> 1521835840 -0500
 
-I love cheesecake
-```
+  I love cheesecake
+  ```
 
 * In the above example, the object that the tag is pointing to is a commit
 * Here is how the object database look after adding the tag:
@@ -196,10 +196,10 @@ In the Git object database you have:
 * Git normally puts branches in `refs/heads` directory.
 * Right now the `heads` folder only contains `master`. It is not a compressed file (unlike blobs) and its content is only a hash key for the current commit.
 
-```shell
-$ cat .git/refs/heads/master
-f4d96566d0a09558fd04a52fb07e407c9d6e97bd
-```
+  ```shell
+  $ cat .git/refs/heads/master
+  f4d96566d0a09558fd04a52fb07e407c9d6e97bd
+  ```
 
 * so we have two linked commits in this project, and we also have a master branch which is just a simple reference (pointer) to a commit (in this case last commit) and that is why the directory is called `refs`:
 
@@ -209,16 +209,16 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * now lets create a new branch called lisa that contains alternative recipes:
 
-```shell
-$ git branch lisa
-```
+  ```shell
+  $ git branch lisa
+  ```
 
 * the new branch is pointing to same commit that master branch is pointing to:
 
-```shell
-$ cat .git/refs/heads/lisa
-f4d96566d0a09558fd04a52fb07e407c9d6e97bd
-```
+  ```shell
+  $ cat .git/refs/heads/lisa
+  f4d96566d0a09558fd04a52fb07e407c9d6e97bd
+  ```
 
 * This is what we have now two commits and two branches, and the branches are pointing at the same commit:
 
@@ -230,30 +230,30 @@ f4d96566d0a09558fd04a52fb07e407c9d6e97bd
 
 * the current branch is marked with * on the list of branches:
 
-```shell
-$ git branch
-  lisa
-* master
-```
+  ```shell
+  $ git branch
+    lisa
+  * master
+  ```
 
 * the current branch is stored in `.git/HEAD`. `HEAD` is a reference to a branch or a pointer to a pointer:
 
-```shell
-$ cat .git/HEAD
-ref: refs/heads/master
-```
+  ```shell
+  $ cat .git/HEAD
+  ref: refs/heads/master
+  ```
 
 * If we change `apple_pie.txt` and commit the new changes then the master branch will point to the new commit and the head is still pointing to the master branch:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 cup sugar
-8 Granny Smith apples
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 cup sugar
+  8 Granny Smith apples
+  ```
 
 <p align="center">
   <img src ="./img/newcommit1.jpg" />
@@ -261,10 +261,10 @@ pre-made pastry
 
 * use `checkout` to change the current branch:
 
-```shell
-$ git checkout lisa
-Switched to branch 'lisa'
-```
+  ```shell
+  $ git checkout lisa
+  Switched to branch 'lisa'
+  ```
 
 * two things happen when we do a `checkout`:
     1. `HEAD` now points to `lisa`
@@ -278,16 +278,16 @@ Switched to branch 'lisa'
 
 * lets edit the `apple_pie.txt` recipe in lisa's branch:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 cup sugar
-1 tbsp cinnamon
-10 Granny Smith apples
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 cup sugar
+  1 tbsp cinnamon
+  10 Granny Smith apples
+  ```
 
 * if we commit the chages, Git will add the commit to the object database and move the current branch, lisa, to point at the new commit:
 
@@ -307,88 +307,88 @@ pre-made pastry
 
 * we are going to have a conflict, if we merge lisa's changes from her branch into the master branch:
 
-```shell
-$ git merge lisa
-Auto-merging recipes/apple_pie.txt
-CONFLICT (content): Merge conflict in recipes/apple_pie.txt
-Automatic merge failed; fix conflicts and then commit the result.
-```
+  ```shell
+  $ git merge lisa
+  Auto-merging recipes/apple_pie.txt
+  CONFLICT (content): Merge conflict in recipes/apple_pie.txt
+  Automatic merge failed; fix conflicts and then commit the result.
+  ```
 
 * Here is our `apple_pie.txt` after the conflict:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 cup sugar
-<<<<<<< HEAD
-8 Granny Smith apples
-=======
-1 tbsp cinnamon
-10 Granny Smith apples
->>>>>>> lisa
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 cup sugar
+  <<<<<<< HEAD
+  8 Granny Smith apples
+  =======
+  1 tbsp cinnamon
+  10 Granny Smith apples
+  >>>>>>> lisa
+  ```
 
 * we need to solve the confilct manually:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 cup sugar
-1 tbsp cinnamon
-9 Granny Smith apples
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 cup sugar
+  1 tbsp cinnamon
+  9 Granny Smith apples
+  ```
 
-```shell
-$ git status
-On branch master
-You have unmerged paths.
-  (fix conflicts and run "git commit")
-  (use "git merge --abort" to abort the merge)
+  ```shell
+  $ git status
+  On branch master
+  You have unmerged paths.
+    (fix conflicts and run "git commit")
+    (use "git merge --abort" to abort the merge)
 
-Unmerged paths:
-  (use "git add <file>..." to mark resolution)
+  Unmerged paths:
+    (use "git add <file>..." to mark resolution)
 
-        both modified:   recipes/apple_pie.txt
+          both modified:   recipes/apple_pie.txt
 
-no changes added to commit (use "git add" and/or "git commit -a")
-```
+  no changes added to commit (use "git add" and/or "git commit -a")
+  ```
 
 * to tell Git that the conflict has been fixed, we need to stage the changes and then commit. The commit does not need a message in this case since it will open vim automatically to edit the message that it has generated (hit `Esc` and then `:wq` to save and quit):
 
-```shell
-$ git add .\recipes\apple_pie.txt
-$ git status
-On branch master
-All conflicts fixed but you are still merging.
-  (use "git commit" to conclude merge)
+  ```shell
+  $ git add .\recipes\apple_pie.txt
+  $ git status
+  On branch master
+  All conflicts fixed but you are still merging.
+    (use "git commit" to conclude merge)
 
-Changes to be committed:
+  Changes to be committed:
 
-        modified:   recipes/apple_pie.txt
-```
+          modified:   recipes/apple_pie.txt
+  ```
 
-```shell
-$ git commit
-[master db6e168] Merge branch 'lisa'
-```
+  ```shell
+  $ git commit
+  [master db6e168] Merge branch 'lisa'
+  ```
 
 * `merge` is a commit and if we look inside this commit using `cat-file` we can see that it has two parents:
 
-```shell
-tree 4de2fe2bc8400d05e060681133fd3db89712e015
-parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
-parent 00a343be57c923c9ebcf7a900454cd1210d598cf
-author Farbod <farbod@example.com> 1522080262 -0500
-committer Farbod <farbod@example.com> 1522080262 -0500
+  ```shell
+  tree 4de2fe2bc8400d05e060681133fd3db89712e015
+  parent 64fd38d40288b792ce1ae3ffaeb27912052900c9
+  parent 00a343be57c923c9ebcf7a900454cd1210d598cf
+  author Farbod <farbod@example.com> 1522080262 -0500
+  committer Farbod <farbod@example.com> 1522080262 -0500
 
-Merge branch 'lisa'
-```
+  Merge branch 'lisa'
+  ```
 
 <p align="center">
   <img src ="./img/merging1.jpg" />
@@ -422,18 +422,18 @@ Merge branch 'lisa'
 
 * Since we have resolved the conflict when we were merging it the other way (merging lisa into the master branch), git will not ask us to resolve the conflict and also it is not going to create a new commit that is a child of lisa and the master branch because master branch itself is the result of the merge. So it will only point lisa to the master branch as the result of the merge:
 
-```shell
-$ git checkout lisa
-Switched to branch 'lisa'
-```
+  ```shell
+  $ git checkout lisa
+  Switched to branch 'lisa'
+  ```
 
-```shell
-$ git merge master
-Updating 00a343b..db6e168
-Fast-forward
- recipes/apple_pie.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-```
+  ```shell
+  $ git merge master
+  Updating 00a343b..db6e168
+  Fast-forward
+  recipes/apple_pie.txt | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+  ```
 
 <p align="center">
   <img src ="./img/merging2.jpg" />
@@ -445,15 +445,15 @@ Fast-forward
 
   * If master has diverged since the feature branch was created, then merging the feature branch into master will create a merge commit. This is a _typical merge_:
 
-<p align="center">
-  <img src ="./img/merging3.jpg" />
-</p>
+  <p align="center">
+    <img src ="./img/merging3.jpg" />
+  </p>
 
   * If master has not diverged, instead of creating a new commit, git will just point master to the latest commit of the feature branch. This is a _fast forward_:
 
-<p align="center">
-  <img src ="./img/merging4.jpg" />
-</p>
+  <p align="center">
+    <img src ="./img/merging4.jpg" />
+  </p>
 
   **Note:** Passing `--no-ff` creates a new commit to represent the merge, even if git would normally fast forward:
 
@@ -465,47 +465,47 @@ Fast-forward
 
 * you can checkout a commit just like you can checkout a branch. In this case, HEAD will point to the commit instead of a branch:
 
-```shell
-$ git checkout db6e1684
-Note: checking out 'db6e1684'.
+  ```shell
+  $ git checkout db6e1684
+  Note: checking out 'db6e1684'.
 
-You are in 'detached HEAD' state. You can look around, make experimental
-changes and commit them, and you can discard any commits you make in this
-state without impacting any branches by performing another checkout.
+  You are in 'detached HEAD' state. You can look around, make experimental
+  changes and commit them, and you can discard any commits you make in this
+  state without impacting any branches by performing another checkout.
 
-If you want to create a new branch to retain commits you create, you may
-do so (now or later) by using -b with the checkout command again. Example:
+  If you want to create a new branch to retain commits you create, you may
+  do so (now or later) by using -b with the checkout command again. Example:
 
-  git checkout -b <new-branch-name>
+    git checkout -b <new-branch-name>
 
-HEAD is now at db6e168... Merge branch 'lisa'
-```
+  HEAD is now at db6e168... Merge branch 'lisa'
+  ```
 
 <p align="center">
-  <img src ="./img/checking3.jpg" />
+  <img src ="./img/checkout3.jpg" />
 </p>
 
 * this situation is called _detached HEAD_, because we don't have a current branch in this state:
 
-```shell
-$ git branch
-* (HEAD detached at db6e168)
-  lisa
-  master
-```
+  ```shell
+  $ git branch
+  * (HEAD detached at db6e168)
+    lisa
+    master
+  ```
 
 * now lets make changes to `apple_pie.txt` and do a commit:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 cup sugar
-1 tbsp cinnamon
-20 Granny Smith apples
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 cup sugar
+  1 tbsp cinnamon
+  20 Granny Smith apples
+  ```
 
 * in this case HEAD is not pointing to a branch so it will move with the commit directly. It is working exactly like branch here:
 
@@ -515,15 +515,15 @@ pre-made pastry
 
 * lets make more changes to `apple_pie.txt` and commit again:
 
-```txt
-Apple Pie
+  ```txt
+  Apple Pie
 
-pre-made pastry
-1/2 cup butter
-3 tablespoons flour
-1 tbsp cinnamon
-20 Granny Smith apples
-```
+  pre-made pastry
+  1/2 cup butter
+  3 tablespoons flour
+  1 tbsp cinnamon
+  20 Granny Smith apples
+  ```
 
 <p align="center">
   <img src ="./img/detached2.jpg" />
@@ -574,7 +574,7 @@ but we are going to use the second way and that is _rebase_. In the following im
   <img src ="./img/rebase3.jpg" />
 </p>
 
- To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
+To do a rebase, Git detaches the entire spaghetti branch from this commit and moves it to the top of the master so it changes the base of the spaghetti branch to the commit that the master branch is pointing to. Thast is why it is called rebase:
 
 ```shell
 $ git checkout spaghetti
@@ -659,10 +659,10 @@ Later we will have an example that shows how mindless rebasing can take you into
 
 * There are two types of tags: Annotated and Lightweight:
 
-```bash
-git tag `tagName`                       # Lightweight Tag
-git tag -a `tagName` -m `tagMessage`    # Annotated Tag
-```
+  ```bash
+  git tag `tagName`                       # Lightweight Tag
+  git tag -a `tagName` -m `tagMessage`    # Annotated Tag
+  ```
 
 * The lightweight tag is just a simple label that contains the SHA-1 of the commit. The annotated tag is similar, but it contains the SHA-1 of a tag object in the database, and that object in turn is referencing a commit. Annotate tag has extra information like: the tagger information, the date the commit was tagged, and the annotation message.
 
@@ -676,22 +676,22 @@ git tag -a `tagName` -m `tagMessage`    # Annotated Tag
 
 * to make a copy of a repository on your computer use `clone`:
 
-```bash
-$ git clone https://github.com/nusco/cookbook.git
-Cloning into 'cookbook'...
-remote: Counting objects: 47, done.
-remote: Total 47 (delta 0), reused 0 (delta 0), pack-reused 47
-Unpacking objects: 100% (47/47), done.
-```
+  ```bash
+  $ git clone https://github.com/nusco/cookbook.git
+  Cloning into 'cookbook'...
+  remote: Counting objects: 47, done.
+  remote: Total 47 (delta 0), reused 0 (delta 0), pack-reused 47
+  Unpacking objects: 100% (47/47), done.
+  ```
 
 * this is what `git cloen` did in the above example: it created an empty directory for the cookbook, and copied the `.git` directory from the GitHub project to this directory. After copying these stuff, Git checked out the master branch to rebuild the files in the working area.
 
 * **Note:** Git copies over the objects in the object database, but it doesn't copy each and every file on the repository. For example, in recent versions of Git, `git clone` only copies one branch (the master branch). We need to use specific commands to work with the other branches on the remote repo.
 
-```bash
-$ git branch
-* master
-```
+  ```bash
+  $ git branch
+  * master
+  ```
 
 * **Note:** the working area in Git is not very important, because you can always rebuild it on the fly from the content of the `.git` directory.
 
@@ -699,21 +699,21 @@ $ git branch
 
 * When we issued the `git clone` command, Git added a few lines to the configuration of our repository. Here is how our `config` file looks like:
 
-```txt
-[core]
-	repositoryformatversion = 0
-	filemode = false
-	bare = false
-	logallrefupdates = true
-	symlinks = false
-	ignorecase = true
-[remote "origin"]
-	url = https://github.com/nusco/cookbook.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
-[branch "master"]
-	remote = origin
-	merge = refs/heads/master
-```
+  ```txt
+  [core]
+    repositoryformatversion = 0
+    filemode = false
+    bare = false
+    logallrefupdates = true
+    symlinks = false
+    ignorecase = true
+  [remote "origin"]
+    url = https://github.com/nusco/cookbook.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+  [branch "master"]
+    remote = origin
+    merge = refs/heads/master
+  ```
 
 * Each Git repository can remember information about other copies of the same repository. The other copies are called _remote_.
 
@@ -721,30 +721,30 @@ $ git branch
 
 * if we ask Git for branches then it will just show the local branches, but Git also stores the information about the branches on the remote and commits that those branches are currently pointing at. We can see the list of all the local and remote branches, and the current position of HEAD, by using `--all` switch:
 
-```bash
-$ git branch
-* master
-$ git branch --all
-* master
-  remotes/origin/HEAD -> origin/master
-  remotes/origin/lisa
-  remotes/origin/master
-  remotes/origin/nogood
-  remotes/origin/spaghetti
-```
+  ```bash
+  $ git branch
+  * master
+  $ git branch --all
+  * master
+    remotes/origin/HEAD -> origin/master
+    remotes/origin/lisa
+    remotes/origin/master
+    remotes/origin/nogood
+    remotes/origin/spaghetti
+  ```
 
 * So, Git tracks remote branches exactly like it tracks local branches by writing those branches as references in the `refs/remotes/origin` folder. This folder contains the references to branches, tags, and the current HEAD pointer of origin. Git will automatically update this information when we connect to a remote.
 
 * To avoid mainataing one small file for each branch, as a low-level optimization, Git sometimes compacts some of them into a single file called `packed-refs`. This can happen for both local and remote branches:
 
-```bash
-$ cat packed-refs
-# pack-refs with: peeled fully-peeled
-ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
-704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
-7160d614c16207bf132828cc39daeeec5003adbc refs/remotes/origin/nogood
-5d4a817c9294fb6507e047e3f02dd5e841cb9d2e refs/remotes/origin/spaghetti
-```
+  ```bash
+  $ cat packed-refs
+  # pack-refs with: peeled fully-peeled
+  ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
+  704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
+  7160d614c16207bf132828cc39daeeec5003adbc refs/remotes/origin/nogood
+  5d4a817c9294fb6507e047e3f02dd5e841cb9d2e refs/remotes/origin/spaghetti
+  ```
 
 <p align="center">
   <img src ="./img/directory1.jpg" />
@@ -752,14 +752,14 @@ ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
 
 * you can use `git show-ref branchName` to get list of all branches (local and remote) with the name `branchName` and the commits that they are pointing at:
 
-```bash
-$ git show-ref master
-704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/heads/master
-704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
+  ```bash
+  $ git show-ref master
+  704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/heads/master
+  704182f5e2925fbdc03f9874d35ce696c21e9a3d refs/remotes/origin/master
 
-$ git show-ref lisa
-ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
-```
+  $ git show-ref lisa
+  ecbebe6601f5730ed6157f95175204cdf4d0542a refs/remotes/origin/lisa
+  ```
 
 * in conclusion both local and remote branches are just references to a commit and when you synchronize with the remote Git updates the list of remote branches.
 
