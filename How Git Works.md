@@ -4,7 +4,7 @@
 
 - [How Git Works](#how-git-works)
   - [Git Is Not What You Think](#git-is-not-what-you-think)
-    - [Meet SHA1](#meet-sha1)
+    - [Meet SHA-1](#meet-sha-1)
     - [Storing Things](#storing-things)
     - [First Commit!](#first-commit)
     - [Versioning Made Easy](#versioning-made-easy)
@@ -36,7 +36,7 @@
 
 ## Git Is Not What You Think
 
-### Meet SHA1
+### Meet SHA-1
 
 * Git is a map of keys and values
 * Value are objects and keys are SHA-1 hash
